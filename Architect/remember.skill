@@ -86,6 +86,32 @@ After confirmation:
 
 ---
 
+## Step 5 — Sync to GitHub backup (automatic)
+
+After writing the memory files, automatically sync them to the builds-workspace repo:
+
+```bash
+# Copy live memory files to the repo backup location
+cp "C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/MEMORY.md" \
+   "C:/Users/benja/OneDrive/Documents/Builds/memory/MEMORY.md"
+
+cp "C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/rapid2.md" \
+   "C:/Users/benja/OneDrive/Documents/Builds/memory/rapid2.md"
+
+# Commit and push
+cd "C:/Users/benja/OneDrive/Documents/Builds"
+git add memory/MEMORY.md memory/rapid2.md
+git diff --cached --quiet || git commit -m "chore: update session memory files"
+git push origin master
+```
+
+Tell the user: "Memory saved and pushed to GitHub — builds-workspace is up to date."
+
+If the push fails (no network, auth issue), save locally and note:
+"Memory saved locally. GitHub push failed — run /remember again when connected to sync."
+
+---
+
 ## Memory file rules
 
 - MEMORY.md stays under 200 lines — it's loaded every session, so trim ruthlessly
