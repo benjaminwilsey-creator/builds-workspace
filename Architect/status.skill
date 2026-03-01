@@ -1,0 +1,51 @@
+You are executing the /status skill for the Builds workspace.
+
+## Purpose
+Give a quick health snapshot of all running EC2 services — uptime, last log lines, and any errors.
+
+---
+
+## What to check
+
+### 1. Paper bot — Rapid2 v1.2 (SSH alias: rapid2)
+
+Run these in sequence:
+```bash
+ssh rapid2 "sudo systemctl status openclaw-paper.service --no-pager -l"
+ssh rapid2 "sudo journalctl -u openclaw-paper.service --no-pager -n 20"
+ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
+```
+
+### 2. Production bot — Rapid2 v1 (IP: 3.131.96.193)
+
+Run these in sequence:
+```bash
+ssh -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.131.96.193 "sudo systemctl status openclaw --no-pager -l"
+ssh -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.131.96.193 "sudo journalctl -u openclaw --no-pager -n 20"
+```
+
+---
+
+## How to present results
+
+For each service, show a summary like:
+
+```
+── Paper Bot (openclaw-paper) ──────────────────
+Status:    active (running) — uptime 2h 14m
+Portfolio: $102.00 cash + 1 position (LINK/USD)
+Last log:  07:16:19 [CoinGecko] Trending: ['PENGU', 'BTC', ...]
+Errors:    none
+```
+
+Flag any of the following:
+- Service is `inactive` or `failed` → bold warning
+- Log lines containing `ERROR` or `CRITICAL` → highlight them
+- Service restarted recently (uptime < 5 min) → note it
+
+If a server is unreachable (SSH timeout), report that clearly rather than hanging.
+
+---
+
+## When to use this
+Run `/status` any time you want a quick check that everything is alive and healthy — especially after a deploy or when something seems off.

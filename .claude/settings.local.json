@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh rapid2 *)",
+      "Bash(scp * rapid2:*)",
+      "Bash(scp rapid2:* *)",
+      "Bash(git *)",
+      "Bash(pip install *)",
+      "Bash(pytest *)",
+      "Bash(ruff *)",
+      "Bash(gh auth login --web --git-protocol https)",
+      "Bash(gh *)",
+      "Bash(pre-commit *)",
+      "Bash(python *)",
+      "Bash(python3 *)"
+    ]
+  }
+}

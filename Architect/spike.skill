@@ -1,0 +1,123 @@
+You are executing the /spike skill for the Builds workspace.
+
+## Purpose
+Before building in an unfamiliar domain, do the research first. A spike is a focused
+investigation that answers: "What is the right way to approach this?" before committing
+to any implementation.
+
+This skill prevents confident-but-wrong advice and unknown-unknowns from becoming bugs.
+
+---
+
+## When this skill is triggered
+
+The user will describe a topic, technology, API, or problem domain they want to explore
+or build with. Your job is to research it thoroughly and return a clear recommendation
+with enough context for the user to make an informed decision.
+
+---
+
+## Step 1 — Define the research question
+
+State the specific question this spike is trying to answer. Be precise.
+
+Bad: "How does video processing work?"
+Good: "What is the best Python library for extracting audio from MP4 files on a Linux server,
+       given we need to process files up to 2GB and run on a t2.micro EC2 instance?"
+
+If the user's question is too broad, narrow it down and confirm before researching.
+
+---
+
+## Step 2 — Research
+
+Use WebSearch and WebFetch to gather current, accurate information. Do not rely solely
+on training data for rapidly-changing topics (APIs, libraries, cloud services, pricing).
+
+Research areas to cover:
+- **Best practices**: What does the industry consider the right approach?
+- **Available options**: What tools/libraries/services exist for this problem?
+- **Current state**: Are the leading options actively maintained? Last release date?
+- **Known pitfalls**: What do people commonly get wrong? What issues come up repeatedly?
+- **Constraints check**: Does the recommended approach work within our constraints
+  (Python 3.12, EC2 t2.micro, Windows dev environment, non-programmer user)?
+- **Cost**: If services are involved, what does it cost at our scale?
+- **Security**: Are there credential, rate-limit, or data-handling concerns?
+
+---
+
+## Step 3 — Evaluate options
+
+Compare the top 2–3 options in a table:
+
+| | Option A | Option B | Option C |
+|---|---|---|---|
+| What it is | | | |
+| Maintained? | | | |
+| Complexity | Low/Med/High | | |
+| Cost | | | |
+| Best for | | | |
+| Avoid if | | | |
+
+---
+
+## Step 4 — State the recommendation
+
+Be direct. Pick one option and explain why in plain English.
+
+Include:
+- What it is and how it works (one paragraph, no jargon)
+- Why it's the right fit for this project and this user
+- The one thing to watch out for
+- A rough sense of implementation effort (small / medium / large)
+
+---
+
+## Step 5 — Surface the unknowns
+
+List anything that couldn't be determined from research alone and would need a
+proof-of-concept or further testing to confirm:
+- "We won't know if X works until we try it with real data"
+- "The rate limits on this API are unclear for our use case"
+- "Performance on t2.micro needs to be tested"
+
+---
+
+## Step 6 — Recommended next step
+
+End with a single clear recommendation for what to do next:
+
+- If confident: "I recommend we proceed with [option]. Run /think to plan the implementation."
+- If uncertain: "I recommend building a small proof-of-concept to test [specific assumption]
+  before committing to this approach."
+- If the domain is too risky: "This area has enough complexity that I'd suggest we [alternative]
+  instead."
+
+---
+
+## Spike output format
+
+```
+SPIKE — [topic]
+───────────────────────────────────────
+Research question:  [precise question]
+Confidence level:   High / Medium / Low
+
+Summary:
+[2–3 sentences on what we learned]
+
+Options compared:
+[table]
+
+Recommendation:
+[direct statement of what to do]
+
+Watch out for:
+[1–3 specific gotchas]
+
+Unknowns remaining:
+[list or "none"]
+
+Next step:
+[single clear action]
+```

@@ -1,0 +1,121 @@
+You are executing the /impact skill for the Builds workspace.
+
+## Purpose
+Before touching any existing code, map every consequence of the change — what breaks, what
+shifts, what needs updating. This skill prevents the "fixed one thing, silently broke another"
+failure that is especially costly when live money or production systems are involved.
+
+Run this skill BEFORE editing any existing file that is already in use.
+
+---
+
+## When this skill is triggered
+
+The user will describe a change they want to make to existing code.
+Your job is to read the affected files, trace the blast radius, and produce a risk assessment
+BEFORE any edits happen.
+
+---
+
+## Step 1 — Identify the change
+
+State clearly:
+- Which file(s) will be modified
+- Which function(s) or section(s) will change
+- What the change does at a high level
+
+---
+
+## Step 2 — Read the affected code
+
+Use the Read tool to read every file that will be directly changed.
+Do not rely on memory — always re-read before assessing impact.
+
+---
+
+## Step 3 — Trace all callers and dependents
+
+Search the codebase for every place that calls, imports, or depends on what you're changing.
+Use Grep to find:
+- Every function call site
+- Every import of the affected module
+- Every config value or constant that will change
+- Every test that covers the affected code
+
+List each one: file name, line number, what it does with the result.
+
+---
+
+## Step 4 — Assess production exposure
+
+Answer each question explicitly (yes / no / unknown):
+
+| Question | Answer |
+|----------|--------|
+| Is this code running live on EC2 right now? | |
+| Does this touch order execution or position logic? | |
+| Does this touch credentials, API keys, or secrets? | |
+| Does this affect state that is persisted to disk or S3? | |
+| Could a bug here cause a silent failure (no error, wrong behaviour)? | |
+| Is there a test that would catch a regression here? | |
+
+If any answer is "yes" to rows 1–5, add a ⚠️ warning and require explicit user confirmation
+before proceeding.
+
+---
+
+## Step 5 — Rate the blast radius
+
+**Green — Low risk**
+Change is isolated. Only one file affected. Test coverage exists. No production exposure.
+→ Safe to proceed directly.
+
+**Yellow — Medium risk**
+2–4 files affected, or partial test coverage, or touches paper bot on EC2.
+→ Proceed with care. Recommend deploying to paper bot first and watching logs.
+
+**Red — High risk**
+5+ files affected, or no test coverage, or touches live trading logic, open positions,
+or real credentials.
+→ Stop. Write a test first. Get explicit user confirmation. Consider staging approach.
+
+---
+
+## Step 6 — Identify what needs updating beyond the direct change
+
+Often a change requires more than the obvious edit. List:
+- Tests that need adding or updating
+- Documentation or CLAUDE.md that needs updating
+- Config values or .env variables that need changing
+- Other files that must change in sync (e.g., if you rename a function)
+- Deployment steps (does the paper bot need restarting after this?)
+
+---
+
+## Step 7 — Present the impact report
+
+Show the user a summary:
+
+```
+IMPACT REPORT — [change description]
+─────────────────────────────────────
+Files directly changed:   [list]
+Files indirectly affected: [list]
+Production exposure:      [Green / Yellow / Red]
+Test coverage:            [Exists / Partial / None]
+Rollback plan:            [how to undo if it goes wrong]
+
+Risks:
+  1. [risk]
+  2. [risk]
+
+Additional work required:
+  - [item]
+  - [item]
+
+Recommendation: [proceed / proceed with caution / stop and discuss]
+```
+
+Ask: "Does this look right? Say yes to proceed with the change, or tell me what to revisit."
+
+Do NOT make any edits until the user approves the impact report.

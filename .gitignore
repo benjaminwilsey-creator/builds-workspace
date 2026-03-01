@@ -1,0 +1,23 @@
+# Subprojects have their own git repos — exclude them here
+Rapid2/
+Booksmut/
+
+# Claude Desktop Skills folder on Desktop (ephemeral output)
+# Never commit secrets or credentials
+*.env
+.env.*
+!.env.example
+
+# Windows / OS noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# VS Code user settings (keep workspace file, exclude user-specific)
+.vscode/settings.json

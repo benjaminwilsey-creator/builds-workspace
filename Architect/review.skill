@@ -1,0 +1,119 @@
+You are executing the /review skill for the Builds workspace.
+
+## Purpose
+A structured pre-deploy code review. Catches bugs, security issues, and rule violations
+BEFORE code ships to EC2. The workflow is: build → /review → /deploy. Never skip this
+for changes to files that touch trading logic, credentials, or production systems.
+
+---
+
+## When this skill is triggered
+
+The user has finished making changes and wants a review before deploying.
+They may specify files to review, or you should identify what has changed since the last commit.
+
+---
+
+## Step 1 — Identify what changed
+
+```bash
+git diff HEAD --name-only
+git diff HEAD --stat
+```
+
+If no git diff is available, ask the user which files to review.
+
+---
+
+## Step 2 — Read every changed file in full
+
+Use the Read tool on each changed file. Do not review from memory or partial reads.
+This is non-negotiable — reviewing code you haven't read is worse than not reviewing at all.
+
+---
+
+## Step 3 — Check against global rules (from CLAUDE.md)
+
+Go through each rule and flag any violations:
+
+**Code quality:**
+- [ ] Functions under 40 lines — flag any that exceed this
+- [ ] No magic numbers — all numeric thresholds use named constants
+- [ ] No dead code — commented-out code or unused variables
+- [ ] One function, one job — flag functions doing multiple things
+- [ ] Errors handled explicitly — no bare `except:` or silent swallows
+- [ ] Errors logged with context — not just `logger.error(e)`
+
+**Security:**
+- [ ] No hardcoded secrets, API keys, tokens, or passwords
+- [ ] No credentials in log output
+- [ ] No `print()` statements in production code (use `logging`)
+- [ ] Input validation at system boundaries
+
+**Python-specific:**
+- [ ] Type hints on all new functions
+- [ ] `logging` module used, not `print()`
+- [ ] `pathlib.Path` used instead of `os.path` where applicable
+- [ ] Async functions have try/except or explicit propagation
+
+---
+
+## Step 4 — Logic review
+
+Read the changes in context and think about correctness:
+- Does the code do what the user intended?
+- Are there off-by-one errors, wrong comparison operators, or inverted conditions?
+- Are there edge cases the code doesn't handle? (empty list, None value, zero division, network timeout)
+- If this touches trading logic: could a bug here cause an incorrect buy, sell, or missed exit?
+- If this touches state persistence: could a bug here corrupt or lose saved state?
+
+---
+
+## Step 5 — Test coverage check
+
+- Do tests exist for the changed behaviour?
+- If new functions were added, are they tested?
+- If existing functions changed, do existing tests still make sense?
+
+If coverage is missing for a non-trivial change, flag it as a required fix before deploy.
+
+---
+
+## Step 6 — Produce the review report
+
+```
+─── CODE REVIEW ─────────────────────────────────────
+Files reviewed: [list]
+Changed lines:  [approximate count]
+
+RULE VIOLATIONS
+  [list each violation with file:line — or "None found"]
+
+SECURITY
+  [list any security concerns — or "Clean"]
+
+LOGIC ISSUES
+  [list any correctness concerns — or "None found"]
+
+TEST COVERAGE
+  [what's covered / what's missing]
+
+VERDICT
+  ✅ APPROVED — safe to deploy
+  ⚠️  APPROVED WITH NOTES — deploy OK, but address [items] soon
+  ❌ BLOCKED — fix [items] before deploying
+
+─────────────────────────────────────────────────────
+```
+
+---
+
+## Step 7 — Handle the verdict
+
+**Approved:** Tell the user "review passed — run /deploy when ready."
+
+**Approved with notes:** Deploy is allowed but flag the items to fix in the next session.
+Offer to add them to memory or as a TODO comment.
+
+**Blocked:** Do not proceed to deploy. Explain each blocking issue clearly in plain English.
+Offer to fix the issues now before continuing.

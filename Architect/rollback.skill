@@ -1,0 +1,124 @@
+You are executing the /rollback skill for the Builds workspace.
+
+## Purpose
+Recover from a bad deploy quickly and safely. If something broke after deploying,
+this skill identifies the last known-good version and restores it to EC2.
+
+⚠️ This skill touches live systems. Confirm with the user before executing any step.
+
+---
+
+## When this skill is triggered
+
+The user reports that something broke after a deploy — the bot crashed, behaves
+incorrectly, or logs show errors that weren't there before.
+
+---
+
+## Step 1 — Assess the situation first
+
+Before doing anything, gather information:
+
+```bash
+ssh rapid2 "sudo systemctl status openclaw-paper.service --no-pager -l"
+ssh rapid2 "sudo journalctl -u openclaw-paper.service --no-pager -n 30"
+```
+
+Ask the user:
+- "What is the symptom — bot crashed, wrong behaviour, errors in logs?"
+- "When did it start — immediately after the last deploy, or gradually?"
+- "Are there any open positions that need protecting?"
+
+Do NOT proceed until you understand what's broken.
+
+---
+
+## Step 2 — Identify the last good version
+
+Check git history for deploy tags:
+```bash
+cd "c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2" && git tag --sort=-creatordate | head -10
+git log --oneline -10
+```
+
+The last deploy tag (format: `deploy-YYYY-MM-DD`) marks the last known-good state.
+If no deploy tags exist, use the commit before the most recent one.
+
+Show the user:
+- Last deploy tag and its commit message
+- What changed since then (git diff)
+- Confirm: "This is what was running before the problem started."
+
+---
+
+## Step 3 — Protect open positions
+
+Before restoring files, check if the bot has open positions that need attention:
+
+```bash
+ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
+```
+
+If positions are open on the paper bot, note them — a restart will resume from saved state,
+so they should be safe. For the production bot, flag any open positions explicitly and
+ask the user if they want to manually close them before rolling back.
+
+---
+
+## Step 4 — Execute the rollback
+
+Stop the service first, then restore files, then restart:
+
+```bash
+# Stop the service
+ssh rapid2 "sudo systemctl stop openclaw-paper.service"
+
+# Check out the last good files locally
+cd "c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2"
+git checkout [last-good-tag] -- paper_bot.py strategy.py bot.py
+
+# Push the restored files to EC2
+scp paper_bot.py strategy.py bot.py rapid2:/home/ubuntu/rapid2-v1.2/
+
+# Restart the service
+ssh rapid2 "sudo systemctl start openclaw-paper.service"
+```
+
+Show the user each command before running it. Get confirmation for the scp step.
+
+---
+
+## Step 5 — Verify recovery
+
+```bash
+sleep 4
+ssh rapid2 "sudo systemctl is-active openclaw-paper.service"
+ssh rapid2 "sudo journalctl -u openclaw-paper.service --no-pager -n 20"
+```
+
+Confirm to the user: "Bot is back up on the previous version" or report any remaining issues.
+
+---
+
+## Step 6 — Restore local working files
+
+After a successful rollback, the local files are now at the old version.
+Restore the current (broken) version so it can be fixed, not lost:
+
+```bash
+git checkout HEAD -- paper_bot.py strategy.py bot.py
+```
+
+Tell the user: "Local files restored to current version — the broken code is still here
+to fix. The EC2 bot is running the previous version until you fix and re-deploy."
+
+---
+
+## Step 7 — Record what happened
+
+Create a brief note for the session memory:
+- What broke
+- What was rolled back
+- What needs fixing before the next deploy
+
+Offer to run /decide to record the root cause if it reveals something architectural.

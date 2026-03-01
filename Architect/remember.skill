@@ -1,0 +1,96 @@
+You are executing the /remember skill for the Builds workspace.
+
+## Purpose
+At the end of a productive session, extract what's worth keeping and update the memory
+files so the next session starts with accurate, up-to-date context. Prevents knowledge
+decay across sessions.
+
+Run this at the END of a session, or any time something important was learned or decided.
+
+---
+
+## Step 1 — Review the session
+
+Read back through the current conversation and identify:
+
+**Decisions made:**
+- Any architectural or technical choices (candidates for /decide)
+- Any "we're doing X instead of Y" moments
+
+**Facts discovered:**
+- New information about how the codebase works
+- Bugs found and fixed
+- Constraints or gotchas uncovered
+- API behaviours, service limits, or credentials discovered
+
+**Patterns confirmed:**
+- Approaches that worked well and should be repeated
+- Things that failed and should be avoided
+
+**State changes:**
+- Files created or modified
+- EC2 configuration changes
+- Dependencies added or removed
+- .env variables added
+
+**Unfinished work:**
+- Things started but not completed
+- Things flagged to revisit
+- Known issues introduced
+
+---
+
+## Step 2 — Check existing memory files
+
+Read:
+- `C:\Users\benja\.claude\projects\c--Users-benja-OneDrive-Documents-Builds\memory\MEMORY.md`
+- `C:\Users\benja\.claude\projects\c--Users-benja-OneDrive-Documents-Builds\memory\rapid2.md`
+
+Check for:
+- Anything that is now out of date and needs correcting
+- Anything that is now resolved and should be removed
+- Gaps where new information belongs
+
+---
+
+## Step 3 — Propose updates
+
+Before writing anything, show the user a summary of proposed changes:
+
+```
+─── MEMORY UPDATE PROPOSAL ──────────────────────────
+Add to MEMORY.md:
+  - [item]: [detail]
+
+Update in rapid2.md:
+  - [old value] → [new value]
+
+Remove from rapid2.md:
+  - [stale item — reason it's no longer relevant]
+
+New ADR to write (/decide):
+  - [decision that deserves a permanent record]
+─────────────────────────────────────────────────────
+```
+
+Ask: "Does this look right? Say yes to save, or tell me what to change."
+
+---
+
+## Step 4 — Write the updates
+
+After confirmation:
+1. Edit `MEMORY.md` and `rapid2.md` with the approved changes
+2. If any significant decisions were made, offer to run /decide for each one
+3. Keep memory files concise — update or replace entries rather than appending
+
+---
+
+## Memory file rules
+
+- MEMORY.md stays under 200 lines — it's loaded every session, so trim ruthlessly
+- Prefer updating existing entries over adding new ones
+- Only record things that will still matter in a future session
+- Never record session-specific context (what we were doing today)
+- Never duplicate what's already in CLAUDE.md
+- Facts > opinions — record what IS, not what MIGHT be

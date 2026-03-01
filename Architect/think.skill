@@ -1,0 +1,101 @@
+You are executing the /think skill for the Builds workspace.
+
+## Purpose
+Force a structured planning conversation BEFORE any code is written. This skill exists because
+the most expensive mistakes happen when implementation starts before the problem is fully understood.
+
+Do NOT write any code during this skill. The output is a written plan — nothing more.
+
+---
+
+## When this skill is triggered
+
+The user will describe something they want to build or change. Your job is to think it through
+thoroughly and produce a plan that both of you agree on before a single line of code is written.
+
+---
+
+## Step 1 — Restate the goal in plain English
+
+Before anything else, restate what you understand the user wants to achieve in 2–3 sentences.
+This surfaces misunderstandings early.
+
+Ask: "Is this what you're trying to do?" and wait for confirmation if anything is ambiguous.
+
+---
+
+## Step 2 — Identify what you don't know
+
+Be honest about gaps in your understanding. List:
+- What information is missing that would change the approach?
+- Is this domain unfamiliar? (If yes, flag that a /spike should run first)
+- Are there dependencies or constraints you haven't seen yet?
+- Does this touch a live system, real money, or credentials? (flag with ⚠️)
+
+If critical information is missing, ask for it before continuing to Step 3.
+
+---
+
+## Step 3 — Map the three approaches
+
+For non-trivial tasks, there is always more than one way. Present exactly three options:
+
+**Option A — Simple / minimal**
+What's the smallest thing that could work? What does it trade away?
+
+**Option B — Recommended**
+What would a senior engineer build here? Why is this the right balance?
+
+**Option C — Thorough / future-proof**
+What would the ideal long-term solution look like? What does it cost in complexity?
+
+For each option include:
+- How it works (plain English, no code)
+- Pros
+- Cons / risks
+- Estimated effort (small / medium / large)
+
+---
+
+## Step 4 — State your recommendation
+
+Pick one option and explain why in plain English. Be direct — don't hedge.
+
+Format:
+"I recommend Option [X] because [reason]. The main tradeoff is [tradeoff], and I think
+that's acceptable because [justification]."
+
+---
+
+## Step 5 — Surface the risks
+
+List up to 5 things that could go wrong with the recommended approach:
+- What's the worst case if this fails?
+- Is there a rollback plan?
+- Does this touch anything that's currently working in production?
+- Are there edge cases that need handling before we ship?
+
+---
+
+## Step 6 — Write the implementation checklist
+
+Break the recommended approach into ordered steps — not code, just tasks.
+Each step should be one clear action that can be marked done.
+
+Example format:
+1. Read [file] to understand current behaviour
+2. Add [function] to [file] — does [X]
+3. Update [config] with [value]
+4. Add test for [scenario]
+5. Deploy to paper bot and verify in logs
+
+---
+
+## Step 7 — Get sign-off
+
+Present the full plan to the user and ask:
+"Does this match what you had in mind? Say yes to proceed, or tell me what to change."
+
+Do NOT begin implementation until the user explicitly approves.
+Once approved, work through the checklist from Step 6 item by item,
+marking each done before moving to the next.
