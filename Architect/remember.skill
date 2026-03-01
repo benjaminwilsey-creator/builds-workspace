@@ -86,9 +86,55 @@ After confirmation:
 
 ---
 
-## Step 5 — Sync to GitHub backup (automatic)
+## Step 5 — Generate session documentation
 
-After writing the memory files, automatically sync them to the builds-workspace repo:
+After writing the memory files, generate a plain-English session summary and prepend it
+to the running build log at `C:\Users\benja\OneDrive\Documents\Builds\Build Log.md`.
+
+**Format for each session entry:**
+
+```
+---
+## Session: [date, e.g. 1 March 2026]
+**Projects touched:** [list project names]
+**Session type:** [e.g. Infrastructure, Feature build, Bug fix, Maintenance]
+
+### What was built or changed
+- [Plain English bullet. Not code — describe what it does, not how.]
+- [E.g. "Added automatic S3 backup — the bot now saves its state to AWS every time it makes a trade, so nothing is lost if the server restarts"]
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | [active / inactive, portfolio value, open positions] |
+| Production bot | [active / inactive] |
+| Last deploy | [date of last deploy tag, or "none"] |
+
+### Decisions made this session
+- [E.g. "Chose TCP port monitoring over HTTP monitoring for UptimeRobot — the server runs a bot, not a website, so HTTP always times out"]
+- [Or "None"]
+
+### Outstanding / next steps
+- [Anything left incomplete or flagged for next session]
+- [Or "None — clean slate"]
+---
+```
+
+Rules for the session entry:
+- Write as if explaining to a smart non-programmer — no jargon, no code snippets
+- Focus on WHAT was built and WHY, not HOW
+- Keep each bullet to one sentence
+- If nothing meaningful happened in a session (just reading/investigating), write a one-liner summary instead of a full entry
+- Prepend the new entry at the TOP of the file so the most recent session is always first
+
+After generating the entry, show it to the user for a quick review before writing it:
+"Here's the session summary — say yes to save it, or tell me what to change."
+
+---
+
+## Step 7 — Sync to GitHub backup (automatic)
+
+After writing the memory files and build log, automatically sync everything to the builds-workspace repo:
 
 ```bash
 # Copy live memory files to the repo backup location
@@ -100,8 +146,8 @@ cp "C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/mem
 
 # Commit and push
 cd "C:/Users/benja/OneDrive/Documents/Builds"
-git add memory/MEMORY.md memory/rapid2.md
-git diff --cached --quiet || git commit -m "chore: update session memory files"
+git add memory/MEMORY.md memory/rapid2.md "Build Log.md"
+git diff --cached --quiet || git commit -m "chore: update session memory and build log"
 git push origin master
 ```
 
