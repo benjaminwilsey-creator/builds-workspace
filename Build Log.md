@@ -2,6 +2,37 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 
 ---
+## Session: 1 March 2026 (continued)
+**Projects touched:** Rapid2 v1.2 infrastructure, Builds Workspace docs
+**Session type:** Monitoring, Documentation
+
+### What was built or changed
+
+**CloudWatch memory alarm (Rapid2 v1.2 — paper trading server)**
+- Installed the CloudWatch agent on the EC2 server — this is a small background process that collects memory usage and sends it to AWS every 60 seconds. AWS does not collect RAM stats by default, so this step was required.
+- Added `CloudWatchAgentServerPolicy` to the EC2 IAM role — the agent needs permission to write data to CloudWatch. Fixed a "no metrics found" error caused by this missing permission.
+- Created a CloudWatch alarm: `rapid2-memory-high` — triggers an email alert if RAM usage exceeds 85% (about 870MB on the 1GB server).
+
+**Documentation**
+- Created `Developer Quick Reference.md` — a one-page cheat sheet of all Claude Code commands and when to use them.
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.2) | Active — paper trading running |
+| Production bot (v1) | Active — live trading on Kraken |
+| LunarCrush signal | Off — requires Individual plan (~$19/mo) |
+| S3 backup | Live and verified |
+| EC2 error alerting | Live — cron every 5 min, Telegrams on error |
+| UptimeRobot | TCP port 22 monitor — showing UP |
+| CloudWatch RAM alarm | Live — alerts above 85% RAM usage |
+| GitHub backup | All 3 repos up to date |
+
+### Outstanding / next steps
+- LunarCrush Individual plan — optional upgrade at ~$19/mo to activate the 4th signal
+- Booksmut (ReelForge) — still in design/docs phase, no code yet. Stack decision needed before development starts.
+
+---
 ## Session: 1 March 2026
 **Projects touched:** Rapid2 v1.2, Builds Workspace (all projects)
 **Session type:** Infrastructure, Tooling, Developer Workflow
