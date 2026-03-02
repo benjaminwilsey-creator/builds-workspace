@@ -260,6 +260,39 @@ All Supabase tables with fields, types, and purpose.
 | license_scope | text | all_titles \| specific_titles \| specific_authors |
 | outreach_date, response_date, license_start, license_expiry | timestamptz/date | Full timeline tracking |
 | asset_portal_url, asset_portal_login | text | Where licensed cover assets are downloaded from |
+| contact_discovery_method | text ENUM | `MANUAL` \| `AUTO_CONFIRMED` \| `AUTO_AUTO` — see ADR 0003 |
+| partner_corrected_contact | boolean | True if partner changed the auto-found email — feeds accuracy log |
+| outreach_draft_id | text | Gmail draft ID — used to link directly to the draft in partner's inbox |
+| followup_draft_sent_at | timestamptz | Prevents 7-day follow-up draft from re-firing |
+| gmail_thread_id | text | Reserved for Option C — tracks reply conversation thread |
+| sent_at_detected | timestamptz | Null in Option B (manual mark); auto-filled in Option C via Sent folder |
+
+### contact_discovery_log — accuracy tracking for auto contact finder
+
+| Field | Type | Purpose |
+|---|---|---|
+| id | uuid PK | Primary key |
+| publisher_domain | text | Publisher being looked up |
+| discovered_email | text | Email address the system found |
+| was_correct | boolean | Set when partner confirms or corrects — feeds accuracy metric |
+| corrected_to | text | What partner changed it to (if wrong) |
+| run_number | int | Cumulative counter — accuracy = correct / last 50 runs |
+| created_at | timestamptz | |
+
+> When `run_number >= 50` AND rolling accuracy >= 98%, `contact_discovery_method` defaults
+> to `AUTO_AUTO` and the partner confirmation step is skipped automatically.
+
+### prompt_versions — outreach email A/B testing
+
+| Field | Type | Purpose |
+|---|---|---|
+| id | uuid PK | Primary key |
+| prompt_text | text | Full Gemini prompt template for outreach email generation |
+| send_count | int | Number of emails generated using this version |
+| response_count | int | Publishers who replied (partner marked IN_DISCUSSION) |
+| response_rate | float | response_count / send_count — used to promote best version |
+| active | boolean | Currently the default prompt |
+| created_at | timestamptz | |
 
 ### affiliate_links — per-book per-tenant link records
 
@@ -386,12 +419,23 @@ Ordered by dependency — nothing is built before its foundation exists.
 - Set up Vercel project — connect to GitHub repo
 - Seed music_library table with 20+ CC0/no-attribution tracks from Pixabay Music and YouTube
   Audio Library. **Only import tracks with confirmed no-attribution commercial licenses.**
+- **Enable Gmail API in Google Cloud project** (same project as Books, TTS, Vision):
+  - APIs & Services → Library → Gmail API → Enable
+  - OAuth consent screen: External, scope `gmail.compose` only (create drafts — cannot read/send/delete)
+  - Authorized domain: add Vercel app domain once known
+  - Test users: add partner's Gmail address
+  - Create OAuth 2.0 Client ID (Web application type)
+  - Store `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in Vercel env vars — never commit
+  - Add both as blank placeholders in `.env.example`
+  - **Note:** Apply for Google app verification early — review can take 1–4 weeks and blocks
+    production use beyond test users
 
 ### PHASE 1 — Database and Auth Foundation
 
 - Deploy all Supabase migrations in schema order: tenants → users → user_roles → books →
   book_sources → campaigns → campaign_parts → affiliate_links → publisher_licenses →
-  music_library → music_mood_map → moderation_log → seed_books → ui_feedback
+  contact_discovery_log → prompt_versions → music_library → music_mood_map →
+  moderation_log → seed_books → ui_feedback
 - Configure Row Level Security on all tables — tenant isolation is the first security layer
 - Set up Supabase Auth — email/password provider, role assignment on first login
 - Create first tenant record and owner user — smoke test auth flow
@@ -495,8 +539,25 @@ Ordered by dependency — nothing is built before its foundation exists.
 - Build Calendar screen — SCHEDULED content with posting cadence health indicator
 - Build Settings screen — tenant config, associate tag, genre preferences, cadence, user role
   management
+- **Build semi-automated publisher outreach (ADR 0003):**
+  - Install `next-auth` with Google provider, `gmail.compose` scope
+  - Partner authorises once on first login — refresh token stored encrypted in Supabase
+  - Build contact discovery UI — shows auto-found email with "Confirm" / "Correct it" buttons,
+    logs result to `contact_discovery_log`
+  - Build accuracy calculator — when rolling accuracy ≥ 98% over last 50 runs, switch to
+    `AUTO_AUTO` mode (skip confirmation step)
+  - Build Gemini outreach email prompt (Phase 1: base template + dynamic publisher/book fields)
+  - Build `/api/outreach/draft` endpoint — generates email via Gemini, creates Gmail draft,
+    saves `outreach_draft_id`, returns draft link
+  - Add "Generate Draft in Gmail" button to publisher card — shows "Draft ready" link on success
+  - Add "Mark as Sent" button — sets `outreach_date`, advances status to `IN_DISCUSSION`
+  - Build daily follow-up job — checks `IN_DISCUSSION` records past 7 days, no `followup_draft_sent_at`,
+    generates follow-up draft, pushes to Gmail, sets `followup_draft_sent_at`
+  - Add `prompt_versions` logging — record which prompt version was used per email sent
+  - Add response rate display to Settings screen
 - TEST: Full end-to-end — book discovered, enriched, scripted, moderated, rendered, appears
-  in queue, downloaded.
+  in queue, downloaded. Also test: contact discovery → confirm → generate draft → verify in
+  Gmail → mark sent → verify 7-day follow-up fires.
 
 ---
 
