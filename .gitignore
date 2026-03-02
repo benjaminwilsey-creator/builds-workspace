@@ -13,6 +13,9 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+# LibreOffice lock files (created when a file is open, never commit)
+.~lock.*
+
 # Python cache
 __pycache__/
 *.pyc
