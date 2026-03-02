@@ -81,6 +81,7 @@ This project uses the **hierarchical-claude-md** Architect skill for CLAUDE.md m
 |---------|---------|
 | `/catchup` | Start-of-session briefing — bot state, errors, git status, open decisions |
 | `/remember` | End-of-session memory update — extract and save what's worth keeping |
+| `/rc` | Remote Control — share current session to mobile/browser via URL + QR code (Max plan required) |
 
 **Before coding**
 | Command | Purpose |

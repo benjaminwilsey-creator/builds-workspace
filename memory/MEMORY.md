@@ -30,7 +30,7 @@ See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
 
 ## Available Skills (invoke with /skill-name)
 
-**Session bookends:** `/catchup` · `/remember`
+**Session bookends:** `/catchup` · `/remember` · `/rc`
 **Before coding:** `/spike` · `/think` · `/impact`
 **After coding:** `/review` · `/decide` · `/deploy`
 **Operations:** `/status` · `/rollback` · `/new-project` · `/hierarchical-claude-md`

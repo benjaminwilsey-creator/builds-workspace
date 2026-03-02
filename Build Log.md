@@ -2,6 +2,13 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 
 ---
+## Session: 2 March 2026 (afternoon)
+**Projects touched:** Builds workspace, Booksmut (ReelForge)
+**Session type:** Housekeeping, Research
+
+Looked up the Claude Code Remote Control feature (`/rc`) — a recently added capability that lets you share a running Claude Code session to a phone or browser via a URL and QR code. Added `/rc` to the Session skills table in CLAUDE.md and to the memory files so it's visible every session. Also generated a plain-English to-do list for the ReelForge partner drawn from the project documentation.
+
+---
 ## Session: 2 March 2026
 **Projects touched:** Booksmut (ReelForge)
 **Session type:** Documentation
