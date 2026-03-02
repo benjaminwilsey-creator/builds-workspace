@@ -25,6 +25,7 @@ No code written yet. All architectural decisions locked.
 |---|----------|
 | 0001 | Publisher Licenses UI: Framework B selected (Dashboard + Focus Mode + mini-checklists) |
 | 0002 | AI creative partner chat widget added to Phase 6 (Gemini, style of top 3 BookTok authors) |
+| 0003 | Semi-automated publisher outreach: Gemini drafts → Gmail API pushes draft → partner clicks Send. Contact discovery accuracy-gated to full auto at ≥98% over 50 confirmed runs. |
 
 ## Partner UI Answers (Framework Review)
 - **Framework selected:** B — Dashboard + Focus Mode
@@ -38,10 +39,12 @@ No code written yet. All architectural decisions locked.
 - [ ] Agree on "top 3 BookTok romance/romantasy authors" — needed for AI agent system prompt (Phase 6)
 - [ ] Confirm Meta accounts (Facebook Page + Instagram Business) are set up and in good standing
 - [ ] Apply for Amazon Associates account early — 3 qualifying sales required within 180 days
+- [ ] Apply for Google app verification early — Gmail OAuth requires approval, takes 1–4 weeks; must be done in Phase 0 to avoid blocking Phase 6
 
 ## Tech Stack (all locked — see Technical Guide v2 for full detail)
 Supabase · Cloudflare R2 · AWS Lambda + SQS + SES · Gemini API · Google TTS + Vision ·
-FFmpeg · Vercel + Next.js + shadcn/ui · Amazon Associates · Hardcover.app · Reddit API · NYT Books API
+FFmpeg · Vercel + Next.js + shadcn/ui · Amazon Associates · Hardcover.app · Reddit API · NYT Books API ·
+Gmail API (gmail.compose scope only) · Google OAuth 2.0 via next-auth
 
 ## Known Risks (must not be forgotten)
 - **Open Library covers are NOT cleared for commercial use** — backdrop fallback only when no licensed cover
@@ -50,3 +53,4 @@ FFmpeg · Vercel + Next.js + shadcn/ui · Amazon Associates · Hardcover.app · 
 - **EventBridge Scheduled Rules trigger discovery Lambdas** — not SQS (SQS is for inter-stage queuing only)
 - **Music library: CC0 and no-attribution tracks only** — CC-BY excluded (attribution not feasible at scale)
 - **Amazon Associates: 3 qualifying sales within 180 days** — apply early, get sales before pipeline goes live
+- **Gmail OAuth requires Google app verification** — gmail.compose scope only, but Google must approve the app for production use beyond test users (1–4 week review). Apply in Phase 0.

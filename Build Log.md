@@ -2,6 +2,37 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 
 ---
+## Session: 1 March 2026 (afternoon — outreach automation)
+**Projects touched:** Booksmut (ReelForge)
+**Session type:** Feature design, Documentation
+
+### What was built or changed
+- Generated a FigJam pipeline diagram of the full ReelForge workflow — a visual overview the partner can use to understand the entire process end-to-end.
+- Designed the publisher outreach automation system from scratch: instead of the partner manually finding a publisher's contact email and writing every email by hand, the system now does both. Gemini finds the contact email and writes a personalised draft; the draft is pushed directly to the partner's Gmail inbox; she reviews it and clicks Send herself. The human-in-the-loop is preserved — the system does the research and writing, the partner makes the final call.
+- Built in a safety gate for the contact-finding step: the system logs whether each email address it finds is correct. Once it has been right 98% of the time across 50 confirmed attempts, it stops asking for confirmation and runs fully automatically. This prevents automating the step before it's proven reliable.
+- Added prompt A/B testing to the outreach design — the system tracks which version of the email template gets replies, so over time the better-performing version becomes the default.
+- Updated the Technical Guide v2 with all new schema: three new database tables/fields covering outreach tracking, contact discovery logging, and prompt version tracking. Added Gmail OAuth setup instructions to Phase 0 and the full outreach build plan to Phase 6.
+- Wrote ADR 0003 — the permanent decision record for why semi-automated outreach was chosen over fully manual or fully automated alternatives.
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.2) | Active — 4 open positions |
+| Production bot (v1) | Unreachable — EC2 did not respond (non-urgent) |
+| Booksmut / ReelForge | Design complete — all architectural decisions locked, Technical Guide v2 final, 3 ADRs written |
+
+### Decisions made this session
+- Publisher outreach will be semi-automated: Gemini drafts, Gmail API delivers to inbox, partner sends (ADR 0003)
+- Contact discovery accuracy-gated: confirmation required until ≥98% accuracy over 50 runs, then fully automated
+- Schema future-proofed for Option C (auto-detect sends from Gmail Sent folder) at zero extra build cost
+
+### Outstanding / next steps
+- Apply for Google app verification in Phase 0 — Gmail OAuth requires Google approval, takes 1–4 weeks
+- Agree on "top 3 BookTok romance/romantasy authors" before Phase 6 (AI creative partner system prompt)
+- Confirm Meta accounts are set up before Phase 0 begins
+- Apply for Amazon Associates early (180-day qualifying sales clock)
+
+---
 ## Session: 1 March 2026 (evening)
 **Projects touched:** Booksmut (ReelForge)
 **Session type:** Design review, Pre-build spike, Documentation
