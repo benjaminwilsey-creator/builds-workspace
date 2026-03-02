@@ -1,6 +1,6 @@
-# Subprojects have their own git repos — exclude them here
+# Subprojects with their own git repos — exclude them here
 Rapid2/
-Booksmut/
+# Booksmut has no separate repo — tracked in builds-workspace
 
 # Claude Desktop Skills folder on Desktop (ephemeral output)
 # Never commit secrets or credentials
