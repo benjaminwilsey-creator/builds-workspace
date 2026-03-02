@@ -34,9 +34,8 @@ A Gemini-powered chat widget embedded in the UI is the minimal viable implementa
 requires no new infrastructure (Gemini API is already in the stack) and no new data model —
 just a UI component and a system prompt. The system prompt seeds the assistant with:
 
-1. The writing style and voice characteristics of the top 3 current BookTok romance/romantasy
-   authors (to be identified and documented before Phase 6 — e.g. Emily Henry, Ana Huang,
-   Rebecca Yarros or equivalent at build time).
+1. The writing style and voice characteristics of the confirmed top 3 BookTok romance/romantasy
+   authors: **Sarah J. Maas**, **Rebecca Yarros**, **Colleen Hoover**. Confirmed 2026-03-02.
 2. The context of what ReelForge is and what the partner is trying to accomplish.
 3. The specific task it should help with (outreach tone, caption review, campaign ideas).
 
@@ -45,8 +44,8 @@ pipeline actions. Partner copies suggestions manually.
 
 ## Tradeoffs Accepted
 
-- "Top 3 authors" must be chosen and documented before Phase 6 — this is a content
-  decision, not a technical one, and requires agreement between both partners.
+- "Top 3 authors" confirmed: Sarah J. Maas, Rebecca Yarros, Colleen Hoover (agreed 2026-03-02).
+  Writing styles in the system prompt are approximate and static; plan to review annually.
 - Author writing styles in the system prompt are approximate and static; they will not
   auto-update as the BookTok landscape changes. Plan to review annually.
 - Adds Gemini API token usage per chat session. At free tier (1M tokens/day), this is

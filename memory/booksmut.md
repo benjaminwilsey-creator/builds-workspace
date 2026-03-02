@@ -36,7 +36,7 @@ No code written yet. All architectural decisions locked.
 - **Design implication:** Borrow Framework C mini-checklists into Framework B publisher cards
 
 ## Open Items Before Phase 0
-- [ ] Agree on "top 3 BookTok romance/romantasy authors" — needed for AI agent system prompt (Phase 6)
+- [x] Top 3 BookTok romance/romantasy authors confirmed: **Sarah J. Maas, Rebecca Yarros, Colleen Hoover** (2026-03-02)
 - [ ] Confirm Meta accounts (Facebook Page + Instagram Business) are set up and in good standing
 - [ ] Apply for Amazon Associates account early — 3 qualifying sales required within 180 days
 - [ ] Apply for Google app verification early — Gmail OAuth requires approval, takes 1–4 weeks; must be done in Phase 0 to avoid blocking Phase 6

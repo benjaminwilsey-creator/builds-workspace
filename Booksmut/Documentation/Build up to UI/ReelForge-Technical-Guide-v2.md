@@ -555,6 +555,13 @@ Ordered by dependency — nothing is built before its foundation exists.
     generates follow-up draft, pushes to Gmail, sets `followup_draft_sent_at`
   - Add `prompt_versions` logging — record which prompt version was used per email sent
   - Add response rate display to Settings screen
+- **Build AI creative partner chat widget (ADR 0002):**
+  - Add Gemini chat component to Publisher Licenses and Campaign Queue screens
+  - System prompt seeds assistant with writing style and voice of confirmed top 3 BookTok
+    romance/romantasy authors: **Sarah J. Maas, Rebecca Yarros, Colleen Hoover** (confirmed
+    2026-03-02 — review annually as BookTok landscape evolves)
+  - Widget is read-only assistance — no database writes, no pipeline triggers
+  - Partner copies suggestions manually into emails or captions
 - TEST: Full end-to-end — book discovered, enriched, scripted, moderated, rendered, appears
   in queue, downloaded. Also test: contact discovery → confirm → generate draft → verify in
   Gmail → mark sent → verify 7-day follow-up fires.
