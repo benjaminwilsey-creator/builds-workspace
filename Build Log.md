@@ -2,6 +2,13 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 
 ---
+## Session: 2 March 2026
+**Projects touched:** Booksmut (ReelForge)
+**Session type:** Documentation
+
+Confirmed the top 3 BookTok romance/romantasy authors for the AI creative partner widget — Sarah J. Maas, Rebecca Yarros, Colleen Hoover. Recorded in ADR 0002, Technical Guide v2 Phase 6, and memory. This was the last outstanding content decision. The only remaining blockers before Phase 0 are account setup tasks: Meta accounts, Amazon Associates, and Google app verification for Gmail OAuth.
+
+---
 ## Session: 1 March 2026 (afternoon — outreach automation)
 **Projects touched:** Booksmut (ReelForge)
 **Session type:** Feature design, Documentation
