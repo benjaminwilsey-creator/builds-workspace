@@ -2,6 +2,35 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 
 ---
+## Session: 1 March 2026 (evening)
+**Projects touched:** Booksmut (ReelForge)
+**Session type:** Design review, Pre-build spike, Documentation
+
+### What was built or changed
+- Conducted a full pre-build assessment of the ReelForge project — read all three design documents (Partner Guide, Technical Guide, UI Framework Review) and ran a spike to find risks and gaps before a single line of code is written.
+- Found and corrected 4 errors in the Technical Guide: Open Library was incorrectly labelled a "cleared" cover source (it isn't — publishers own those copyrights); the discovery scheduler was mislabelled as SQS (it should be AWS EventBridge); music tracks were listed as CC-BY compatible (they can't be — attribution is required); and the video composer's disk space wasn't configured (Lambda defaults to 512MB, needs 2GB for HD video rendering).
+- Created a corrected v2 of the Technical Guide — both as a Markdown file (the editable master copy) and as a Word document using the python-docx library that was installed this session.
+- Read and recorded the partner's UI framework selection: she chose Framework B (a dashboard overview with a one-click Focus Mode). Her answers also revealed she wants an AI creative writing assistant built into the tool — something that writes in the style of the top BookTok romance authors. This was added to the plan.
+- Wrote two permanent decision records (ADRs) locking in: the Framework B UI selection (with mini progress checklists borrowed from Framework C), and the AI creative partner feature as a Phase 6 addition.
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.2) | Active — 4 open positions (LINK, ONDO, PEPE, ADA), ~$120 portfolio, break-even |
+| Production bot (v1) | Unreachable — EC2 at 3.131.96.193 did not respond during catchup |
+| Booksmut / ReelForge | Design complete — Technical Guide v2 written, ADRs recorded, Phase 0 ready |
+
+### Decisions made this session
+- Publisher Licenses screen will use Framework B (dashboard + focus mode toggle + mini-checklists per publisher card)
+- AI creative partner chat widget added to Phase 6 — Gemini-powered, styled after top 3 BookTok romance authors (authors to be agreed before Phase 6 build)
+
+### Outstanding / next steps
+- Production bot EC2 unreachable — check whether the instance is stopped (not urgent if not actively trading)
+- Agree on "top 3 BookTok romance/romantasy authors" for the AI agent system prompt — needed before Phase 6
+- Confirm Meta accounts (Facebook Page + Instagram Business) are set up before Phase 0 begins
+- Apply for Amazon Associates account early — needs 3 qualifying sales within 180 days of application
+
+---
 ## Session: 1 March 2026 (continued)
 **Projects touched:** Rapid2 v1.2 infrastructure, Builds Workspace docs
 **Session type:** Monitoring, Documentation
