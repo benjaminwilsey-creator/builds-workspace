@@ -2,6 +2,32 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 
 ---
+## Session: 4 March 2026
+**Projects touched:** Rapid2 v1.2 (paper bot)
+**Session type:** Bug investigation, Feature build
+
+### What was built or changed
+- Investigated why no trades had fired in 2+ days — discovered signals WERE firing (DOGE repeatedly) but the bot was silently skipping buys because the T2 tier's allocation cap was almost full ($3.62 headroom vs $18 minimum trade size). Added a log line so the bot now explains why it skipped, e.g. "cap full (need $18.00, have $3.62)".
+- Expanded T3 micro-cap watchlist from 10 coins to 29, adding PENGU, FARTCOIN, POPCAT, PNUT, MOODENG, GOAT, GIGA, and others confirmed available on Kraken. Removed BABYDOGE which was never listed on Kraken.
+- Replaced the entire static T3 watchlist with dynamic Kraken discovery: the bot now fetches all Kraken USD pairs in one bulk call once per hour, filters to the T3 price range automatically, and scans every qualifying coin — so no coin on Kraken can ever be missed due to a gap in a hand-maintained list. Added a CoinGecko trending pre-filter to keep API costs low.
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | Active — 6 positions open, ~$67 cash remaining |
+| Production bot | Unreachable via SSH (likely stopped in AWS console) |
+| Last deploy | 4 March 2026 (paper bot only) |
+
+### Decisions made this session
+- Dynamic T3 discovery preferred over maintaining a static watchlist — one bulk API call per hour gives complete Kraken coverage at lower cost than many individual fetches per scan cycle.
+- CoinGecko trending used as a pre-filter before running expensive Reddit and volume checks — acceptable tradeoff since coins with real momentum almost always appear on CoinGecko trending first.
+
+### Outstanding / next steps
+- Production v1 EC2 unreachable — worth checking AWS console to confirm instance state
+- `TIER3_PRICE_MIN` not enforced in strategy code — minor bug to fix
+- Telegram bot token leaking into systemd logs via httpx debug URLs — low risk, worth cleaning up
+
+---
 ## Session: 2 March 2026 (afternoon)
 **Projects touched:** Builds workspace, Booksmut (ReelForge)
 **Session type:** Housekeeping, Research

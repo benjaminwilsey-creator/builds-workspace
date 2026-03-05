@@ -14,7 +14,7 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 
 ## Key Files (v1.2)
 - **bot.py** — Live trading infrastructure (Kraken connection, order execution, Telegram)
-- **paper_bot.py** — Paper trading bot (simulated trades, same signals)
+- **paper_bot.py** — Paper trading bot (simulated trades, same signals); T3 uses dynamic Kraken discovery via `get_kraken_t3_candidates()` — no static watchlist
 - **strategy.py** — All signal logic: LunarCrush, CoinGecko, Reddit, volume; position sizing; exits
 - **pyproject.toml** — Ruff + pytest configuration
 - **.pre-commit-config.yaml** — detect-secrets, ruff, hygiene hooks
@@ -67,3 +67,6 @@ To tune strategy: edit strategy.py only.
 - LunarCrush signal silently off (returns False) until Individual plan subscribed
 - `btc_crash_active` not persisted across restarts
 - praw in requirements.txt but not used (Reddit runs via public JSON API instead)
+- `TIER3_PRICE_MIN` config value ($0.00001) defined but never enforced in `tier3_entry_signal()` — minor bug
+- Production v1 EC2 (3.131.96.193) unreachable via SSH for multiple sessions — likely stopped in AWS console
+- Telegram bot token visible in systemd journal logs via httpx debug URL logging — low risk, worth cleaning up
