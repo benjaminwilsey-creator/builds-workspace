@@ -6,67 +6,63 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 ## Versions
 | Version | Path | Status |
 |---------|------|--------|
-| v1 (Production) | `Builds\Rapid2\rapid2 (Program)\` | Live on EC2, real money |
-| v1.2 (Development) | `Builds\Rapid2\rapid2 v1.2\` | Paper trading on EC2 |
+| v1 (Retired) | `Builds\Rapid2\rapid2 (Program)\` | EC2 instance terminated 2026-03-04 |
+| v1.2 (Production) | `Builds\Rapid2\rapid2 v1.2\` | Live on EC2, real money — replaced v1 |
 
 ## Tech Stack
-- Python 3.12, ccxt, pandas, pandas-ta, python-telegram-bot v20+ (async), apscheduler, python-dotenv, boto3
+- Python 3.12, ccxt, python-telegram-bot v20+ (async), apscheduler, python-dotenv, boto3
 
 ## Key Files (v1.2)
-- **bot.py** — Live trading infrastructure (Kraken connection, order execution, Telegram)
-- **paper_bot.py** — Paper trading bot (simulated trades, same signals); T3 uses dynamic Kraken discovery via `get_kraken_t3_candidates()` — no static watchlist
-- **strategy.py** — All signal logic: LunarCrush, CoinGecko, Reddit, volume; position sizing; exits
+- **bot.py** — Live trading infrastructure (Kraken connection, order execution, Telegram, load_dotenv)
+- **paper_bot.py** — Paper trading bot (simulated trades, same signals) — still on server but not running
+- **strategy.py** — All signal logic: CryptoCompare, CoinGecko, Reddit, volume; position sizing; exits
 - **pyproject.toml** — Ruff + pytest configuration
 - **.pre-commit-config.yaml** — detect-secrets, ruff, hygiene hooks
-- **tests/test_strategy.py** — 30 smoke tests (all pure unit, no network)
-- **.github/workflows/ci.yml** — Ruff lint + pytest on push to master
-- **state/paper_state.json** — Persisted paper state (positions, cash, starting_value)
+- **tests/test_strategy.py** — Smoke tests (pure unit, no network)
 
 ## Architecture Pattern
-Clean separation: bot.py/paper_bot.py = infrastructure only, strategy.py = logic only.
+Clean separation: bot.py = infrastructure only, strategy.py = logic only.
 To tune strategy: edit strategy.py only.
 
 ## 3-Tier Strategy
 | Tier | Target | Assets | Key Logic |
 |------|--------|--------|-----------|
-| T1 Stable | 15% | BTC only | Hold anchor, no active trading |
+| T1 Stable | 15% | BTC/ETH | Hold anchor, no active trading |
 | T2 Mid-cap | 35% | $0.10–$15 altcoins | Social + technical signals, TP 15%, SL 7% |
 | T3 Micro-cap | 50% | Dust/<$1 coins | Ratcheting trailing stop (25% → 15% after +100%) |
 
 ## Signal System (4 signals, score 0–4)
-1. **LunarCrush** — social score + AltRank improvement (requires paid plan ~$19/mo)
-2. **CoinGecko** — trending coins list
-3. **Reddit** — mention spike ratio (public API, no auth needed)
-4. **Volume** — 24h volume threshold
+1. **CryptoCompare** — Reddit posts_per_hour + active_users (free tier, register at cryptocompare.com)
+   - Two-step lookup: coinId from `/data/all/coinlist` (cached in `_CC_ID_CACHE`), then `/data/social/coin/latest`
+   - `_CC_LIST_FETCHED` sentinel prevents retry storms if coin list fetch fails on startup
+2. **CoinGecko** — trending coins list (no key required)
+3. **Reddit** — mention spike ratio, public JSON API, unauthenticated
+4. **Volume** — 3x 7-day average daily volume
 
-## EC2 — v1 (Production)
-- Instance: t2.micro, Ubuntu, us-east-2
-- IP: `3.131.96.193` (Elastic IP)
-- SSH: `ssh -i "C:\Users\benja\OneDrive\Documents\KeePass\AWS\rapid2-key.pem" ubuntu@3.131.96.193`
-- Service: `openclaw`
-- Deploy path: `/home/ubuntu/rapid2/`
+**T3 entry requires score >= 2** (raised from 1 — CoinGecko trending alone is not sufficient)
+**Position sizing:** 1 signal = $5, 2 signals = $10, 3+ signals = $18
 
-## EC2 — v1.2 (Paper Trading)
+## EC2 — v1.2 (Production)
 - Instance: t2.micro, Ubuntu, us-east-2
 - IP: `3.138.144.246` — SSH alias: `rapid2`
-- Service: `openclaw-paper`
+- Service: `openclaw-paper` (name unchanged even though it now runs bot.py / live trading)
 - Deploy path: `/home/ubuntu/rapid2-v1.2/`
-- State: `/home/ubuntu/rapid2-v1.2/state/paper_state.json`
-- S3 backup: `s3://open-state-yourname/paper_state.json` (IAM role: `open1-ec2-s3`)
 - Venv: `/home/ubuntu/rapid2-v1.2/.venv/bin/python`
+- Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper.service -n 50 --no-pager"`
 
 ## GitHub
-- v1: https://github.com/benjaminwilsey-creator/openclaw-v1
-- v1.2: https://github.com/benjaminwilsey-creator/openclaw-v1.2
+- v1.2 (production): https://github.com/benjaminwilsey-creator/openclaw-v1.2
+- v1 (retired): https://github.com/benjaminwilsey-creator/openclaw-v1
 - Account: benjaminwilsey-creator
 
-## Telegram Commands (paper bot)
-`/status`, `/positions`, `/pause`, `/resume`, `/report`, `/reset`, `/help`
+## Telegram Commands (live bot, bot.py)
+`/status`, `/positions`, `/portfolio`, `/watchlist`, `/pause`, `/resume`, `/report`, `/help`
 
-## Known Issues
-- LunarCrush signal silently off (returns False) until Individual plan subscribed
+## Known Issues / Gotchas
+- Service still named `openclaw-paper.service` even though it runs `bot.py` (live trading) — low priority rename
+- `bot.py` requires `load_dotenv()` before `os.getenv()` calls — systemd does NOT inherit shell env vars, so missing this silently uses fallback placeholders. Already fixed in current code.
+- Kraken API key has IP whitelist — if server IP changes, must update in Kraken dashboard before bot can connect
+- Entry prices on startup are set to current market price (not actual cost basis) — P&L display starts from restart
+- `_CC_LIST_FETCHED` resets on restart — CryptoCompare coin list fetched fresh each boot
+- Reddit scraping (unauthenticated) is best-effort — may break without warning
 - `btc_crash_active` not persisted across restarts
-- praw in requirements.txt but not used (Reddit runs via public JSON API instead)
-- `TIER3_PRICE_MIN` config value ($0.00001) defined but never enforced in `tier3_entry_signal()` — minor bug
-- Production v1 EC2 (3.131.96.193) unreachable via SSH for multiple sessions — likely stopped in AWS console
-- Telegram bot token visible in systemd journal logs via httpx debug URL logging — low risk, worth cleaning up

@@ -1,6 +1,33 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
+---
+## Session: 5 March 2026
+**Projects touched:** Rapid2 v1.2 (now production), Rapid2 v1 (retired)
+**Session type:** Infrastructure emergency + Feature swap + Production deploy
 
+### What was built or changed
+- Discovered the production v1 EC2 server was terminated (not just stopped) — the instance is permanently gone, but the Elastic IP and the unmanaged LINK/USD position it bought at 4:59am survived.
+- Replaced the paid LunarCrush social signal ($72/month) with CryptoCompare (free tier) — the bot now checks a coin's Reddit activity (posts per hour and active users) using CryptoCompare's API instead. Added a smart cache so the full coin list is only fetched once per bot restart.
+- Raised the Tier 3 entry requirement from 1 signal to 2 — CoinGecko trending alone was enough to trigger a buy, which was never the intent since trending is used both as a pre-filter and as a signal.
+- Fixed a missing load call in bot.py — the live bot was silently reading placeholder values instead of the real credentials because systemd does not pass shell environment variables to services. Bot would start but immediately fail to connect.
+- Promoted v1.2 bot from paper trading to live production on the existing paper server (3.138.144.246) — updated the systemd service to run bot.py instead of paper_bot.py.
+- Resolved Kraken API IP whitelist block — the API key was whitelisted to the old (now-dead) server IP; updated in Kraken dashboard to allow the paper server's IP.
+
+### Current state
+| | Status |
+|---|---|
+| Production bot (v1.2) | Active on 3.138.144.246 — $119.99 account, 14 positions loaded, scheduler running |
+| Paper bot | Inactive (paper_bot.py still on server but service now runs bot.py) |
+| Last deploy | 5 March 2026 (tag: deploy-2026-03-05-0038) |
+
+### Decisions made this session
+- Chose CryptoCompare over other LunarCrush alternatives — free tier with email registration, 100k calls/month, covers Reddit social stats which is the most useful signal layer.
+- Promoted v1.2 directly to production rather than spinning up a new EC2 instance — the paper server is already configured, monitored, and has all credentials in place.
+
+### Outstanding / next steps
+- Service is still named openclaw-paper.service even though it now runs live trading — low priority rename
+- Elastic IP 3.131.96.193 may still exist in AWS but is unattached — worth releasing to avoid charges
+- Entry prices for all 14 loaded positions are set to current market price, not actual cost basis — P&L tracking starts from the restart date only
 ---
 ## Session: 4 March 2026
 **Projects touched:** Rapid2 v1.2 (paper bot)

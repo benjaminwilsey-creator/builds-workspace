@@ -18,15 +18,15 @@ See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
 - python-docx installed on Python 3.14 (`/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`) — can convert .md → .docx
 
 ## Key Credentials Locations
-- Rapid2 v1 `.env`: `Builds\Rapid2\rapid2 (Program)\.env` (live Kraken + Telegram creds)
-- Rapid2 v1.2 `.env`: `Builds\Rapid2\rapid2 v1.2\.env` (paper trading creds)
+- Rapid2 v1 `.env`: `Builds\Rapid2\rapid2 (Program)\.env` (retired — but still holds working Kraken creds)
+- Rapid2 v1.2 `.env`: `Builds\Rapid2\rapid2 v1.2\.env` (live trading creds — production)
 - AWS SSH key: `C:\Users\benja\OneDrive\Documents\KeePass\AWS\rapid2-key.pem`
 
 ## EC2 Servers
 | Server | IP | SSH Alias | Service | Purpose |
 |--------|-----|-----------|---------|---------|
-| Rapid2 v1 (Production) | `3.131.96.193` | none (use full IP) | `openclaw` | Live trading — real money |
-| Rapid2 v1.2 (Paper) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Paper trading — dev/test |
+| Rapid2 v1 (Retired) | `3.131.96.193` | none | `openclaw` | TERMINATED 2026-03-04 — instance gone |
+| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money |
 
 ## Available Skills (invoke with /skill-name)
 
@@ -39,8 +39,8 @@ See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
 | Repo | URL | What's in it |
 |------|-----|--------------|
 | builds-workspace | https://github.com/benjaminwilsey-creator/builds-workspace | CLAUDE.md, all skills, memory backups, workspace config |
-| openclaw-v1.2 | https://github.com/benjaminwilsey-creator/openclaw-v1.2 | Paper bot source code |
-| openclaw-v1 | https://github.com/benjaminwilsey-creator/openclaw-v1 | Production bot source code |
+| openclaw-v1.2 | https://github.com/benjaminwilsey-creator/openclaw-v1.2 | Production bot source code (v1.2) |
+| openclaw-v1 | https://github.com/benjaminwilsey-creator/openclaw-v1 | Retired v1 source code |
 
 Note: memory files are backed up to `Builds/memory/` in builds-workspace repo. Update both locations when memory changes.
 
