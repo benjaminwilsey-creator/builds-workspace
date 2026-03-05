@@ -53,12 +53,12 @@ This project uses the **hierarchical-claude-md** Architect skill for CLAUDE.md m
 ## Project Index
 | Project | Path | Status | Stack |
 |---------|------|--------|-------|
-| **Rapid2 v1 (OpenClaw)** | `Rapid2/rapid2 (Program)/` | Production (live on EC2) | Python 3.12, ccxt, Telegram |
-| **Rapid2 v1.2 (OpenClaw)** | `Rapid2/rapid2 v1.2/` | Active development (paper trading on EC2) | Python 3.12, ccxt, Telegram, S3 |
+| **Rapid2 v1 (OpenClaw)** | `Rapid2/rapid2 (Program)/` | Retired — EC2 terminated 2026-03-04 | Python 3.12, ccxt, Telegram |
+| **Rapid2 v1.2 (OpenClaw)** | `Rapid2/rapid2 v1.2/` | **Production (live)** — replaced v1 on 2026-03-05 | Python 3.12, ccxt, Telegram, S3 |
 | **Booksmut (ReelForge)** | `Booksmut/` | Design phase (docs only) | TBD |
 | **Architect** | `Architect/` | Active skill files | Claude skills |
 
-## Deployment — Rapid2 v1 (Production)
+## Deployment — Rapid2 v1 (Retired)
 - ⚠️ Handles real money — confirm before any deploy
 - EC2: `3.131.96.193` (us-east-2, Elastic IP) — SSH alias: none, use full IP
 - SSH key: `C:\Users\benja\OneDrive\Documents\KeePass\AWS\rapid2-key.pem`
@@ -66,7 +66,7 @@ This project uses the **hierarchical-claude-md** Architect skill for CLAUDE.md m
 - Restart: `sudo systemctl restart openclaw`
 - Logs: `sudo journalctl -u openclaw -n 50 --no-pager`
 
-## Deployment — Rapid2 v1.2 (Paper Trading)
+## Deployment — Rapid2 v1.2 (Production — Live Trading)
 - EC2: `3.138.144.246` (us-east-2) — SSH alias: `rapid2`
 - SSH key: `C:\Users\benja\OneDrive\Documents\KeePass\AWS\rapid2-key.pem`
 - Deploy: `scp <files> rapid2:/home/ubuntu/rapid2-v1.2/`
