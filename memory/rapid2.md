@@ -40,7 +40,13 @@ To tune strategy: edit strategy.py only.
 4. **Volume** — 3x 7-day average daily volume
 
 **T3 entry requires score >= 2** (raised from 1 — CoinGecko trending alone is not sufficient)
-**Position sizing:** 1 signal = $5, 2 signals = $10, 3+ signals = $18
+**Position sizing:** 1 signal = $4, 2 signals = $7, 3+ signals = $12
+
+## Concentration Rules (added 2026-03-06)
+- `TIER2_MAX_SINGLE_PCT = 0.20` — no more than 20% of account in any one T2 coin
+- Concentration check uses **live Kraken balance** (not just tracked POSITIONS) — catches coins held but not tracked
+- Consolidation is also blocked if the projected post-buy % would exceed the cap
+- Coins on TIER2_WATCHLIST priced below $1 get loaded as T3 on startup (e.g. HBAR at $0.10) — managed by trailing stop not TP/SL
 
 ## EC2 — v1.2 (Production)
 - Instance: t2.micro, Ubuntu, us-east-2
@@ -49,6 +55,7 @@ To tune strategy: edit strategy.py only.
 - Deploy path: `/home/ubuntu/rapid2-v1.2/`
 - Venv: `/home/ubuntu/rapid2-v1.2/.venv/bin/python`
 - Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper.service -n 50 --no-pager"`
+- `openclaw.service` (stale v1 code) was found running alongside v1.2 on 2026-03-06 — stopped + disabled
 
 ## GitHub
 - v1.2 (production): https://github.com/benjaminwilsey-creator/openclaw-v1.2
@@ -65,4 +72,4 @@ To tune strategy: edit strategy.py only.
 - Entry prices on startup are set to current market price (not actual cost basis) — P&L display starts from restart
 - `_CC_LIST_FETCHED` resets on restart — CryptoCompare coin list fetched fresh each boot
 - Reddit scraping (unauthenticated) is best-effort — may break without warning
-- `btc_crash_active` not persisted across restarts
+- Dust positions (sub-penny balances like BONK, FLOKI dust) are silently skipped on sell — harmless, logged as WARNING

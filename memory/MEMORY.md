@@ -53,3 +53,7 @@ Note: memory files are backed up to `Builds/memory/` in builds-workspace repo. U
 
 - Error alerter script: `/home/ubuntu/error_alert.sh`
 - CloudWatch alarm name: `rapid2-memory-high` (paper server only)
+
+## Windows Tooling Gotchas
+- **Edit tool fails** on paths with spaces in directory name (e.g. `rapid2 v1.2`) — workaround: write Python script to `/c/Users/benja/AppData/Local/Temp/`, execute with `/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`
+- **Bash -c inline Python** fails if code contains `${...}` — bash expands them as variables; use the file workaround instead

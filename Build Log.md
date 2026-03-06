@@ -1,6 +1,33 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 6 March 2026
+**Projects touched:** Rapid2 v1.2 (production)
+**Session type:** Bug fix + Strategy tuning
+
+### What was built or changed
+- Found and killed a ghost: the old v1 bot code was still running on the v1.2 server alongside the live bot, and both were fighting over the same Telegram connection — causing constant errors every 30 seconds. Stopped and permanently disabled it.
+- Added a per-coin concentration cap: the bot now checks your actual Kraken balance before buying any Tier 2 coin — if you already hold more than 20% of your account in that coin (even if the bot lost track of it), the buy is blocked. This directly fixed the HBAR loop where the bot kept failing to buy more HBAR it didn't know you already held.
+- Blocked consolidation from feeding an over-concentrated coin: the bot will no longer sell your other holdings to fund a coin you already hold too much of, even if the signal is strong.
+- Reduced position sizes from $5/$10/$18 to $4/$7/$12 — the old sizing meant a single high-confidence trade could consume 15% of the account; the new sizing caps any single trade at ~10%, leaving room for 6–8 simultaneous positions.
+- Fixed a crash in the /portfolio Telegram command — if Kraken was briefly unreachable, the command would silently fail; it now returns a friendly error message instead.
+- Fixed repeated ETH error noise — the bot holds a tiny dust ETH position worth fractions of a cent that it kept trying and failing to sell every 5 minutes. It now detects positions too small to sell and skips them gracefully.
+
+### Current state
+| | Status |
+|---|---|
+| Production bot (v1.2) | Active — $116.54 account, 14 positions loaded |
+| Last deploy | 6 March 2026 (tag: deploy-2026-03-06-0339) |
+
+### Decisions made this session
+- Concentration cap checks live Kraken balance rather than just bot-tracked positions — this catches coins the bot holds but lost track of (e.g. after a restart where position loading silently failed for one coin).
+- Position sizing reduced to match a ~10% max single-trade rule — leaves more room for diversification and avoids single coins dominating the portfolio.
+
+### Outstanding / next steps
+- Elastic IP 3.131.96.193 may still exist in AWS unattached — worth releasing to avoid charges
+- HBAR at $0.10 is classified as Tier 3 (not Tier 2) because of its low price — it is now managed by the trailing stop, not the Tier 2 take-profit/stop-loss rules
+- Service still named openclaw-paper.service despite running live trading — low priority rename
+---
 ## Session: 5 March 2026
 **Projects touched:** Rapid2 v1.2 (now production), Rapid2 v1 (retired)
 **Session type:** Infrastructure emergency + Feature swap + Production deploy
