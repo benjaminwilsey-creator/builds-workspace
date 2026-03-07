@@ -1,6 +1,60 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 7 March 2026 (afternoon)
+**Projects touched:** .qwen/ folder (new), qwen-developer-setup repo
+**Session type:** Qwen Code workflow adaptation
+
+### What was built or changed
+- Created `.qwen/` folder — complete Qwen Code developer workflow system (separate from Claude Code skills)
+- Created qwen-developer-setup GitHub repo — https://github.com/benjaminwilsey-creator/qwen-developer-setup
+- Consolidated 11 Claude skill files into single `Workflow.md` — optimized for Qwen's execution pattern
+- Wrote Qwen Optimization Guide — 10 quality rules specific to Qwen (explicit steps, confirmation gates, format enforcement, etc.)
+- Adapted Developer Quick Reference — decision tree, session types, expected outputs, anti-patterns, troubleshooting
+- Created booksmut/ mirror — ReelForge project docs with ADRs and technical guide
+- Removed skills/ folder — consolidated into Workflow.md (11 files → 1 file)
+- Updated QWEN.md — workflow summary table, workflow rules, quality constraints
+
+### Current state
+| | Status |
+|---|---|
+| Claude Code workflow | Active — Architect/ skills in builds-workspace |
+| Qwen Code workflow | Active — .qwen/ folder, separate repo |
+| Booksmut/ReelForge | Design complete, Phase 0 ready |
+| Rapid2 v1.2 | Production bot running on EC2 |
+
+### Decisions made this session
+- Qwen workflow optimized for Qwen's strengths — explicit numbered steps, consolidated references, no slash commands
+- Skills consolidated into Workflow.md — less file hopping, faster context loading for Qwen
+- Separate GitHub repo for qwen-developer-setup — clean separation from Claude Code workspace
+
+### Outstanding / next steps
+- None — Qwen workflow complete and pushed to GitHub
+---
+## Session: 7 March 2026
+**Projects touched:** Root workspace config, memory files
+**Session type:** Workspace refocus — developer tools only
+
+### What was built or changed
+- Refocused the workspace on **developer workflow and skills** — removed trading bot-specific content from global config files
+- Updated root CLAUDE.md — removed "live trading credentials" warnings, changed communication style to reference "production systems" generically, reordered project index (Architect first, Rapid2 archived)
+- Updated Developer Quick Reference — changed "bot is healthy" to "service is healthy", "real money" to "production systems"
+- Updated MEMORY.md — changed project ordering (Architect primary, Rapid2 archived reference)
+
+### Current state
+| | Status |
+|---|---|
+| Workspace focus | Developer workflow system (Architect skills) |
+| Rapid2 trading bot | Archived — reference only, not actively developed |
+| Booksmut/ReelForge | Design complete, Phase 0 ready |
+
+### Decisions made this session
+- Workspace is now **developer-first** — the skills system (/catchup, /think, /review, /deploy, etc.) is the primary tool, not the trading bot
+- Rapid2 remains in the workspace as archived reference — useful for deployment patterns and skill examples
+- Future development sessions will use the developer workflow for any new projects
+
+### Outstanding / next steps
+- None — clean slate for new development work
 ---
 ## Session: 6 March 2026 (late evening)
 **Projects touched:** Architect (skills), Root workspace config, Rapid2 v1.2 (bot.py)
