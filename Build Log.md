@@ -1,6 +1,35 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+---
+## Session: 6 March 2026 (evening)
+**Projects touched:** Architect (skills), Root workspace config
+**Session type:** Developer agent optimization
+
+### What was built or changed
+- Analyzed the full developer agent workflow against 2026 community best practices (HumanLayer, Morph, awesome-claude-code) and identified 7 improvements
+- Converted 3 skills to sub-agent pattern — /review, /catchup, and /spike now run in isolated contexts so raw data (code files, SSH logs, web search results) never enters the main session
+- Trimmed root CLAUDE.md from 120 lines to 75 — removed deployment details and skills tables that duplicated other files
+- Cleaned the /deploy skill — removed all references to the retired v1 server (terminated 2026-03-04)
+- Added Context Hygiene section to the Developer Quick Reference — /clear, /compact, two-correction rule
+- Created .claudeignore at workspace root — prevents Claude from accidentally loading state/, .venv/, .env, .pem, and other junk into context
+- Updated MEMORY.md — added sub-agent pattern docs, context hygiene notes, Write tool gotcha
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | active, 11 open positions (3 T2 + 8 T3), ~$120 total, $42 cash |
+| Production bot | same server — v1.2 is the live bot |
+| Last deploy | none this session (config-only changes) |
+
+### Decisions made this session
+- Sub-agent pattern adopted for context-heavy skills (/review, /catchup, /spike) — keeps main session clean
+- Root CLAUDE.md trimmed to <100 lines — deployment details belong in project CLAUDE.md and skill files, not the root
+- .claudeignore added as a standard part of the workspace setup
+
+### Outstanding / next steps
+- None — clean slate
+
 ## Session: 6 March 2026
 **Projects touched:** Rapid2 v1.2 (production)
 **Session type:** Bug fix + Strategy tuning

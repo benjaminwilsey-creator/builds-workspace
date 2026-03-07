@@ -1,123 +1,121 @@
 You are executing the /spike skill for the Builds workspace.
 
 ## Purpose
-Before building in an unfamiliar domain, do the research first. A spike is a focused
-investigation that answers: "What is the right way to approach this?" before committing
-to any implementation.
-
-This skill prevents confident-but-wrong advice and unknown-unknowns from becoming bugs.
+Research-first investigation before building in an unfamiliar domain. Runs in an isolated
+sub-agent so that web search results and fetched page content never pollute the main
+context window. Only the final spike report enters the main session.
 
 ---
 
-## When this skill is triggered
+## Your job as the main agent
 
-The user will describe a topic, technology, API, or problem domain they want to explore
-or build with. Your job is to research it thoroughly and return a clear recommendation
-with enough context for the user to make an informed decision.
+### Step 1 - Clarify the research question (do this yourself)
 
----
+Read the user's topic and check if it is specific enough to research.
 
-## Step 1 — Define the research question
+Too broad: "How does video processing work?"
+Specific enough: "What is the best Python library for extracting audio from MP4 files
+on a Linux EC2 t2.micro instance, processing files up to 2GB?"
 
-State the specific question this spike is trying to answer. Be precise.
+If the question is too broad, ask ONE clarifying question before proceeding.
+If it is specific enough, proceed immediately without asking.
 
-Bad: "How does video processing work?"
-Good: "What is the best Python library for extracting audio from MP4 files on a Linux server,
-       given we need to process files up to 2GB and run on a t2.micro EC2 instance?"
+Confirm the precise research question in one sentence, then move to Step 2.
 
-If the user's question is too broad, narrow it down and confirm before researching.
+### Step 2 - Spawn the research sub-agent
 
----
+Use the **Agent tool** (subagent_type="general") with the task prompt below.
+Replace {{RESEARCH_QUESTION}} with the confirmed question from Step 1.
 
-## Step 2 — Research
+### Step 3 - Return the report
 
-Use WebSearch and WebFetch to gather current, accurate information. Do not rely solely
-on training data for rapidly-changing topics (APIs, libraries, cloud services, pricing).
+Output the sub-agent's spike report verbatim to the user.
 
-Research areas to cover:
-- **Best practices**: What does the industry consider the right approach?
-- **Available options**: What tools/libraries/services exist for this problem?
-- **Current state**: Are the leading options actively maintained? Last release date?
-- **Known pitfalls**: What do people commonly get wrong? What issues come up repeatedly?
-- **Constraints check**: Does the recommended approach work within our constraints
-  (Python 3.12, EC2 t2.micro, Windows dev environment, non-programmer user)?
-- **Cost**: If services are involved, what does it cost at our scale?
-- **Security**: Are there credential, rate-limit, or data-handling concerns?
+Then offer: "If this looks good, run /think to plan the implementation."
 
 ---
 
-## Step 3 — Evaluate options
+## Sub-agent task prompt (pass this to the Agent tool)
 
-Compare the top 2–3 options in a table:
+You are a research assistant performing a technical spike for a developer.
+The user is a non-programmer. Write everything in plain English.
+Do not use jargon without defining it briefly.
+
+Research question: {{RESEARCH_QUESTION}}
+
+Project constraints to keep in mind:
+- Python 3.12 on EC2 t2.micro (Linux, Ubuntu)
+- Windows development environment
+- User is non-technical — solutions must be operable without deep expertise
+- Production bot handling real money — stability and simplicity matter more than cleverness
+
+## Step 1 - Research
+
+Use WebSearch and WebFetch to gather current, accurate information.
+Do not rely on training data alone for APIs, libraries, cloud services, or pricing —
+these change frequently.
+
+Cover these areas:
+- What tools/libraries/services exist for this problem?
+- What does the industry consider the right approach today?
+- Are the leading options actively maintained? (check last release date)
+- What do people commonly get wrong? What issues come up repeatedly in forums?
+- Does the recommended approach work within the project constraints above?
+- If services are involved: what does it cost at small scale?
+- Any credential, rate-limit, or security concerns?
+
+Aim for 2-4 searches. Use WebFetch to read the most relevant pages in full where needed.
+
+## Step 2 - Compare top options
+
+Pick the top 2-3 options and compare them in a table:
 
 | | Option A | Option B | Option C |
 |---|---|---|---|
 | What it is | | | |
-| Maintained? | | | |
+| Actively maintained? | | | |
 | Complexity | Low/Med/High | | |
 | Cost | | | |
 | Best for | | | |
 | Avoid if | | | |
 
----
+## Step 3 - Make a recommendation
 
-## Step 4 — State the recommendation
-
-Be direct. Pick one option and explain why in plain English.
-
-Include:
+Be direct. Pick one option. Explain in plain English:
 - What it is and how it works (one paragraph, no jargon)
-- Why it's the right fit for this project and this user
+- Why it fits this project and this user
 - The one thing to watch out for
-- A rough sense of implementation effort (small / medium / large)
+- Rough implementation effort: small / medium / large
 
----
+## Step 4 - Surface unknowns
 
-## Step 5 — Surface the unknowns
+List anything that research alone cannot confirm — things that would need a small
+proof-of-concept or test to validate before committing to this approach.
 
-List anything that couldn't be determined from research alone and would need a
-proof-of-concept or further testing to confirm:
-- "We won't know if X works until we try it with real data"
-- "The rate limits on this API are unclear for our use case"
-- "Performance on t2.micro needs to be tested"
+## Step 5 - Produce the spike report
 
----
+Return ONLY the report below. No preamble.
 
-## Step 6 — Recommended next step
-
-End with a single clear recommendation for what to do next:
-
-- If confident: "I recommend we proceed with [option]. Run /think to plan the implementation."
-- If uncertain: "I recommend building a small proof-of-concept to test [specific assumption]
-  before committing to this approach."
-- If the domain is too risky: "This area has enough complexity that I'd suggest we [alternative]
-  instead."
-
----
-
-## Spike output format
-
-```
-SPIKE — [topic]
-───────────────────────────────────────
-Research question:  [precise question]
-Confidence level:   High / Medium / Low
+--- SPIKE REPORT ---
+Topic: [research question]
+Confidence: High / Medium / Low
 
 Summary:
-[2–3 sentences on what we learned]
+[2-3 sentences on what research found]
 
 Options compared:
-[table]
+[table from Step 2]
 
 Recommendation:
-[direct statement of what to do]
+[direct statement — what to use and why]
 
 Watch out for:
-[1–3 specific gotchas]
+[1-3 specific gotchas]
 
 Unknowns remaining:
-[list or "none"]
+[list, or "None — confident to proceed"]
 
 Next step:
-[single clear action]
-```
+[single clear action — usually "run /think to plan the implementation"]
+
+---

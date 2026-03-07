@@ -2,38 +2,31 @@ You are executing the /deploy skill for the Builds workspace.
 
 ## Purpose
 Deploy code changes to EC2 and verify the service is healthy after restart.
-
-## How to use this skill
-The user will call `/deploy` optionally followed by a project name.
-Examples:
-  /deploy           → ask which project to deploy
-  /deploy paper     → deploy Rapid2 v1.2 (paper bot)
-  /deploy prod      → deploy Rapid2 v1 (production — ⚠️ real money)
+Only one deployable target exists: Rapid2 v1.2 (the live production bot).
+Rapid2 v1 was retired 2026-03-04 — its EC2 instance is terminated.
 
 ---
 
-## Step 1 — Identify the target project
+## Step 1 — Confirm the target
 
-If the user didn't specify a project, ask:
-"Which project do you want to deploy?
-1. Paper bot (Rapid2 v1.2) — safe, paper trading
-2. Production bot (Rapid2 v1) — ⚠️ real money, confirm before proceeding"
+If the user didn't specify, confirm:
+"Deploying Rapid2 v1.2 to EC2 (live trading bot — real money). The service will restart briefly. Confirm?"
+
+Wait for confirmation before proceeding.
 
 ---
 
 ## Step 2 — Show what will be deployed
 
-Before transferring any files, run `git diff --name-only HEAD` (or `git status`) in the project folder to show which files have changed. Present this to the user as: "These files will be deployed: [list]"
+Run `git diff --name-only HEAD` (or `git status`) in the project folder.
+Present as: "These files will be deployed: [list]"
 
-If the target is the **production bot**, add an explicit warning:
-"⚠️ This deploys to the LIVE bot handling real money. The service will restart briefly. Confirm?"
-Wait for confirmation before proceeding.
+Do NOT proceed if the list is empty or unexpected.
 
 ---
 
-## Step 3 — Deploy based on project
+## Step 3 — Deploy
 
-### Paper bot (Rapid2 v1.2)
 ```
 Local path:  c:\Users\benja\OneDrive\Documents\Builds\Rapid2\rapid2 v1.2\
 EC2 path:    rapid2:/home/ubuntu/rapid2-v1.2/
@@ -42,52 +35,33 @@ SSH alias:   rapid2
 ```
 
 Files to deploy (only changed Python/config files — never .env):
-- `paper_bot.py`, `strategy.py`, `bot.py` (if changed)
+- `bot.py`, `strategy.py`, `paper_bot.py` (if changed)
 - Do NOT deploy: `.env`, `state/`, `.git/`
 
-Command pattern:
 ```bash
 scp <changed_files> rapid2:/home/ubuntu/rapid2-v1.2/
 ssh rapid2 "sudo systemctl restart openclaw-paper.service"
-```
-
-### Production bot (Rapid2 v1)
-```
-Local path:  c:\Users\benja\OneDrive\Documents\Builds\Rapid2\rapid2 (Program)\
-EC2 path:    ubuntu@3.131.96.193:/home/ubuntu/rapid2/
-SSH key:     C:\Users\benja\OneDrive\Documents\KeePass\AWS\rapid2-key.pem
-Service:     openclaw
-```
-
-Command pattern:
-```bash
-scp -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" <changed_files> ubuntu@3.131.96.193:/home/ubuntu/rapid2/
-ssh -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.131.96.193 "sudo systemctl restart openclaw"
 ```
 
 ---
 
 ## Step 4 — Tag the deploy in git
 
-Before verifying health, tag the current commit so it can be rolled back to if needed:
-
 ```bash
 cd "c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2"
 git tag deploy-$(date +%Y-%m-%d-%H%M)
 ```
 
-This creates a marker like `deploy-2026-03-01-0715` that /rollback uses to find the
-last known-good version. If git is not initialised or the working tree is dirty, skip
-the tag and note it in the deploy summary.
+This creates a marker like `deploy-2026-03-01-0715` that /rollback uses to restore
+the last known-good version. Skip if the working tree is dirty; note it in the summary.
 
 ---
 
 ## Step 5 — Verify health
 
 After restart, wait 4 seconds then:
-1. Check `systemctl is-active <service>` — must return `active`
-2. Show last 15 log lines via `journalctl -u <service> --no-pager -n 15`
-3. Confirm to the user: "Deploy successful — bot is running" or report the error
+1. Check `systemctl is-active openclaw-paper.service` — must return `active`
+2. Show last 15 log lines via `journalctl -u openclaw-paper.service --no-pager -n 15`
+3. Confirm: "Deploy successful — bot is running" or report the error
 
-If the service failed to start, show the full error from logs and do NOT mark the deploy as successful.
-Offer to run /rollback immediately if the service won't start.
+If the service failed to start, show the full error and offer to run /rollback immediately.

@@ -1,119 +1,124 @@
 You are executing the /review skill for the Builds workspace.
 
 ## Purpose
-A structured pre-deploy code review. Catches bugs, security issues, and rule violations
-BEFORE code ships to EC2. The workflow is: build → /review → /deploy. Never skip this
-for changes to files that touch trading logic, credentials, or production systems.
+A structured pre-deploy code review that runs in an isolated sub-agent.
+The sub-agent reads all changed files. Only the final report enters the main context.
+This keeps the main session clean for continued work after the review.
 
 ---
 
-## When this skill is triggered
+## Your job as the main agent
 
-The user has finished making changes and wants a review before deploying.
-They may specify files to review, or you should identify what has changed since the last commit.
+Do NOT read any code files yourself. Instead:
+
+1. Identify the working directory for the project being reviewed.
+   - If the user mentioned a project, use its path.
+   - Default: `c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2`
+
+2. Use the **Agent tool** (subagent_type="general") with the task prompt below.
+   Substitute {{PROJECT_DIR}} with the actual project path before sending.
+
+3. When the sub-agent returns, output its report verbatim to the user.
+
+4. Based on the VERDICT line in the report:
+   - APPROVED -> tell the user "Review passed - run /deploy when ready."
+   - APPROVED WITH NOTES -> tell the user deploy is OK, but list the flagged items
+     and offer to add them to memory or a TODO.
+   - BLOCKED -> tell the user which issues must be fixed first.
+     Offer to fix them now before continuing.
 
 ---
 
-## Step 1 — Identify what changed
+## Sub-agent task prompt (pass this to the Agent tool)
 
-```bash
-git diff HEAD --name-only
-git diff HEAD --stat
-```
+You are a senior code reviewer. Your job is to review code changes before they are
+deployed to a live production trading bot that handles real money.
 
-If no git diff is available, ask the user which files to review.
+Work in this directory: {{PROJECT_DIR}}
 
----
+## Step 1 - Identify what changed
 
-## Step 2 — Read every changed file in full
+Run:
+  git diff HEAD --name-only
+  git diff HEAD --stat
+
+If git shows no diff, check for untracked files:
+  git status --short
+
+If still nothing, report back "No changes detected - nothing to review."
+
+## Step 2 - Read every changed file in full
 
 Use the Read tool on each changed file. Do not review from memory or partial reads.
-This is non-negotiable — reviewing code you haven't read is worse than not reviewing at all.
+Read the complete file - not just the diff - so you understand the full context of
+each change.
 
----
+## Step 3 - Check against code quality rules
 
-## Step 3 — Check against global rules (from CLAUDE.md)
+For each changed file, verify:
 
-Go through each rule and flag any violations:
+Code quality:
+- Functions under 40 lines - flag any that exceed this
+- No magic numbers - all numeric thresholds use named constants
+- No dead code - commented-out blocks or unused variables
+- One function, one job - flag functions doing multiple things
+- Errors handled explicitly - no bare `except:` or silent exception swallows
+- Errors logged with context (what was attempted, what failed) - not just `logger.error(e)`
 
-**Code quality:**
-- [ ] Functions under 40 lines — flag any that exceed this
-- [ ] No magic numbers — all numeric thresholds use named constants
-- [ ] No dead code — commented-out code or unused variables
-- [ ] One function, one job — flag functions doing multiple things
-- [ ] Errors handled explicitly — no bare `except:` or silent swallows
-- [ ] Errors logged with context — not just `logger.error(e)`
+Security:
+- No hardcoded secrets, API keys, tokens, or passwords
+- No credentials appearing in log output
+- No `print()` statements - use `logging` module only
+- User input or external API responses validated before use
 
-**Security:**
-- [ ] No hardcoded secrets, API keys, tokens, or passwords
-- [ ] No credentials in log output
-- [ ] No `print()` statements in production code (use `logging`)
-- [ ] Input validation at system boundaries
+Python-specific:
+- Type hints on all new functions (parameters + return type)
+- `logging` used, not `print()`
+- `pathlib.Path` used instead of `os.path` where applicable
+- Async functions have try/except or explicitly propagate errors
 
-**Python-specific:**
-- [ ] Type hints on all new functions
-- [ ] `logging` module used, not `print()`
-- [ ] `pathlib.Path` used instead of `os.path` where applicable
-- [ ] Async functions have try/except or explicit propagation
+## Step 4 - Logic review
 
----
+Think carefully about correctness - this code runs live trades:
+- Does the change do what was intended?
+- Are there off-by-one errors, wrong operators, or inverted conditions?
+- Are edge cases handled? (None, empty list, zero division, network timeout, API error)
+- If this touches entry/exit logic: could a bug cause a wrong buy, wrong sell, or missed exit?
+- If this touches position sizing: could a bug send too much or too little capital?
+- If this touches state persistence (paper_state.json or S3): could a bug corrupt or lose saved state?
+- If this touches Telegram commands: could a bug let an unauthorized user send commands?
 
-## Step 4 — Logic review
-
-Read the changes in context and think about correctness:
-- Does the code do what the user intended?
-- Are there off-by-one errors, wrong comparison operators, or inverted conditions?
-- Are there edge cases the code doesn't handle? (empty list, None value, zero division, network timeout)
-- If this touches trading logic: could a bug here cause an incorrect buy, sell, or missed exit?
-- If this touches state persistence: could a bug here corrupt or lose saved state?
-
----
-
-## Step 5 — Test coverage check
+## Step 5 - Test coverage
 
 - Do tests exist for the changed behaviour?
-- If new functions were added, are they tested?
+- If new functions were added, are they covered by tests/test_strategy.py?
 - If existing functions changed, do existing tests still make sense?
 
-If coverage is missing for a non-trivial change, flag it as a required fix before deploy.
+Missing test coverage for non-trivial logic changes is a required fix before deploy.
 
----
+## Step 6 - Produce the review report
 
-## Step 6 — Produce the review report
+Return ONLY the report below - no preamble, no explanation outside the report block.
 
-```
-─── CODE REVIEW ─────────────────────────────────────
-Files reviewed: [list]
-Changed lines:  [approximate count]
+--- CODE REVIEW ---
+Files reviewed: [list each file]
+Changed lines:  [approximate count from git diff --stat]
 
 RULE VIOLATIONS
-  [list each violation with file:line — or "None found"]
+  [list each violation as "file.py:line - description", or "None found"]
 
 SECURITY
-  [list any security concerns — or "Clean"]
+  [list any security concerns - or "Clean"]
 
 LOGIC ISSUES
-  [list any correctness concerns — or "None found"]
+  [list any correctness concerns - or "None found"]
 
 TEST COVERAGE
-  [what's covered / what's missing]
+  [what is covered / what is missing - or "No new logic, no tests required"]
 
 VERDICT
-  ✅ APPROVED — safe to deploy
-  ⚠️  APPROVED WITH NOTES — deploy OK, but address [items] soon
-  ❌ BLOCKED — fix [items] before deploying
-
-─────────────────────────────────────────────────────
-```
+  APPROVED - safe to deploy
+  APPROVED WITH NOTES - deploy OK, but address [items] soon
+  BLOCKED - fix [items] before deploying
 
 ---
-
-## Step 7 — Handle the verdict
-
-**Approved:** Tell the user "review passed — run /deploy when ready."
-
-**Approved with notes:** Deploy is allowed but flag the items to fix in the next session.
-Offer to add them to memory or as a TODO comment.
-
-**Blocked:** Do not proceed to deploy. Explain each blocking issue clearly in plain English.
-Offer to fix the issues now before continuing.

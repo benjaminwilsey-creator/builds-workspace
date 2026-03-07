@@ -1,104 +1,101 @@
 You are executing the /catchup skill for the Builds workspace.
 
 ## Purpose
-Start every session with a 60-second briefing instead of spending the first few minutes
-re-establishing context. Reads live state, recent logs, open decisions, and memory files
-to produce a clear "here's where we are" summary.
-
-Run this at the start of any session where you're picking up from previous work.
+Start every session with a 60-second briefing. Runs in an isolated sub-agent so that
+SSH output, log data, and JSON state never pollute the main context window.
+Only the final briefing enters the main session.
 
 ---
 
-## Step 1 — Read memory files
+## Your job as the main agent
 
-Read the following files:
-- `C:\Users\benja\.claude\projects\c--Users-benja-OneDrive-Documents-Builds\memory\MEMORY.md`
-- `C:\Users\benja\.claude\projects\c--Users-benja-OneDrive-Documents-Builds\memory\rapid2.md`
+Do NOT run any SSH commands or read any files yourself. Instead:
 
-Note any flagged known issues or pending items.
+1. Use the **Agent tool** (subagent_type="general") with the task prompt below.
 
----
+2. When the sub-agent returns, output its briefing verbatim to the user.
 
-## Step 2 — Check EC2 services
-
-For each active EC2 server, check service health and recent errors:
-
-**Paper bot (rapid2 SSH alias):**
-```bash
-ssh rapid2 "sudo systemctl is-active openclaw-paper.service && \
-  sudo journalctl -u openclaw-paper.service --no-pager -n 30 | grep -E 'ERROR|CRITICAL|WARNING|BUY|SELL|S3|Started|Stopped'"
-```
-
-**Production bot (3.131.96.193):**
-```bash
-ssh -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.131.96.193 \
-  "sudo systemctl is-active openclaw 2>/dev/null || echo 'unreachable'"
-```
+3. If the briefing shows a service as DOWN or contains ERROR/CRITICAL lines,
+   call those out explicitly and ask if the user wants to investigate before working.
 
 ---
 
-## Step 3 — Read current portfolio state
+## Sub-agent task prompt (pass this to the Agent tool)
 
-```bash
-ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
-```
+You are gathering a session briefing for a developer. Collect data from the sources
+below, then produce a single compact summary. Do not show raw data — only the report.
 
----
+## Step 1 - Read memory files
 
-## Step 4 — Check for recent decisions
+Read both files in full:
+- C:\\Users\\benja\\.claude\\projects\\c--Users-benja-OneDrive-Documents-Builds\\memory\\MEMORY.md
+- C:\\Users\\benja\\.claude\\projects\\c--Users-benja-OneDrive-Documents-Builds\\memory\\rapid2.md
 
-Look for any ADR files created recently:
-```bash
-ssh rapid2 "find /home/ubuntu/rapid2-v1.2/docs/decisions -name '*.md' 2>/dev/null | sort | tail -5"
-```
+Note any known issues or pending items from rapid2.md.
 
-Also check local:
-- `Builds\Rapid2\rapid2 v1.2\docs\decisions\` (if exists)
+## Step 2 - Check EC2 service health
 
----
+Run:
+  ssh rapid2 "sudo systemctl is-active openclaw-paper.service && sudo journalctl -u openclaw-paper.service --no-pager -n 30 | grep -E 'ERROR|CRITICAL|WARNING|BUY|SELL|S3|Started|Stopped'"
 
-## Step 5 — Check git status of active projects
+Note: Rapid2 v1 (3.131.96.193) is retired as of 2026-03-04 - do not check it.
 
-```bash
-cd "c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2" && git log --oneline -5 && git status --short
-```
+## Step 3 - Read portfolio state
 
----
+Run:
+  ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
 
-## Step 6 — Produce the briefing
+From the JSON, extract:
+- paper_usd (cash on hand)
+- starting_value
+- number of open positions and their symbols grouped by tier
+- Approximate total value at entry prices (sum position qty * entry_price + cash)
 
-Format the output as a clean, scannable summary. Plain English throughout.
+## Step 4 - Check for recent decisions
 
-```
-─── SESSION CATCHUP ─────────────────────────────────
-Date: [today]
+Run:
+  ssh rapid2 "find /home/ubuntu/rapid2-v1.2/docs/decisions -name '*.md' 2>/dev/null | sort | tail -5"
+
+Also check locally: c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2/docs/decisions/
+
+## Step 5 - Git status
+
+Run in the v1.2 directory (use cd then commands, or full path):
+  cd "c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2" && git log --oneline -3 && git status --short
+
+## Step 6 - Produce the briefing
+
+Return ONLY the report below. No preamble. No raw data. Just the formatted briefing.
+
+If any service is DOWN or errors were found, put those at the very top as a warning
+before the normal report structure.
+
+--- SESSION CATCHUP ---
+Date: [today's date]
 
 SERVICES
-  Paper bot:   [active / inactive] — uptime [X]
-  Live bot:    [active / inactive / unreachable]
+  Paper bot: [active / inactive]
 
-PORTFOLIO (paper)
-  Cash:        $[amount]
-  Positions:   [count] open — [list symbols]
-  Starting:    $[starting_value]  →  Current: $[current_total]  ([+/-X%])
+PORTFOLIO
+  Cash:      $[paper_usd]
+  Positions: [count] open
+    T2: [symbols]
+    T3: [symbols]
+  Value:     ~$[total at entry] vs $[starting_value] starting ([+/-X%])
 
-RECENT ACTIVITY (last 24h)
-  [any BUY/SELL entries from logs, or "no trades"]
-  [any ERROR/CRITICAL lines, or "no errors"]
+RECENT ACTIVITY (last 30 log lines)
+  Trades:  [BUY/SELL lines, or "none"]
+  Errors:  [ERROR/CRITICAL lines, or "none"]
+  Other:   [notable WARNINGs, or omit]
 
 GIT (v1.2)
   Last commit: [message]
   Uncommitted: [files, or "clean"]
 
 OPEN DECISIONS
-  [list any recent ADR files, or "none recorded"]
+  [ADR files found, or "none recorded"]
 
-KNOWN ISSUES (from memory)
-  [list from rapid2.md known issues section]
+KNOWN ISSUES
+  [from rapid2.md Known Issues section — bullet list]
 
-─────────────────────────────────────────────────────
-Ready. What are we working on today?
-```
-
-Keep it tight — the goal is 60 seconds to read, not a full report.
-If a service is down or errors are found, make those the first thing shown, not buried at the bottom.
+---

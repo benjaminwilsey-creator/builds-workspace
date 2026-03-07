@@ -14,6 +14,23 @@
 
 ---
 
+## Context Hygiene
+
+Context is the fuel Claude runs on. Let it get polluted and the quality of every response
+drops — quietly, without warning. These habits keep it clean.
+
+| When | Action | Why |
+|------|--------|-----|
+| Switching to a different topic | `/clear` | Wipes the slate — new topic, fresh context |
+| Session feels sluggish or confused | `/clear` + restate the goal | Fixes context drift — Claude has lost the thread |
+| Context indicator hits ~70% | `/compact` | Compresses history without losing the gist |
+| Corrected Claude on the same thing twice | `/clear` + start with a sharper prompt | The context is polluted — keep correcting and it gets worse |
+
+**Rule of thumb:** one session, one topic. If you're switching from debugging the bot to
+planning a new feature, clear first.
+
+---
+
 ## Before You Build
 
 | Situation | Command | What it does |
@@ -48,15 +65,15 @@
 ## The Standard Workflow
 
 ```
-New session          →  /catchup
-Unfamiliar topic     →  /spike
-Planning anything    →  /think
-Editing existing     →  /impact
-Done coding          →  /review
-Ship it              →  /deploy
-Something broke      →  /rollback
-Made a key decision  →  /decide
-End of session       →  /remember
+New session          ->  /catchup
+Unfamiliar topic     ->  /spike
+Planning anything    ->  /think
+Editing existing     ->  /impact
+Done coding          ->  /review
+Ship it              ->  /deploy
+Something broke      ->  /rollback
+Made a key decision  ->  /decide
+End of session       ->  /remember
 ```
 
 ---
@@ -66,7 +83,8 @@ End of session       →  /remember
 1. Always `/think` before building — no surprises halfway through
 2. Always `/review` before `/deploy` — never ship unreviewed code
 3. Always `/remember` at end of session — never lose context
-4. Any change touching real money → confirm twice before proceeding
+4. Any change touching real money -> confirm twice before proceeding
+5. Corrected Claude twice on the same thing? `/clear` and start fresh
 
 ---
 

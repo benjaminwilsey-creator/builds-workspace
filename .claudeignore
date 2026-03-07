@@ -1,0 +1,27 @@
+# .claudeignore — tells Claude Code which files to skip when reading the codebase
+# Follows .gitignore syntax. Prevents accidental context bloat from large/sensitive files.
+
+# Python runtime artifacts — never useful for code review
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+
+# Virtual environments — thousands of library files, none of them yours
+**/.venv/
+**/venv/
+
+# Bot state — live portfolio data, not source code
+**/state/
+
+# Credentials — should never enter context under any circumstance
+**/.env
+**/*.pem
+
+# Git internals
+**/.git/
+
+# Large running logs — too big to be useful, check via /catchup or /status instead
+Build Log.md
+
+# Worktrees — stale Claude Code worktree branches
+.claude/worktrees/
