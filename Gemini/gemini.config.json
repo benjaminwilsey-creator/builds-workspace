@@ -1,0 +1,4 @@
+{
+  "project_discovery": true,
+  "default_test_runner": "jest"
+}

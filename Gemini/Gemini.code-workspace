@@ -1,0 +1,57 @@
+{
+  "folders": [
+    {
+      "name": "Builds (root)",
+      "path": "."
+    },
+    {
+      "name": "OpenClaw v1.2 (Paper)",
+      "path": "Rapid2/rapid2 v1.2"
+    },
+    {
+      "name": "OpenClaw v1 (Production)",
+      "path": "Rapid2/rapid2 (Program)"
+    },
+    {
+      "name": "Booksmut (ReelForge)",
+      "path": "Booksmut"
+    },
+    {
+      "name": "Architect (Skills)",
+      "path": "Architect"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.rulers": [100],
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/.pytest_cache": true,
+      "**/.ruff_cache": true
+    },
+    "files.watcherExclude": {
+      "**/__pycache__/**": true,
+      "**/.git/**": true
+    },
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "charliermarsh.ruff",
+      "ms-python.debugpy",
+      "github.vscode-pull-request-github",
+      "eamodio.gitlens",
+      "ms-azuretools.vscode-docker"
+    ]
+  }
+}

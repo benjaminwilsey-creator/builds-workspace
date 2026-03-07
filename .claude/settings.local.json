@@ -3,7 +3,6 @@
     "allow": [
       "Bash(ssh rapid2 *)",
       "Bash(scp * rapid2:*)",
-      "Bash(scp rapid2:* *)",
       "Bash(git *)",
       "Bash(pip install *)",
       "Bash(pytest *)",
@@ -12,7 +11,13 @@
       "Bash(gh *)",
       "Bash(pre-commit *)",
       "Bash(python *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Read(//c/Users/benja/AppData/Local/**)",
+      "Bash(ssh -i \"C:\\\\Users\\\\benja\\\\OneDrive\\\\Documents\\\\KeePass\\\\AWS\\\\rapid2-key.pem\" -o ConnectTimeout=10 ubuntu@3.131.96.193 \"sudo systemctl status openclaw.service --no-pager -l | head -10\")",
+      "Bash(python3 -c \":*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\benja\\\\OneDrive\\\\Documents\\\\Builds\\\\read_docs.ps1\")",
+      "Read(//c/Users/benja/.claude/**)",
+      "Read(//usr/**)"
     ]
   }
 }

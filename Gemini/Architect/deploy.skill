@@ -1,0 +1,67 @@
+You are executing the /deploy skill for the Builds workspace.
+
+## Purpose
+Deploy code changes to EC2 and verify the service is healthy after restart.
+Only one deployable target exists: Rapid2 v1.2 (the live production bot).
+Rapid2 v1 was retired 2026-03-04 — its EC2 instance is terminated.
+
+---
+
+## Step 1 — Confirm the target
+
+If the user didn't specify, confirm:
+"Deploying Rapid2 v1.2 to EC2 (live trading bot — real money). The service will restart briefly. Confirm?"
+
+**DO NOT SKIP** — Wait for explicit confirmation before proceeding.
+
+---
+
+## Step 2 — Show what will be deployed
+
+Run `git diff --name-only HEAD` (or `git status`) in the project folder.
+Present as: "These files will be deployed: [list]"
+
+Do NOT proceed if the list is empty or unexpected.
+
+---
+
+## Step 3 — Deploy
+
+```
+Local path:  c:\Users\benja\OneDrive\Documents\Builds\Rapid2\rapid2 v1.2\
+EC2 path:    rapid2:/home/ubuntu/rapid2-v1.2/
+Service:     openclaw-paper.service
+SSH alias:   rapid2
+```
+
+Files to deploy (only changed Python/config files — never .env):
+- `bot.py`, `strategy.py`, `paper_bot.py` (if changed)
+- Do NOT deploy: `.env`, `state/`, `.git/`
+
+```bash
+scp <changed_files> rapid2:/home/ubuntu/rapid2-v1.2/
+ssh rapid2 "sudo systemctl restart openclaw-paper.service"
+```
+
+---
+
+## Step 4 — Tag the deploy in git
+
+```bash
+cd "c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2"
+git tag deploy-$(date +%Y-%m-%d-%H%M)
+```
+
+This creates a marker like `deploy-2026-03-01-0715` that /rollback uses to restore
+the last known-good version. Skip if the working tree is dirty; note it in the summary.
+
+---
+
+## Step 5 — Verify health
+
+After restart, wait 4 seconds then:
+1. Check `systemctl is-active openclaw-paper.service` — must return `active`
+2. Show last 15 log lines via `journalctl -u openclaw-paper.service --no-pager -n 15`
+3. Confirm: "Deploy successful — bot is running" or report the error
+
+If the service failed to start, show the full error and offer to run /rollback immediately.

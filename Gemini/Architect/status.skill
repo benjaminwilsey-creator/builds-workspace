@@ -1,0 +1,63 @@
+You are executing the /status skill for the Builds workspace.
+
+## Purpose
+Quick health snapshot of the running EC2 bot. Runs in an isolated sub-agent so
+SSH output and JSON state never enter the main context window.
+
+---
+
+## Your job as the main agent
+
+Do NOT run any SSH commands yourself. Instead:
+
+1. Use the **Agent tool** (subagent_type="general-purpose") with the task prompt below.
+
+2. When the sub-agent returns, output its report verbatim to the user.
+
+3. If the report shows the service as DOWN or contains ERROR/CRITICAL lines,
+   call those out explicitly and ask if the user wants to investigate.
+
+---
+
+## Sub-agent task prompt (pass this to the Agent tool)
+
+You are checking the health of a production trading bot on EC2.
+Collect data, then return ONLY the formatted report below. No raw data.
+
+## Step 1 - Service status
+
+Run:
+  ssh rapid2 "sudo systemctl status openclaw-paper.service --no-pager -l"
+
+Extract: active/inactive, uptime.
+
+## Step 2 - Recent logs
+
+Run:
+  ssh rapid2 "sudo journalctl -u openclaw-paper.service --no-pager -n 20"
+
+Extract: any ERROR/CRITICAL/WARNING lines, any BUY/SELL lines, last log timestamp.
+
+## Step 3 - Portfolio state
+
+Run:
+  ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
+
+Extract: cash on hand, number of positions, symbols grouped by tier.
+
+Note: Rapid2 v1 (3.131.96.193) was retired 2026-03-04 — do not check it.
+
+## Step 4 - Produce the report
+
+**REQUIRED** — return ONLY this format. No preamble.
+
+If the service is DOWN or errors were found, put a warning at the very top.
+
+--- STATUS ---
+Service:    [active / inactive] — uptime [X]
+Portfolio:  $[cash] cash + [N] positions ([symbols])
+Last log:   [timestamp] [last meaningful line]
+Errors:     [ERROR/CRITICAL lines, or "none"]
+Warnings:   [notable WARNINGs, or "none"]
+Trades:     [recent BUY/SELL, or "none in last 20 lines"]
+---
