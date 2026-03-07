@@ -2,6 +2,37 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
 ---
+## Session: 6 March 2026 (late evening)
+**Projects touched:** Architect (skills), Root workspace config, Rapid2 v1.2 (bot.py)
+**Session type:** Developer agent optimization (Sonnet 4.6)
+
+### What was built or changed
+- Analyzed the full developer agent workflow against Claude Sonnet 4.6's strengths and weaknesses -- identified 8 improvements
+- Removed dead references to the retired v1 server from /status and /decide skills -- prevents wasted SSH timeouts
+- Converted /status and /impact skills to the sub-agent pattern -- SSH output and grep results now stay isolated from the main conversation
+- Added "Behaviour Guardrails" section to root CLAUDE.md -- 5 rules that prevent Sonnet from adding unsolicited improvements or refactoring working code
+- Added DO NOT SKIP / REQUIRED emphasis markers to critical steps in /think, /review, /deploy, and /rollback -- prevents Sonnet from skipping confirmation steps
+- Refactored bot.py -- split two oversized functions (scan_and_enter at 95 lines, load_existing_positions at 50 lines) into focused helpers under 40 lines each
+- Fixed a bug in all 5 sub-agent skills -- they used the wrong Agent tool parameter (subagent_type="general" instead of "general-purpose"), which caused every sub-agent spawn to fail on first try
+- Identified 4 strategic improvements for future sessions: /test skill, S3 state backup, watchlist config file, /performance skill -- saved to memory backlog
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | active, 11 open positions (3 T2 + 8 T3), ~$120 total, $42 cash |
+| Production bot | same server -- v1.2 is the live bot |
+| Last deploy | none this session (bot.py refactored but not yet deployed) |
+
+### Decisions made this session
+- Sonnet 4.6 guardrails added to CLAUDE.md -- explicit "don't" rules prevent over-helping
+- All context-heavy skills now use sub-agent pattern (5 of 13 total)
+- bot.py refactor reviewed and approved but NOT deployed -- deploy next session after fresh /review
+
+### Outstanding / next steps
+- Deploy bot.py refactor to EC2 (reviewed, approved, syntax verified -- just needs /deploy)
+- Four planned improvements saved to memory backlog: /test, S3 backup, watchlist config, /performance
+
+---
 ## Session: 6 March 2026 (evening)
 **Projects touched:** Architect (skills), Root workspace config
 **Session type:** Developer agent optimization

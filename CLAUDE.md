@@ -49,6 +49,13 @@ This project uses the **hierarchical-claude-md** skill for CLAUDE.md management.
 - All async functions that can throw must have try/except or propagate clearly
 - Use named constants for any numeric thresholds or config values
 
+## Behaviour Guardrails
+- Do NOT add unsolicited improvements — no extra refactors, docstrings, type annotations, or error handling beyond what was asked
+- Do NOT refactor working code while fixing a bug — fix the bug only
+- Do NOT add features, configurability, or abstractions beyond the current request
+- If a change was not requested, do not make it — even if it looks like an improvement
+- When in doubt, ask before changing
+
 ## Project Index
 | Project | Path | Status | Stack |
 |---------|------|--------|-------|

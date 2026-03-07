@@ -1,51 +1,63 @@
 You are executing the /status skill for the Builds workspace.
 
 ## Purpose
-Give a quick health snapshot of all running EC2 services — uptime, last log lines, and any errors.
+Quick health snapshot of the running EC2 bot. Runs in an isolated sub-agent so
+SSH output and JSON state never enter the main context window.
 
 ---
 
-## What to check
+## Your job as the main agent
 
-### 1. Paper bot — Rapid2 v1.2 (SSH alias: rapid2)
+Do NOT run any SSH commands yourself. Instead:
 
-Run these in sequence:
-```bash
-ssh rapid2 "sudo systemctl status openclaw-paper.service --no-pager -l"
-ssh rapid2 "sudo journalctl -u openclaw-paper.service --no-pager -n 20"
-ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
-```
+1. Use the **Agent tool** (subagent_type="general-purpose") with the task prompt below.
 
-### 2. Production bot — Rapid2 v1 (IP: 3.131.96.193)
+2. When the sub-agent returns, output its report verbatim to the user.
 
-Run these in sequence:
-```bash
-ssh -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.131.96.193 "sudo systemctl status openclaw --no-pager -l"
-ssh -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.131.96.193 "sudo journalctl -u openclaw --no-pager -n 20"
-```
+3. If the report shows the service as DOWN or contains ERROR/CRITICAL lines,
+   call those out explicitly and ask if the user wants to investigate.
 
 ---
 
-## How to present results
+## Sub-agent task prompt (pass this to the Agent tool)
 
-For each service, show a summary like:
+You are checking the health of a production trading bot on EC2.
+Collect data, then return ONLY the formatted report below. No raw data.
 
-```
-── Paper Bot (openclaw-paper) ──────────────────
-Status:    active (running) — uptime 2h 14m
-Portfolio: $102.00 cash + 1 position (LINK/USD)
-Last log:  07:16:19 [CoinGecko] Trending: ['PENGU', 'BTC', ...]
-Errors:    none
-```
+## Step 1 - Service status
 
-Flag any of the following:
-- Service is `inactive` or `failed` → bold warning
-- Log lines containing `ERROR` or `CRITICAL` → highlight them
-- Service restarted recently (uptime < 5 min) → note it
+Run:
+  ssh rapid2 "sudo systemctl status openclaw-paper.service --no-pager -l"
 
-If a server is unreachable (SSH timeout), report that clearly rather than hanging.
+Extract: active/inactive, uptime.
 
+## Step 2 - Recent logs
+
+Run:
+  ssh rapid2 "sudo journalctl -u openclaw-paper.service --no-pager -n 20"
+
+Extract: any ERROR/CRITICAL/WARNING lines, any BUY/SELL lines, last log timestamp.
+
+## Step 3 - Portfolio state
+
+Run:
+  ssh rapid2 "cat /home/ubuntu/rapid2-v1.2/state/paper_state.json"
+
+Extract: cash on hand, number of positions, symbols grouped by tier.
+
+Note: Rapid2 v1 (3.131.96.193) was retired 2026-03-04 — do not check it.
+
+## Step 4 - Produce the report
+
+**REQUIRED** — return ONLY this format. No preamble.
+
+If the service is DOWN or errors were found, put a warning at the very top.
+
+--- STATUS ---
+Service:    [active / inactive] — uptime [X]
+Portfolio:  $[cash] cash + [N] positions ([symbols])
+Last log:   [timestamp] [last meaningful line]
+Errors:     [ERROR/CRITICAL lines, or "none"]
+Warnings:   [notable WARNINGs, or "none"]
+Trades:     [recent BUY/SELL, or "none in last 20 lines"]
 ---
-
-## When to use this
-Run `/status` any time you want a quick check that everything is alive and healthy — especially after a deploy or when something seems off.

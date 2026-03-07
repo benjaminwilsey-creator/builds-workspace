@@ -15,7 +15,7 @@ See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
 - IDE: VS Code
 - Deployment: AWS EC2 (scp push + systemd restart)
 - Communication: plain English, no jargon, explain the "why"
-- python-docx installed on Python 3.14 (`/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`) — can convert .md → .docx
+- python-docx installed on Python 3.14 (`/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`) — can convert .md -> .docx
 
 ## Key Credentials Locations
 - Rapid2 v1 `.env`: `Builds\Rapid2\rapid2 (Program)\.env` (retired — but still holds working Kraken creds)
@@ -48,13 +48,15 @@ Note: memory files are backed up to `Builds/memory/` in builds-workspace repo. U
 - Error alerter script: `/home/ubuntu/error_alert.sh`
 - CloudWatch alarm name: `rapid2-memory-high` (paper server only)
 
-## Sub-Agent Pattern (added 2026-03-06)
-Three context-heavy skills now run as isolated sub-agents via the Agent tool:
+## Sub-Agent Pattern (updated 2026-03-06)
+Five skills now run as isolated sub-agents via the Agent tool:
 - `/catchup` — SSH output, logs, JSON state stay out of main context
 - `/review` — code files read in sub-agent; only the verdict report returns
 - `/spike` — web search results stay in sub-agent; only the spike report returns
+- `/status` — SSH + state JSON isolated; only formatted health report returns
+- `/impact` — grep/read results isolated; only impact report returns
 
-Pattern: main agent spawns Agent tool (subagent_type="general") with self-contained
+Pattern: main agent spawns Agent tool (subagent_type="general-purpose") with self-contained
 task prompt. Sub-agent does all data gathering, returns only the formatted report.
 
 ## Context Hygiene
@@ -62,6 +64,13 @@ task prompt. Sub-agent does all data gathering, returns only the formatted repor
 - `/compact` at ~70% context usage — compresses without losing gist
 - Two-correction rule: if you've corrected Claude twice on the same thing, `/clear` and restart with a sharper prompt
 - `.claudeignore` at Builds root excludes: state/, .venv/, .env, .pem, __pycache__, Build Log.md, .claude/worktrees/
+
+## Planned Improvements (not yet built)
+Priority order for next development session on the agent/bot:
+1. `/test` skill — run pytest before deploy, block deploy on failure
+2. S3 state backup — save paper_state.json to S3 after each trade, load on startup if local missing
+3. Watchlist config file — move TIER2/TIER3_WATCHLIST from bot.py to JSON config, hot-reload each scan
+4. `/performance` skill — parse trade logs, report win rate, P&L, signal accuracy
 
 ## Windows Tooling Gotchas
 - **Edit tool fails** on paths with spaces in directory name (e.g. `rapid2 v1.2`) — workaround: write Python script to `/c/Users/benja/AppData/Local/Temp/`, execute with `/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`

@@ -11,7 +11,7 @@ Only the final briefing enters the main session.
 
 Do NOT run any SSH commands or read any files yourself. Instead:
 
-1. Use the **Agent tool** (subagent_type="general") with the task prompt below.
+1. Use the **Agent tool** (subagent_type="general-purpose") with the task prompt below.
 
 2. When the sub-agent returns, output its briefing verbatim to the user.
 

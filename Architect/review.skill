@@ -15,7 +15,7 @@ Do NOT read any code files yourself. Instead:
    - If the user mentioned a project, use its path.
    - Default: `c:/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2`
 
-2. Use the **Agent tool** (subagent_type="general") with the task prompt below.
+2. Use the **Agent tool** (subagent_type="general-purpose") with the task prompt below.
    Substitute {{PROJECT_DIR}} with the actual project path before sending.
 
 3. When the sub-agent returns, output its report verbatim to the user.
@@ -77,9 +77,9 @@ Python-specific:
 - `pathlib.Path` used instead of `os.path` where applicable
 - Async functions have try/except or explicitly propagate errors
 
-## Step 4 - Logic review
+## Step 4 - Logic review (**CRITICAL — most important step**)
 
-Think carefully about correctness - this code runs live trades:
+Think carefully about correctness — this code runs live trades with real money:
 - Does the change do what was intended?
 - Are there off-by-one errors, wrong operators, or inverted conditions?
 - Are edge cases handled? (None, empty list, zero division, network timeout, API error)
@@ -98,7 +98,7 @@ Missing test coverage for non-trivial logic changes is a required fix before dep
 
 ## Step 6 - Produce the review report
 
-Return ONLY the report below - no preamble, no explanation outside the report block.
+**REQUIRED** — Return ONLY the report below. No preamble, no explanation outside the report block.
 
 --- CODE REVIEW ---
 Files reviewed: [list each file]

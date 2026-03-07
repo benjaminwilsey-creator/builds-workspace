@@ -12,7 +12,7 @@ Rapid2 v1 was retired 2026-03-04 — its EC2 instance is terminated.
 If the user didn't specify, confirm:
 "Deploying Rapid2 v1.2 to EC2 (live trading bot — real money). The service will restart briefly. Confirm?"
 
-Wait for confirmation before proceeding.
+**DO NOT SKIP** — Wait for explicit confirmation before proceeding.
 
 ---
 

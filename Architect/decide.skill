@@ -38,7 +38,6 @@ infer the answers from the conversation rather than asking again.
 
 Identify which project this decision belongs to:
 - Rapid2 v1.2 → `Builds\Rapid2\rapid2 v1.2\docs\decisions\`
-- Rapid2 v1 → `Builds\Rapid2\rapid2 (Program)\docs\decisions\`
 - Booksmut → `Builds\Booksmut\docs\decisions\`
 - Workspace-wide → `Builds\docs\decisions\`
 

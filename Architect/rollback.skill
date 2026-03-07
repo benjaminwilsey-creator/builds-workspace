@@ -29,7 +29,7 @@ Ask the user:
 - "When did it start — immediately after the last deploy, or gradually?"
 - "Are there any open positions that need protecting?"
 
-Do NOT proceed until you understand what's broken.
+**DO NOT SKIP** — Do NOT proceed until you understand what's broken.
 
 ---
 

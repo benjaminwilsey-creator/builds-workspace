@@ -24,7 +24,7 @@ Confirm the precise research question in one sentence, then move to Step 2.
 
 ### Step 2 - Spawn the research sub-agent
 
-Use the **Agent tool** (subagent_type="general") with the task prompt below.
+Use the **Agent tool** (subagent_type="general-purpose") with the task prompt below.
 Replace {{RESEARCH_QUESTION}} with the confirmed question from Step 1.
 
 ### Step 3 - Return the report

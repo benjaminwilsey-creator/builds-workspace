@@ -13,7 +13,7 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 - Python 3.12, ccxt, python-telegram-bot v20+ (async), apscheduler, python-dotenv, boto3
 
 ## Key Files (v1.2)
-- **bot.py** — Live trading infrastructure (Kraken connection, order execution, Telegram, load_dotenv)
+- **bot.py** — Live trading infrastructure (Kraken connection, order execution, Telegram, load_dotenv). Refactored 2026-03-06: scan_and_enter split into _scan_tier3 + _scan_tier2; load_existing_positions split into _classify_tier + _build_position
 - **paper_bot.py** — Paper trading bot (simulated trades, same signals) — still on server but not running
 - **strategy.py** — All signal logic: CryptoCompare, CoinGecko, Reddit, volume; position sizing; exits
 - **pyproject.toml** — Ruff + pytest configuration

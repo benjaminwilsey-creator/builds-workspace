@@ -91,11 +91,11 @@ Example format:
 
 ---
 
-## Step 7 — Get sign-off
+## Step 7 — Get sign-off (**REQUIRED — DO NOT SKIP**)
 
 Present the full plan to the user and ask:
 "Does this match what you had in mind? Say yes to proceed, or tell me what to change."
 
-Do NOT begin implementation until the user explicitly approves.
+**DO NOT begin implementation until the user explicitly approves.**
 Once approved, work through the checklist from Step 6 item by item,
 marking each done before moving to the next.
