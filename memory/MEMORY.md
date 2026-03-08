@@ -7,10 +7,12 @@ Four projects in `c:\Users\benja\OneDrive\Documents\Builds`:
 2. **Booksmut** — ReelForge BookTok affiliate video pipeline — design complete, Phase 0 ready to start
 3. **Architect** — Claude skill files for markdown hierarchy processing
 4. **Sportsball** — College football content pipeline for Ricky's brand — scaffolded, architecture planned
+5. **3DPrint** (name TBD) — Plain-language to STL converter for Ricky's Bambu A1 — concept only, not yet scaffolded
 
 See [rapid2.md](rapid2.md) for full Rapid2 details.
 See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
 See [sportsball.md](sportsball.md) for full Sportsball details.
+See [3dprint.md](3dprint.md) for full 3DPrint details.
 
 ## User Preferences
 - Platform: Windows with MSYS bash

@@ -1,6 +1,30 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 7 March 2026 (late evening)
+**Projects touched:** 3DPrint concept (new, unnamed)
+**Session type:** Concept exploration — domain research and architecture thinking
+
+### What was built or changed
+- Explored a new project idea: a tool that lets Ricky describe a 3D shape in plain conversational English and receive a clean, printable STL file for his Bambu A1 printer
+- Identified the core problem with existing AI + 3D printing approaches: AI-generated CAD code bloats quickly and produces messy, over-complicated geometry that is hard to print and hard to modify
+- Proposed a better architecture: skip code generation entirely and build the 3D geometry directly in Python, producing a clean STL with no intermediate code layer
+
+### Current state
+| | Status |
+|---|---|
+| 3DPrint project | Concept only — not scaffolded |
+| Sportsball | Scaffolded, architecture planned, not yet built |
+| Paper bot (Rapid2) | Active — 11 open positions |
+| Production bot | TERMINATED |
+
+### Decisions made this session
+- Direct mesh generation (trimesh/numpy-stl) preferred over OpenSCAD/CadQuery code generation — eliminates AI code bloat at the source
+
+### Outstanding / next steps
+- Answer 3 open questions before scaffolding: (1) standalone objects or multi-part? (2) preview image before STL? (3) personal use or product for others?
+- Confirm project name, then scaffold and run /think
+---
 ## Session: 7 March 2026 (evening)
 **Projects touched:** Sportsball (new)
 **Session type:** New project kickoff — business strategy + architecture planning
