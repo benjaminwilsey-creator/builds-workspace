@@ -55,25 +55,28 @@ This project uses the **hierarchical-claude-md** skill for CLAUDE.md management.
 - When in doubt, ask before changing
 
 ## Project Index
-| Project | Path | Status | Stack |
-|---------|------|--------|-------|
-| **Architect** | `Architect/` | Active skill files | Claude skills |
-| **Booksmut (ReelForge)** | `Booksmut/` | Design phase (docs only) | TBD |
-| **Rapid2 v1.2 (OpenClaw)** | `Rapid2/rapid2 v1.2/` | Archived — reference only | Python 3.12, ccxt, Telegram, S3 |
+| Project | Path | Purpose |
+|---------|------|---------|
+| **Architect** | `Architect/` | Claude skill files — the developer workflow system |
+| **Sportsball** | `Sportsball/` | Football content pipeline — grows Ricky's brand to $150k+/year |
 
-Deployment details: see individual project CLAUDE.md files and the `/deploy` skill.
+Each product project (Rapid2, Booksmut, etc.) has its own subfolder with its own CLAUDE.md.
+Deployment details: see the relevant project CLAUDE.md and the `/deploy` skill.
 
 ## Recommended Workflow
 ```
-New session       ->  /catchup    get up to speed in 60 seconds
-Unfamiliar topic  ->  /spike      research the space first
-Plan a feature    ->  /think      agree on approach before coding
-Edit existing     ->  /impact     check blast radius before touching
-Done coding       ->  /review     quality gate before deploy
-After deciding    ->  /decide     record why, for future sessions
-Ready to ship     ->  /deploy     git tag + push + restart + verify
-Something wrong   ->  /rollback   restore last good version
-End of session    ->  /remember   save what matters to memory files
+New session       ->  /catchup              get up to speed in 60 seconds
+Unfamiliar topic  ->  /spike                research the space first
+Plan a feature    ->  /think                agree on approach before coding
+Edit existing     ->  /impact               check blast radius before touching
+Done coding       ->  /review               quality gate before deploy
+After deciding    ->  /decide               record why, for future sessions
+Ready to ship     ->  /deploy               git tag + push + restart + verify
+Something wrong   ->  /rollback             restore last good version
+End of session    ->  /remember             save what matters to memory files
+Check service     ->  /status               service health + recent logs
+New project       ->  /new-project          scaffold project structure
+Update rules      ->  /hierarchical-claude-md  update a project's CLAUDE.md
 ```
 
 Full skill reference: `Developer Quick Reference.md`

@@ -1,15 +1,16 @@
 # Memory
 
 ## Project Overview
-Projects in `c:\Users\benja\OneDrive\Documents\Builds`:
+Four projects in `c:\Users\benja\OneDrive\Documents\Builds`:
 
-1. **Architect** — Claude skill files for the developer workflow system (primary active project)
+1. **Rapid2** — Production crypto trading bot (OpenClaw) — primary active project
 2. **Booksmut** — ReelForge BookTok affiliate video pipeline — design complete, Phase 0 ready to start
-3. **Rapid2** — Crypto trading bot (OpenClaw) — archived reference, not actively developed
-4. **qwen-developer-setup** — Qwen Code workflow system (separate GitHub repo)
+3. **Architect** — Claude skill files for markdown hierarchy processing
+4. **Sportsball** — College football content pipeline for Ricky's brand — scaffolded, architecture planned
 
+See [rapid2.md](rapid2.md) for full Rapid2 details.
 See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
-See [rapid2.md](rapid2.md) for Rapid2 reference (archived).
+See [sportsball.md](sportsball.md) for full Sportsball details.
 
 ## User Preferences
 - Platform: Windows with MSYS bash
@@ -60,21 +61,11 @@ Five skills now run as isolated sub-agents via the Agent tool:
 Pattern: main agent spawns Agent tool (subagent_type="general-purpose") with self-contained
 task prompt. Sub-agent does all data gathering, returns only the formatted report.
 
-**Qwen Code adaptation:** Qwen uses `task` tool (not `Agent` tool) with same pattern.
-Skills consolidated into single `Workflow.md` — less file hopping, faster context loading.
-
 ## Context Hygiene
 - `/clear` between unrelated topics — prevents context drift
-- `/compact` at ~70% context usage (Claude) or ~60% (Qwen) — compresses without losing gist
+- `/compact` at ~70% context usage — compresses without losing gist
 - Two-correction rule: if you've corrected Claude twice on the same thing, `/clear` and restart with a sharper prompt
 - `.claudeignore` at Builds root excludes: state/, .venv/, .env, .pem, __pycache__, Build Log.md, .claude/worktrees/
-
-## Qwen Workflow System (created 2026-03-07)
-- **Repo:** https://github.com/benjaminwilsey-creator/qwen-developer-setup
-- **Structure:** `.qwen/` folder with QWEN.md, Workflow.md, Developer Quick Reference.md, Qwen Optimization Guide.md
-- **Key adaptations:** explicit numbered steps, confirmation gates, consolidated references (11 skills → 1 file)
-- **Quality rules:** re-read before edit, format enforcement, fail explicit, one task at a time, consistent triggers
-- **booksmut/ mirror:** ReelForge project docs with ADRs and technical guide for Qwen sessions
 
 ## Planned Improvements (not yet built)
 Priority order for next development session on the agent/bot:
@@ -82,8 +73,6 @@ Priority order for next development session on the agent/bot:
 2. S3 state backup — save paper_state.json to S3 after each trade, load on startup if local missing
 3. Watchlist config file — move TIER2/TIER3_WATCHLIST from bot.py to JSON config, hot-reload each scan
 4. `/performance` skill — parse trade logs, report win rate, P&L, signal accuracy
-
-**Qwen workflow:** Complete — separate repo at qwen-developer-setup (2026-03-07)
 
 ## Windows Tooling Gotchas
 - **Edit tool fails** on paths with spaces in directory name (e.g. `rapid2 v1.2`) — workaround: write Python script to `/c/Users/benja/AppData/Local/Temp/`, execute with `/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`

@@ -1,6 +1,35 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 7 March 2026 (evening)
+**Projects touched:** Sportsball (new)
+**Session type:** New project kickoff — business strategy + architecture planning
+
+### What was built or changed
+- Created the Sportsball project — a new college football content pipeline designed to grow Ricky's brand to $150k+/year
+- Scaffolded the full project folder with Python toolchain: linter, test runner, CI pipeline, secret detection, VS Code config
+- Researched the college football creator economy — confirmed that YouTube + paid newsletter + sportsbook affiliates is the right three-layer revenue model
+- Mapped Ricky's content angle: college football, focusing on fantasy analysis, scheme breakdowns, statistics, and transfer portal/current events
+- Planned the pipeline architecture: a four-stage system (Fetch news → Generate drafts with AI → Ricky reviews → Publish) with a local web UI for review and SQLite to track draft status
+
+### Current state
+| | Status |
+|---|---|
+| Sportsball | Scaffolded — architecture planned, no code written yet |
+| Paper bot (Rapid2) | Active — 11 open positions, $42 cash |
+| Production bot | TERMINATED |
+| Last deploy | N/A this session |
+
+### Decisions made this session
+- Revenue model: YouTube builds the audience, paid newsletter (Substack/Beehiiv) is the primary income, sportsbook affiliate links layer on top once audience is established
+- Pipeline approach: human-in-the-loop is non-negotiable — Ricky approves every piece before it publishes; AI assists, it doesn't author
+
+### Outstanding / next steps
+- Confirm how Ricky wants to review content (local web page proposed, alternatives: email, Telegram)
+- Confirm publishing method (Twitter auto-post assumed; Substack copy-paste assumed)
+- Confirm college football data source (ESPN unofficial API is candidate)
+- Get /think sign-off, then build Phase 1 (the news fetcher)
+---
 ## Session: 7 March 2026 (afternoon)
 **Projects touched:** .qwen/ folder (new), qwen-developer-setup repo
 **Session type:** Qwen Code workflow adaptation
