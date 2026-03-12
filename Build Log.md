@@ -1,6 +1,35 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 11 March 2026
+**Projects touched:** Rapid2 (OpenClaw v1.2)
+**Session type:** Strategy overhaul — feature build
+
+### What was built or changed
+- Flipped the allocation pyramid: most capital now sits in the safest tier (50% stable / 30% mid-cap / 20% micro-cap), instead of the riskiest (was 15/35/50). This means a bad run on volatile coins can no longer wipe out the majority of the account.
+- Added RSI as a 5th entry signal — confirms a coin's price is actually moving up, not just being talked about. Requires at least 3 out of 5 signals to enter a T3 trade (was 2 out of 4).
+- Replaced the fixed 25% trailing stop with ATR-based stops — each coin's stop is now sized to its own historical volatility. Calm coins get tighter stops; volatile coins get more room to breathe. Falls back to a fixed 15% stop if the coin is too new to have enough price history.
+- Tightened social signal thresholds (4x more Reddit activity required) to filter out noise.
+- Reduced T3 to a maximum of 3 open positions (was 6) — forces the bot to be pickier, concentrating on higher-conviction bets.
+- Reduced position sizes to $3.60/$5/$8 (was $4/$7/$12).
+- Updated project CLAUDE.md and memory files to reflect all of the above.
+
+### Current state
+| | Status |
+|---|---|
+| Production bot (Rapid2 v1.2) | Active — live trading on Kraken |
+| T3 positions | ~10 open (above new 3-position cap — will drain naturally, no force-sell) |
+| Last deploy | 11 March 2026 — commit 11957e0 |
+
+### Decisions made this session
+- Let existing over-cap T3 positions exit naturally via their ATR stops rather than force-selling — avoids locking in losses or triggering tax events unnecessarily
+- Option B (RSI + ATR, keep momentum strategy for T3) chosen over Option C (mean reversion rewrite) — mean reversion is a bigger conceptual change that needs its own backtesting period before going live
+
+### Outstanding / next steps
+- Monitor in logs: T3 cap message "Position cap reached (10/3)" should gradually reduce as positions close out
+- Cleanup items (non-blocking): refactor scan_and_enter() into smaller functions, add logging to 4 bare except:pass blocks, move magic numbers to CONFIG
+- If T3 entries dry up completely (RSI + stricter thresholds may be too tight together), relax RSI threshold from 60 → 55
+---
 ## Session: 7 March 2026 (late evening)
 **Projects touched:** 3DPrint concept (new, unnamed)
 **Session type:** Concept exploration — domain research and architecture thinking

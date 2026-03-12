@@ -24,23 +24,29 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 Clean separation: bot.py = infrastructure only, strategy.py = logic only.
 To tune strategy: edit strategy.py only.
 
-## 3-Tier Strategy
+## 3-Tier Strategy (updated 2026-03-11 — strategy overhaul commit 11957e0)
 | Tier | Target | Assets | Key Logic |
 |------|--------|--------|-----------|
-| T1 Stable | 15% | BTC/ETH | Hold anchor, no active trading |
-| T2 Mid-cap | 35% | $0.10–$15 altcoins | Social + technical signals, TP 15%, SL 7% |
-| T3 Micro-cap | 50% | Dust/<$1 coins | Ratcheting trailing stop (25% → 15% after +100%) |
+| T1 Stable | 50% | BTC/ETH | Hold anchor, no active trading |
+| T2 Mid-cap | 30% | $0.10–$15 altcoins | Social + technical signals, TP 15%, SL 7% |
+| T3 Micro-cap | 20% | Dust/<$1 coins | ATR-based trailing stop (2x 10-day ATR, fallback 15%) |
 
-## Signal System (4 signals, score 0–4)
-1. **CryptoCompare** — Reddit posts_per_hour + active_users (free tier, register at cryptocompare.com)
+Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest tier.
+
+## Signal System (5 signals, score 0–5)
+1. **CryptoCompare** — Reddit posts_per_hour (>= 2.0) + active_users (>= 200)
    - Two-step lookup: coinId from `/data/all/coinlist` (cached in `_CC_ID_CACHE`), then `/data/social/coin/latest`
    - `_CC_LIST_FETCHED` sentinel prevents retry storms if coin list fetch fails on startup
 2. **CoinGecko** — trending coins list (no key required)
 3. **Reddit** — mention spike ratio, public JSON API, unauthenticated
 4. **Volume** — 3x 7-day average daily volume
+5. **RSI** — RSI-14 on 1h candles > 60 (new — momentum confirmation)
 
-**T3 entry requires score >= 2** (raised from 1 — CoinGecko trending alone is not sufficient)
-**Position sizing:** 1 signal = $4, 2 signals = $7, 3+ signals = $12
+**T3 entry requires score >= 3** (was 2 out of 4)
+**T2 entry requires score >= 4** (was same out of 4)
+**Position sizing:** 1 signal = $3.60, 2 signals = $5, 3+ signals = $8 (reduced from $4/$7/$12)
+**T3 max positions: 3** (was 6)
+**Social thresholds raised:** posts_per_hour 0.5 → 2.0, active_users 50 → 200
 
 ## Concentration Rules (added 2026-03-06)
 - `TIER2_MAX_SINGLE_PCT = 0.20` — no more than 20% of account in any one T2 coin
@@ -64,6 +70,17 @@ To tune strategy: edit strategy.py only.
 
 ## Telegram Commands (live bot, bot.py)
 `/status`, `/positions`, `/portfolio`, `/watchlist`, `/pause`, `/resume`, `/report`, `/help`
+
+## New Functions (strategy overhaul 2026-03-11)
+- `get_rsi_signal(exchange, symbol)` — fetches 16 x 1h OHLCV candles, calculates RSI-14 (Wilder's smoothing), returns True if RSI > 60
+- `calculate_atr(exchange, symbol)` — fetches 11 x 1d OHLCV candles, calculates 10-day ATR (true range formula)
+- `calculate_atr_stop(exchange, symbol, peak_price)` — returns stop price = peak - (2 × ATR); falls back to fixed 15% stop if fewer than 7 daily candles available
+- `tier3_update_trailing_stop()` now accepts `exchange` param and calls `calculate_atr_stop()` instead of fixed 25%
+
+## Cleanup TODO (from /review, not blocking)
+- `scan_and_enter()` is 130 lines (limit: 40) — extract T2/T3 scan blocks into helpers
+- 4 bare `except:pass` blocks in bot.py (lines ~192, 363, 381, 589) — silently swallow errors, should log
+- Several magic numbers (0.0001 dust, anti-chase 1.05, score thresholds 3/4) should be CONFIG constants
 
 ## Known Issues / Gotchas
 - Service still named `openclaw-paper.service` even though it runs `bot.py` (live trading) — low priority rename
