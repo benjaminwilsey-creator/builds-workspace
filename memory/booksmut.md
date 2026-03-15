@@ -8,24 +8,29 @@ videos with Amazon affiliate captions for human scheduling in Meta Business Suit
 Two-person project: developer (Benjamin) + non-technical partner (publisher licensing lead).
 
 ## Status
-Phase 0 (account setup) **nearly complete** as of 2026-03-15.
-No code written yet. Phase 1 (Database & Auth) is next.
+Phase 0 **complete**. Phase 1 database migrations **complete** as of 2026-03-15.
+Next: seed `seed_books` table (20 BookTok titles), then Phase 2 discovery pipeline.
 
-### Phase 0 Completion
-- [x] Amazon Associates — applied
+### Phase 0 — Complete
+- [x] Amazon Associates — tag: `thesecretpic-20` (Elizabeth Wilsey account)
 - [x] NYT Books API — approved
-- [x] Supabase — project created
-- [x] Cloudflare R2 — bucket + CORS configured
-- [x] Vercel — project created
-- [x] Google Cloud APIs — enabled (Books, TTS, Vision, Gmail) via gcloud CLI
-- [x] Gemini API — key created
+- [x] Supabase — project created, Session Pooler URI saved (IPv4 compatible)
+- [x] Cloudflare R2 — bucket + CORS configured for reelforge-seven.vercel.app
+- [x] Vercel — deployed at `reelforge-seven.vercel.app`
+- [x] Google Cloud APIs — enabled (Books, TTS, Vision, Gmail)
+- [x] Google Cloud Service Account — `reelforge-api-runner` created, key file saved
+- [x] Gemini API — key created (Google AI Studio, not Cloud Console)
 - [x] Hardcover.app — account created
-- [x] Gmail OAuth — consent screen + Client ID configured
-- [x] Meta Business Suite — confirmed
-- [x] Partner UI framework — Framework B selected (ADR 0001)
-- [ ] Music library seed — 20+ tracks needed (Pixabay / YouTube Audio Library, no CC-BY)
-- [ ] Google app verification — confirm submitted (1–4 week wait, blocks Phase 6)
-- [~] Reddit API — **dropped for this build** (API access process changed)
+- [x] Gmail OAuth — consent screen configured, partner added as test user (no Workspace needed)
+- [x] Music library seed — 20+ tracks saved to CSV (Pixabay / YouTube Audio Library, CC0/no-attribution only)
+- [x] Reddit API — **dropped for this build** (API access process changed)
+- [ ] Google app verification — 1–4 week wait, blocks Phase 6 Gmail OAuth in production
+
+### Phase 1 — Complete
+- [x] All 16 tables created in Supabase SQL Editor
+- [x] Row Level Security enabled on all tenant-scoped tables
+- [x] First tenant created: ReelForge / thesecretpic-20
+- [x] Owner user linked
 
 ## GitHub Repo
 - URL: https://github.com/benjaminwilsey-creator/reelforge
@@ -58,11 +63,6 @@ No code written yet. Phase 1 (Database & Auth) is next.
 - **Tool that feels good:** Checklists
 - **Design implication:** Borrow Framework C mini-checklists into Framework B publisher cards
 
-## Open Items Before Phase 0
-- [x] Top 3 BookTok romance/romantasy authors confirmed: **Sarah J. Maas, Rebecca Yarros, Colleen Hoover** (2026-03-02)
-- [ ] Confirm Meta accounts (Facebook Page + Instagram Business) are set up and in good standing
-- [ ] Apply for Amazon Associates account early — 3 qualifying sales required within 180 days
-- [ ] Apply for Google app verification early — Gmail OAuth requires approval, takes 1–4 weeks; must be done in Phase 0 to avoid blocking Phase 6
 
 ## Tech Stack (updated 2026-03-15 — AWS replaced by Google Cloud)
 Supabase · Cloudflare R2 · **Google Cloud Functions + Pub/Sub + Cloud Scheduler** · Gemini API · Google TTS + Vision ·

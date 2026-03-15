@@ -1,18 +1,19 @@
 ---
 date: 2026-03-15
-project: Booksmut
+project: Booksmut / ReelForge
 ---
 
 ## What we did
-- Committed all Phase 0 setup documentation to the Booksmut repo and caught a credentials file before it was committed (added .gitignore patterns)
-- Confirmed Phase 0 is nearly complete — 10 of 12 items done
-- Recorded ADR 0004: infrastructure switched from AWS to Google Cloud, Reddit API dropped
-- Workspace confirmed permanently moved to E:\Builds - Copy (was OneDrive)
+- Completed all Phase 0 account setup (Supabase, R2, Vercel, Google Cloud, Gemini, Associates, music library)
+- Created Google Cloud Service Account (reelforge-api-runner) with TTS, Vision, Books permissions
+- Added partner as Google OAuth test user — no Workspace needed
+- Ran all 16 Phase 1 database migrations in Supabase SQL Editor, RLS enabled
+- Created first tenant (ReelForge / thesecretpic-20) and linked owner user
 
 ## Next up
-- Confirm Google app verification has been submitted (1–4 week wait — Phase 6 blocker)
-- Seed music library with 20+ tracks (Pixabay / YouTube Audio Library, no CC-BY)
-- Begin Phase 1 (Supabase schema) once those two are done
+- Seed `seed_books` table with 20 known BookTok titles (Supabase SQL Editor)
+- Start Phase 2: discovery pipeline — Cloud Functions for NYT fetcher + Hardcover GraphQL fetcher
 
 ## Watch out for
-- Google app verification: if not submitted, do it immediately — longest remaining lead time
+- Google app verification still pending — blocks Gmail OAuth for non-test users in production (Phase 6)
+- Amazon Associates 180-day clock is running — need 3 qualifying sales before account closes

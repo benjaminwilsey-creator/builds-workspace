@@ -1,6 +1,33 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 15 March 2026 (evening)
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Infrastructure + Database setup
+
+### What was built or changed
+- Completed all Phase 0 account setup — every service account, API key, and third-party platform the pipeline needs is now active and credentials are saved
+- Built the Google Cloud Service Account — a robot identity that lets the pipeline call TTS, Vision, and Books APIs automatically without human login
+- Added the partner as a Google OAuth test user so she can use the Gmail draft feature without needing a full Google Workspace account
+- Created all 16 database tables in Supabase and locked them so each user can only see their own data
+- Created the first tenant record (ReelForge / thesecretpic-20) and linked the owner user account
+
+### Current state
+| | Status |
+|---|---|
+| ReelForge | Phase 0 complete, Phase 1 database done |
+| Rapid2 production bot | Not checked this session — unchanged |
+
+### Decisions made this session
+- Infrastructure is Google Cloud end-to-end — no AWS in this build (ADR 0004, recorded previous session)
+- Reddit API skipped — their new access policy made it impractical; discovery works without it
+
+### Outstanding / next steps
+- Seed the database with 20 known BookTok titles as a starting point for the discovery engine
+- Begin Phase 2: build the first Cloud Functions that pull NYT bestseller lists and Hardcover trending books
+- Google app verification still pending — blocks Gmail OAuth for non-test users in production (Phase 6)
+
+---
 ## Session: 15 March 2026
 **Projects touched:** Booksmut (ReelForge)
 **Session type:** Planning / Phase 0 completion
