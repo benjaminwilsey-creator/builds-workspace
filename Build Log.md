@@ -1,6 +1,34 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 15 March 2026
+**Projects touched:** Booksmut (ReelForge)
+**Session type:** Planning / Phase 0 completion
+
+### What was built or changed
+- Committed all Phase 0 infrastructure setup guides to the Booksmut repo (Cloudflare R2, domain, AWS→GCP steps, Gmail OAuth, Supabase keepalive workflow)
+- Caught and blocked a Google credentials file from being committed — added patterns to .gitignore
+- Recorded that the backend was switched from AWS (Lambda + SQS) to Google Cloud (Functions + Pub/Sub + Cloud Scheduler) set up via gcloud CLI — consolidating on one cloud provider since GCP was already required for TTS, Vision, and Gemini
+- Workspace permanently moved from OneDrive to E:\Builds - Copy — updated all memory references
+
+### Current state
+| | Status |
+|---|---|
+| Booksmut | Phase 0 nearly complete — 10 of 12 items done |
+| Remaining Phase 0 | Music library seed + Google app verification |
+| Phase 1 | Not started — waiting on Phase 0 completion |
+| Rapid2 production bot | Active — live trading on Kraken (unchanged) |
+
+### Decisions made this session
+- Switched from AWS to Google Cloud for all backend infrastructure (ADR 0004) — one cloud provider instead of two
+- Reddit API dropped for this build — API access process changed, no replacement in v1
+
+### Outstanding / next steps
+- Confirm Google app verification submitted (1–4 week wait, blocks Phase 6 Gmail outreach)
+- Seed music library with 20+ tracks
+- Begin Phase 1 (Supabase schema) once above are done
+
+---
 ## Session: 11 March 2026
 **Projects touched:** Rapid2 (OpenClaw v1.2)
 **Session type:** Strategy overhaul — feature build
