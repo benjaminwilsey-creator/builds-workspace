@@ -7,6 +7,7 @@ Rapid2/
 *.env
 .env.*
 !.env.example
+*credentials*.json
 
 # Windows / OS noise
 Thumbs.db
