@@ -1,6 +1,86 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 15 March 2026 (night)
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature build + Bug fix
+
+### What was built or changed
+- Built and deployed the discovery pipeline — a Cloud Function that runs every Monday, pulls the NYT Best Sellers lists, and saves new books to the database
+- Integrated the Hardcover API so each new book is automatically enriched with a description, genre, series info, and aesthetic tags in the same run
+- Eliminated a planned two-function design (where a separate function did the enrichment) in favour of doing it all in one — simpler, fewer moving parts, no message queue needed
+- Fixed two bugs: Windows was adding invisible characters to the Hardcover API token (causing silent auth failures), and the GraphQL query was using the wrong format for Hardcover's search API
+- Confirmed end-to-end: 34 books fetched from NYT, all 34 enriched and stored in Supabase with full metadata
+- Updated the deployment guide to match the final single-function architecture
+
+### Current state
+| | Status |
+|---|---|
+| ReelForge discovery pipeline | Live — runs weekly, 34 books in database (status: ENRICHED) |
+| Rapid2 production bot | Not checked this session — unchanged |
+
+### Decisions made this session
+- Merged book enrichment directly into the NYT fetcher instead of keeping it as a separate function — the Pub/Sub authentication between functions was causing failures and the single-function approach is simpler
+
+### Outstanding / next steps
+- Delete the defunct hardcover-enricher Cloud Function and Pub/Sub topic (two quick commands)
+- Step 2-2: Scorer function — reads enriched books, calculates a popularity score, marks them ready for video generation
+---
+## Session: 15 March 2026 (evening)
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Infrastructure + Database setup
+
+### What was built or changed
+- Completed all Phase 0 account setup — every service account, API key, and third-party platform the pipeline needs is now active and credentials are saved
+- Built the Google Cloud Service Account — a robot identity that lets the pipeline call TTS, Vision, and Books APIs automatically without human login
+- Added the partner as a Google OAuth test user so she can use the Gmail draft feature without needing a full Google Workspace account
+- Created all 16 database tables in Supabase and locked them so each user can only see their own data
+- Created the first tenant record (ReelForge / thesecretpic-20) and linked the owner user account
+
+### Current state
+| | Status |
+|---|---|
+| ReelForge | Phase 0 complete, Phase 1 database done |
+| Rapid2 production bot | Not checked this session — unchanged |
+
+### Decisions made this session
+- Infrastructure is Google Cloud end-to-end — no AWS in this build (ADR 0004, recorded previous session)
+- Reddit API skipped — their new access policy made it impractical; discovery works without it
+
+### Outstanding / next steps
+- Seed the database with 20 known BookTok titles as a starting point for the discovery engine
+- Begin Phase 2: build the first Cloud Functions that pull NYT bestseller lists and Hardcover trending books
+- Google app verification still pending — blocks Gmail OAuth for non-test users in production (Phase 6)
+
+---
+## Session: 15 March 2026
+**Projects touched:** Booksmut (ReelForge)
+**Session type:** Planning / Phase 0 completion
+
+### What was built or changed
+- Committed all Phase 0 infrastructure setup guides to the Booksmut repo (Cloudflare R2, domain, AWS→GCP steps, Gmail OAuth, Supabase keepalive workflow)
+- Caught and blocked a Google credentials file from being committed — added patterns to .gitignore
+- Recorded that the backend was switched from AWS (Lambda + SQS) to Google Cloud (Functions + Pub/Sub + Cloud Scheduler) set up via gcloud CLI — consolidating on one cloud provider since GCP was already required for TTS, Vision, and Gemini
+- Workspace permanently moved from OneDrive to E:\Builds - Copy — updated all memory references
+
+### Current state
+| | Status |
+|---|---|
+| Booksmut | Phase 0 nearly complete — 10 of 12 items done |
+| Remaining Phase 0 | Music library seed + Google app verification |
+| Phase 1 | Not started — waiting on Phase 0 completion |
+| Rapid2 production bot | Active — live trading on Kraken (unchanged) |
+
+### Decisions made this session
+- Switched from AWS to Google Cloud for all backend infrastructure (ADR 0004) — one cloud provider instead of two
+- Reddit API dropped for this build — API access process changed, no replacement in v1
+
+### Outstanding / next steps
+- Confirm Google app verification submitted (1–4 week wait, blocks Phase 6 Gmail outreach)
+- Seed music library with 20+ tracks
+- Begin Phase 1 (Supabase schema) once above are done
+
+---
 ## Session: 11 March 2026
 **Projects touched:** Rapid2 (OpenClaw v1.2)
 **Session type:** Strategy overhaul — feature build
