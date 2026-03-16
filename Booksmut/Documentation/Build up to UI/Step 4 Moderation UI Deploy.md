@@ -24,7 +24,28 @@ ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS tone_note text;
 
 ---
 
-## Step 2 — Get your Supabase credentials
+## Step 2 — Enable Row Level Security (RLS)
+
+RLS controls what the page can read and write. Run this in Supabase SQL Editor:
+
+```sql
+-- Enable RLS on both tables
+ALTER TABLE campaigns      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE campaign_parts ENABLE ROW LEVEL SECURITY;
+
+-- Allow the moderation UI to read and update campaigns
+CREATE POLICY "moderation_read"   ON campaigns      FOR SELECT USING (true);
+CREATE POLICY "moderation_update" ON campaigns      FOR UPDATE USING (true);
+CREATE POLICY "parts_read"        ON campaign_parts FOR SELECT USING (true);
+CREATE POLICY "parts_update"      ON campaign_parts FOR UPDATE USING (true);
+```
+
+> **Why this matters:** With RLS enabled and these policies in place, the anon key used
+> in the page can only read and update — it cannot delete rows or access other tables.
+
+---
+
+## Step 3 — Get your Supabase credentials
 
 You need two values from the Supabase dashboard:
 
@@ -32,47 +53,45 @@ You need two values from the Supabase dashboard:
 - Supabase dashboard → Settings → API
 - Copy the "Project URL" — looks like `https://xxxx.supabase.co`
 
-**Service role key:**
-- Same page → Project API keys → `service_role` (click to reveal)
+**Anon key:**
+- Same page → Project API keys → `anon` / `public`
 - Copy the full key — it's a long string starting with `eyJ...`
 
-> **Note:** The service role key bypasses Supabase's row-level security — it gives full
-> access to your database. This page is internal-only. Never share the URL publicly.
+> **Do not use the `service_role` key here.** That key bypasses all security and gives
+> full database access. The `anon` key is designed for client-side use — it respects the
+> RLS policies you set above.
 
 ---
 
-## Step 3 — Add your credentials to the HTML file
+## Step 4 — Add your credentials to the HTML file
 
 Open `web/index.html` and find these two lines near the top of the `<script>` block:
 
 ```js
 const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY = 'YOUR_SERVICE_ROLE_KEY';
+const SUPABASE_KEY = 'YOUR_ANON_KEY';
 ```
 
-Replace the placeholder values with your real credentials. Save the file.
+Replace both placeholders with your real values. Save the file.
 
 ---
 
-## Step 4 — Deploy to Cloudflare Pages
+## Step 5 — Deploy to GitHub Pages
 
 Cloudflare Pages hosts the file for free and auto-deploys whenever you push to GitHub.
 
-1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create**
-2. Choose **Pages** → **Connect to Git**
-3. Authorise Cloudflare to access your GitHub account if prompted
-4. Select the `builds-workspace` repository
-5. Set these build settings:
-   - **Build command:** *(leave blank)*
-   - **Build output directory:** `Booksmut/web`
-6. Click **Save and Deploy**
+1. Go to your repo on GitHub → **Settings** → **Pages** (left sidebar)
+2. Under "Source" → select **Deploy from a branch**
+3. Branch: `master` · Folder: `/Booksmut/web`
+4. Click **Save**
 
-Cloudflare will deploy in about 30 seconds. You'll get a URL like
-`https://reelforge-moderation.pages.dev` — bookmark it.
+GitHub will give you a URL like
+`https://benjaminwilsey-creator.github.io/builds-workspace/Booksmut/web/`
+in about 60 seconds — bookmark it.
 
 ---
 
-## Step 5 — Test it
+## Step 6 — Test it
 
 1. Open the Cloudflare Pages URL in your browser
 2. You should see your 5 SCRIPTED campaigns as cards
@@ -109,8 +128,8 @@ Use this if the script is completely off and you just want a fresh attempt.
 
 ## If something goes wrong
 
-**"Failed to load: Invalid API key"** — the service role key in the HTML is wrong or has
-extra whitespace. Copy it again from Supabase Settings → API → service_role.
+**"Failed to load: Invalid API key"** — the anon key in the HTML is wrong or has extra
+whitespace. Copy it again from Supabase Settings → API → anon / public.
 
 **"Failed to load: relation campaign_parts does not exist"** — the nested select query
 requires the foreign key relationship to be set up in Supabase. Check that `campaign_parts`
