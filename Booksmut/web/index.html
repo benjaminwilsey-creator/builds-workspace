@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReelForge — Script Moderation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f172a;
+      --surface:   #1e293b;
+      --surface2:  #263348;
+      --border:    #334155;
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --green:     #22c55e;
+      --green-dim: #166534;
+      --amber:     #f59e0b;
+      --amber-dim: #78350f;
+      --red:       #ef4444;
+      --red-dim:   #7f1d1d;
+      --radius:    10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .counter {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .tone-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tone-bar label {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .tone-bar select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .tone-bar select:focus { outline: 2px solid #6366f1; }
+
+    /* ── Main content ── */
+    main {
+      max-width: 820px;
+      margin: 32px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ── Campaign card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .card.removing {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .card-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .book-meta {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .spice { color: #fb923c; }
+
+    .campaign-type {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      white-space: nowrap;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Script parts ── */
+    .parts {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .part {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .part-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .part-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .hook-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      color: white;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Fields ── */
+    .card-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-group label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+
+    .hint-inline {
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 11px;
+    }
+
+    .field {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 8px 10px;
+      resize: vertical;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+
+    .field:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    input.field { resize: none; }
+
+    /* ── Tone override section ── */
+    .tone-override {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(99, 102, 241, 0.04);
+    }
+
+    .tone-override label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #818cf8;
+      margin-bottom: 6px;
+    }
+
+    /* ── Action buttons ── */
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      padding: 16px 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 20px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    button:hover { opacity: 0.85; }
+    button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-approve    { background: var(--green);     color: #fff; }
+    .btn-regenerate { background: var(--amber);     color: #000; }
+    .btn-reject     { background: transparent; border: 1px solid var(--red); color: var(--red); }
+
+    /* ── States ── */
+    .loading, .empty, .error {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty p:first-child { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .error { color: var(--red); }
+    .hint { font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Script Moderation</h1>
+    <span id="counter" class="counter">Loading…</span>
+  </div>
+  <div class="tone-bar">
+    <label>Default tone for regeneration:</label>
+    <select id="global-tone">
+      <option value="">— not set —</option>
+      <option value="cozy">Cozy &amp; heartwarming</option>
+      <option value="dramatic">Dramatic &amp; emotional</option>
+      <option value="hype">Hype &amp; energetic</option>
+      <option value="mysterious">Mysterious &amp; intriguing</option>
+      <option value="funny">Witty &amp; funny</option>
+      <option value="romantic">Swoony &amp; romantic</option>
+    </select>
+    <select id="global-style">
+      <option value="">— not set —</option>
+      <option value="storytelling">Storytelling</option>
+      <option value="hook-heavy">Hook-heavy</option>
+      <option value="pov">POV:</option>
+      <option value="comparison">Comparison (X meets Y)</option>
+      <option value="list">List (reasons to read)</option>
+    </select>
+  </div>
+</header>
+
+<main id="campaigns"></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  // ── CONFIG — replace both values before deploying ────────────────────────
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL';       // e.g. https://xxxx.supabase.co
+  const SUPABASE_KEY = 'YOUR_SERVICE_ROLE_KEY';   // Settings → API → service_role
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const SPICE_LABELS = ['clean', 'mild', 'low', 'medium', 'spicy', 'very spicy'];
+  const HOOK_COLORS  = {
+    CURIOSITY_GAP:   '#6366f1',
+    IDENTITY_SIGNAL: '#0891b2',
+    SOCIAL_PROOF:    '#059669',
+    LOSS_AVERSION:   '#d97706',
+    CONTRADICTION:   '#dc2626',
+  };
+
+  // Persist global tone/style across page reloads
+  const toneEl  = document.getElementById('global-tone');
+  const styleEl = document.getElementById('global-style');
+  toneEl.value  = localStorage.getItem('rf-tone')  || '';
+  styleEl.value = localStorage.getItem('rf-style') || '';
+  toneEl.addEventListener('change',  () => localStorage.setItem('rf-tone',  toneEl.value));
+  styleEl.addEventListener('change', () => localStorage.setItem('rf-style', styleEl.value));
+
+  // ── Load ─────────────────────────────────────────────────────────────────
+  async function loadCampaigns() {
+    const container = document.getElementById('campaigns');
+    container.innerHTML = '<p class="loading">Loading campaigns…</p>';
+
+    const { data, error } = await db
+      .from('campaigns')
+      .select(`
+        id, campaign_type, caption, hashtags, tone_note,
+        books ( title, author, genre, spice_level ),
+        campaign_parts ( part_number, total_parts, hook, body, cta, hook_category )
+      `)
+      .eq('status', 'SCRIPTED')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      container.innerHTML = `<p class="error">Failed to load: ${error.message}</p>`;
+      return;
+    }
+
+    updateCounter(data.length);
+
+    if (data.length === 0) {
+      container.innerHTML = `
+        <div class="empty">
+          <p>Nothing to review</p>
+          <p class="hint">Check back after Monday's pipeline run.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = data.map(c => renderCard(c)).join('');
+  }
+
+  function updateCounter(n) {
+    const el = document.getElementById('counter');
+    el.textContent = n === 0 ? 'All done' : `${n} awaiting review`;
+  }
+
+  // ── Render ───────────────────────────────────────────────────────────────
+  function renderCard(c) {
+    const book  = c.books;
+    const parts = (c.campaign_parts || []).sort((a, b) => a.part_number - b.part_number);
+    const tags  = (c.hashtags || []).join(', ');
+    const spice = SPICE_LABELS[book.spice_level] || book.spice_level;
+
+    const partsHtml = parts.map(p => `
+      <div class="part" data-part="${p.part_number}">
+        <div class="part-header">
+          <span class="part-label">Part ${p.part_number} of ${p.total_parts}</span>
+          <span class="hook-badge" style="background:${HOOK_COLORS[p.hook_category] || '#6b7280'}">
+            ${p.hook_category}
+          </span>
+        </div>
+        <div class="field-group">
+          <label>Hook</label>
+          <textarea class="field hook-field" rows="2">${esc(p.hook)}</textarea>
+        </div>
+        <div class="field-group">
+          <label>Body</label>
+          <textarea class="field body-field" rows="4">${esc(p.body)}</textarea>
+        </div>
+        <div class="field-group">
+          <label>CTA</label>
+          <textarea class="field cta-field" rows="1">${esc(p.cta)}</textarea>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="card" data-id="${c.id}">
+        <div class="card-header">
+          <div class="book-info">
+            <h2>${esc(book.title)}</h2>
+            <p class="book-meta">
+              ${esc(book.author)} · ${esc(book.genre)} ·
+              <span class="spice">spice: ${spice}</span>
+            </p>
+          </div>
+          <span class="campaign-type">${c.campaign_type}</span>
+        </div>
+
+        <div class="parts">${partsHtml}</div>
+
+        <div class="card-body">
+          <div class="field-group">
+            <label>Caption</label>
+            <textarea class="field caption-field" rows="6">${esc(c.caption || '')}</textarea>
+          </div>
+          <div class="field-group">
+            <label>Hashtags <span class="hint-inline">(comma-separated, no #)</span></label>
+            <input class="field hashtag-field" type="text" value="${esc(tags)}">
+          </div>
+        </div>
+
+        <div class="tone-override">
+          <label>Tone note for regeneration (optional)</label>
+          <input class="field tone-note-field" type="text"
+            placeholder="e.g. more dramatic, lean into the rivalry, make the hook punchier"
+            value="${esc(c.tone_note || '')}">
+        </div>
+
+        <div class="card-actions">
+          <button class="btn-approve"    onclick="approve('${c.id}')">✓ Approve</button>
+          <button class="btn-regenerate" onclick="regenerate('${c.id}')">↺ Regenerate</button>
+          <button class="btn-reject"     onclick="reject('${c.id}')">✕ Reject</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+  function esc(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function getCard(id) {
+    return document.querySelector(`.card[data-id="${id}"]`);
+  }
+
+  function getEdits(id) {
+    const card = getCard(id);
+    const parts = [];
+    card.querySelectorAll('.part').forEach(p => {
+      parts.push({
+        part_number: parseInt(p.dataset.part),
+        hook:        p.querySelector('.hook-field').value,
+        body:        p.querySelector('.body-field').value,
+        cta:         p.querySelector('.cta-field').value,
+      });
+    });
+    const caption   = card.querySelector('.caption-field').value;
+    const tagsRaw   = card.querySelector('.hashtag-field').value;
+    const hashtags  = tagsRaw.split(',').map(h => h.trim().replace(/^#/, '')).filter(Boolean);
+    const toneNote  = card.querySelector('.tone-note-field').value.trim();
+    return { parts, caption, hashtags, toneNote };
+  }
+
+  function setButtons(id, disabled, approveText) {
+    const card = getCard(id);
+    card.querySelectorAll('button').forEach(b => b.disabled = disabled);
+    if (approveText) card.querySelector('.btn-approve').textContent = approveText;
+  }
+
+  async function saveEdits(id) {
+    const { parts, caption, hashtags } = getEdits(id);
+    const now = new Date().toISOString();
+
+    for (const part of parts) {
+      const { error } = await db.from('campaign_parts')
+        .update({ hook: part.hook, hook_text: part.hook, body: part.body, cta: part.cta })
+        .eq('campaign_id', id)
+        .eq('part_number', part.part_number);
+      if (error) throw new Error(`Part ${part.part_number}: ${error.message}`);
+    }
+
+    const { error } = await db.from('campaigns')
+      .update({ caption, hashtags, updated_at: now })
+      .eq('id', id);
+    if (error) throw new Error(`Caption/hashtags: ${error.message}`);
+  }
+
+  function removeCard(id) {
+    const card = getCard(id);
+    card.classList.add('removing');
+    setTimeout(() => {
+      card.remove();
+      const remaining = document.querySelectorAll('.card').length;
+      updateCounter(remaining);
+      if (remaining === 0) {
+        document.getElementById('campaigns').innerHTML = `
+          <div class="empty">
+            <p>All done!</p>
+            <p class="hint">Check back after Monday's pipeline run.</p>
+          </div>`;
+      }
+    }, 300);
+  }
+
+  // ── Actions ──────────────────────────────────────────────────────────────
+  async function approve(id) {
+    setButtons(id, true, 'Saving…');
+    try {
+      await saveEdits(id);
+      const { error } = await db.from('campaigns')
+        .update({ status: 'MODERATION_SCRIPT', updated_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+      removeCard(id);
+    } catch (e) {
+      alert(`Approve failed: ${e.message}`);
+      setButtons(id, false);
+      getCard(id).querySelector('.btn-approve').textContent = '✓ Approve';
+    }
+  }
+
+  async function regenerate(id) {
+    const { toneNote } = getEdits(id);
+
+    // Build tone note: per-card note wins; fall back to global selectors
+    let note = toneNote;
+    if (!note) {
+      const parts = [];
+      const tv = toneEl.value;
+      const sv = styleEl.value;
+      if (tv) parts.push(`tone: ${toneEl.options[toneEl.selectedIndex].text}`);
+      if (sv) parts.push(`style: ${styleEl.options[styleEl.selectedIndex].text}`);
+      note = parts.join(', ');
+    }
+
+    setButtons(id, true);
+    getCard(id).querySelector('.btn-regenerate').textContent = 'Sending back…';
+    try {
+      const { error } = await db.from('campaigns')
+        .update({
+          status:      'CAMPAIGN_DRAFT',
+          tone_note:   note || null,
+          retry_count: 0,
+          last_error:  null,
+          updated_at:  new Date().toISOString(),
+        })
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+      removeCard(id);
+    } catch (e) {
+      alert(`Regenerate failed: ${e.message}`);
+      setButtons(id, false);
+      getCard(id).querySelector('.btn-regenerate').textContent = '↺ Regenerate';
+    }
+  }
+
+  async function reject(id) {
+    if (!confirm('Reject this script? It goes back to CAMPAIGN_DRAFT for re-scripting with no tone note.')) return;
+    setButtons(id, true);
+    try {
+      const { error } = await db.from('campaigns')
+        .update({
+          status:      'CAMPAIGN_DRAFT',
+          tone_note:   null,
+          retry_count: 0,
+          last_error:  null,
+          updated_at:  new Date().toISOString(),
+        })
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+      removeCard(id);
+    } catch (e) {
+      alert(`Reject failed: ${e.message}`);
+      setButtons(id, false);
+    }
+  }
+
+  loadCampaigns();
+</script>
+</body>
+</html>
