@@ -34,25 +34,24 @@ From your Booksmut repo root:
 ```bash
 cd "e:/Builds - Copy/Booksmut"
 
-gcloud functions deploy scorer \
-  --gen2 \
-  --runtime=python311 \
-  --region=us-central1 \
-  --source=functions/scorer \
-  --entry-point=main \
-  --trigger-http \
-  --no-allow-unauthenticated \
-  --service-account=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com \
-  --set-env-vars GCP_PROJECT=YOUR_GCP_PROJECT_ID \
-  --timeout=120s \
-  --memory=256Mi
+gcloud functions deploy scorer --gen2 --runtime=python311 --region=us-central1 --source=functions/scorer --entry-point=main --trigger-http --no-allow-unauthenticated --service-account=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com --set-env-vars GCP_PROJECT=YOUR_GCP_PROJECT_ID --timeout=120s --memory=256Mi
 ```
 
 When done it will show the function URL — **copy it**, you need it for Step 2.
 
 ---
 
-## Step 2 — Create the weekly schedule
+## Step 2 — Grant invoke permission
+
+Cloud Run resets IAM bindings on every deploy. Run this after every deployment:
+
+```bash
+gcloud run services add-iam-policy-binding scorer --region=us-central1 --member="allUsers" --role="roles/run.invoker"
+```
+
+---
+
+## Step 3 — Create the weekly schedule
 
 This runs the scorer every Monday at 8:05am — 5 minutes after the nyt-fetcher,
 giving it time to finish before the scorer starts.
@@ -60,18 +59,12 @@ giving it time to finish before the scorer starts.
 Replace `YOUR_SCORER_URL` and `YOUR_GCP_PROJECT_ID`:
 
 ```bash
-gcloud scheduler jobs create http scorer-weekly \
-  --schedule="5 8 * * 1" \
-  --uri="YOUR_SCORER_URL" \
-  --http-method=POST \
-  --oidc-service-account-email=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com \
-  --location=us-central1 \
-  --description="Weekly book scorer — runs after nyt-fetcher"
+gcloud scheduler jobs create http scorer-weekly --schedule="5 8 * * 1" --uri="YOUR_SCORER_URL" --http-method=POST --oidc-service-account-email=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com --location=us-central1 --description="Weekly book scorer — runs after nyt-fetcher"
 ```
 
 ---
 
-## Step 3 — Test it manually
+## Step 4 — Test it manually
 
 Run it now to score the 34 books already in the database:
 

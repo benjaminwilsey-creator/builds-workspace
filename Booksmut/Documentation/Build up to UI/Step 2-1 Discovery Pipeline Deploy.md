@@ -135,18 +135,7 @@ Navigate to the repo root first, then deploy:
 ```bash
 cd "e:/Builds - Copy/Booksmut"
 
-gcloud functions deploy nyt-fetcher \
-  --gen2 \
-  --runtime=python311 \
-  --region=us-central1 \
-  --source=functions/nyt-fetcher \
-  --entry-point=main \
-  --trigger-http \
-  --no-allow-unauthenticated \
-  --service-account=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com \
-  --set-env-vars GCP_PROJECT=YOUR_GCP_PROJECT_ID \
-  --timeout=300s \
-  --memory=256Mi
+gcloud functions deploy nyt-fetcher --gen2 --runtime=python311 --region=us-central1 --source=functions/nyt-fetcher --entry-point=main --trigger-http --no-allow-unauthenticated --service-account=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com --set-env-vars GCP_PROJECT=YOUR_GCP_PROJECT_ID --timeout=300s --memory=256Mi
 ```
 
 This takes 2–3 minutes. When done it will show the function URL — **copy it**, you need it for Step 6.
@@ -163,13 +152,7 @@ This tells Cloud Scheduler to fire the nyt-fetcher every Monday at 8am.
 Replace `YOUR_NYT_FETCHER_URL` with the URL from Step 5.
 
 ```bash
-gcloud scheduler jobs create http nyt-weekly-discovery \
-  --schedule="0 8 * * 1" \
-  --uri="YOUR_NYT_FETCHER_URL" \
-  --http-method=POST \
-  --oidc-service-account-email=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com \
-  --location=us-central1 \
-  --description="Weekly NYT Best Sellers fetch"
+gcloud scheduler jobs create http nyt-weekly-discovery --schedule="0 8 * * 1" --uri="YOUR_NYT_FETCHER_URL" --http-method=POST --oidc-service-account-email=reelforge-api-runner@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com --location=us-central1 --description="Weekly NYT Best Sellers fetch"
 ```
 
 ---
