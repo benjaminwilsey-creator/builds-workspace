@@ -18,3 +18,7 @@ Thumbs.db
 
 # Editor
 .vscode/settings.json
+
+# Credentials — never commit
+*credentials*.json
+*service-account*.json

@@ -1,0 +1,4 @@
+functions-framework==3.*
+psycopg2-binary==2.*
+google-cloud-secret-manager==2.*
+google-genai>=1.0

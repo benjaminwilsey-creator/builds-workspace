@@ -17,7 +17,19 @@
       "Bash(python3 -c \":*)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\benja\\\\OneDrive\\\\Documents\\\\Builds\\\\read_docs.ps1\")",
       "Read(//c/Users/benja/.claude/**)",
-      "Read(//usr/**)"
+      "Read(//usr/**)",
+      "WebSearch",
+      "WebFetch(domain:gainium.io)",
+      "WebFetch(domain:www.osl.com)",
+      "WebFetch(domain:www.fortraders.com)",
+      "Read(//c/Users/benja/OneDrive/Documents/Builds/**)",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/MEMORY.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/MEMORY.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/booksmut.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/booksmut.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/rapid2.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/rapid2.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/last_session.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/last_session.md\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\benja\\OneDrive\\Documents\\Builds"
     ]
   }
 }
