@@ -1,6 +1,34 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 16 March 2026
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature build
+
+### What was built or changed
+- Deployed the queue selector — picks the 5 highest-scoring books each week and creates campaign rows ready for scripting
+- Deployed the script generator — calls Gemini AI to write a 30-second video script (hook, body, CTA, caption, hashtags) for each campaign automatically
+- Built and deployed a moderation web page where scripts can be reviewed, edited, approved, or sent back for re-scripting with a tone note before they go to voiceover
+- Fixed three issues: Gemini's SDK and model names changed (deprecated packages, retired models), and a database key was accidentally committed to GitHub (rotated and removed)
+
+### Current state
+| | Status |
+|---|---|
+| Discovery pipeline | Live — runs Monday 8:00am, 34 books in DB |
+| Scorer | Live — runs Monday 8:05am |
+| Queue selector | Live — runs Monday 8:10am |
+| Script generator | Live — runs Monday 8:15am, Gemini 2.5-flash |
+| Moderation UI | Live — benjaminwilsey-creator.github.io/builds-workspace/ |
+| Voiceover (Step 5) | Not built yet |
+
+### Decisions made this session
+- Moderation before voiceover — scripts are reviewed and optionally edited by hand before audio is generated, so bad scripts don't waste TTS budget
+- Anon key never committed to repo — stored in browser localStorage only, prompted on first visit
+
+### Outstanding / next steps
+- Moderation UI cards not rendering (counter shows 5 but cards stay on "Loading" — likely a JS error in renderCard, check browser console next session)
+- Step 5: TTS voiceover function — reads approved campaigns and generates audio per script part using Google Cloud Text-to-Speech
+---
 ## Session: 15 March 2026 (night)
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Feature build + Bug fix
