@@ -1,6 +1,31 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 15 March 2026 (night)
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature build + Bug fix
+
+### What was built or changed
+- Built and deployed the discovery pipeline — a Cloud Function that runs every Monday, pulls the NYT Best Sellers lists, and saves new books to the database
+- Integrated the Hardcover API so each new book is automatically enriched with a description, genre, series info, and aesthetic tags in the same run
+- Eliminated a planned two-function design (where a separate function did the enrichment) in favour of doing it all in one — simpler, fewer moving parts, no message queue needed
+- Fixed two bugs: Windows was adding invisible characters to the Hardcover API token (causing silent auth failures), and the GraphQL query was using the wrong format for Hardcover's search API
+- Confirmed end-to-end: 34 books fetched from NYT, all 34 enriched and stored in Supabase with full metadata
+- Updated the deployment guide to match the final single-function architecture
+
+### Current state
+| | Status |
+|---|---|
+| ReelForge discovery pipeline | Live — runs weekly, 34 books in database (status: ENRICHED) |
+| Rapid2 production bot | Not checked this session — unchanged |
+
+### Decisions made this session
+- Merged book enrichment directly into the NYT fetcher instead of keeping it as a separate function — the Pub/Sub authentication between functions was causing failures and the single-function approach is simpler
+
+### Outstanding / next steps
+- Delete the defunct hardcover-enricher Cloud Function and Pub/Sub topic (two quick commands)
+- Step 2-2: Scorer function — reads enriched books, calculates a popularity score, marks them ready for video generation
+---
 ## Session: 15 March 2026 (evening)
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Infrastructure + Database setup

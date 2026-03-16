@@ -5,7 +5,7 @@ Primary workspace: `e:\Builds - Copy` (moved from OneDrive permanently 2026-03-1
 Rapid2 source still lives at: `c:\Users\benja\OneDrive\Documents\Builds\Rapid2\rapid2 v1.2\`
 
 1. **Rapid2** — Production crypto trading bot (OpenClaw) — primary active project
-2. **Booksmut** — ReelForge BookTok affiliate video pipeline — Phase 0 complete, Phase 1 database done, seed_books + Phase 2 next
+2. **Booksmut** — ReelForge BookTok affiliate video pipeline — Phase 0 + 1 complete, Phase 2 discovery pipeline deployed (34 books ENRICHED), next: Step 2-2 Scorer
 3. **Architect** — Claude skill files for markdown hierarchy processing
 4. **Sportsball** — College football content pipeline for Ricky's brand — scaffolded, architecture planned
 5. **3DPrint** (name TBD) — Plain-language to STL converter for Ricky's Bambu A1 — concept only, not yet scaffolded

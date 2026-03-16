@@ -4,16 +4,14 @@ project: Booksmut / ReelForge
 ---
 
 ## What we did
-- Completed all Phase 0 account setup (Supabase, R2, Vercel, Google Cloud, Gemini, Associates, music library)
-- Created Google Cloud Service Account (reelforge-api-runner) with TTS, Vision, Books permissions
-- Added partner as Google OAuth test user — no Workspace needed
-- Ran all 16 Phase 1 database migrations in Supabase SQL Editor, RLS enabled
-- Created first tenant (ReelForge / thesecretpic-20) and linked owner user
+- Deployed the nyt-fetcher Cloud Function — it now fetches NYT Best Sellers and enriches each book via Hardcover automatically, all in one function
+- Fixed two bugs along the way: Windows line endings corrupting the Hardcover API token, and a wrong GraphQL query format for the Hardcover search endpoint
+- Confirmed end-to-end: 34 books discovered and fully enriched (genre, description, tags) in Supabase
+- Updated the Step 2-1 deployment doc to match the simpler single-function architecture
 
 ## Next up
-- Seed `seed_books` table with 20 known BookTok titles (Supabase SQL Editor)
-- Start Phase 2: discovery pipeline — Cloud Functions for NYT fetcher + Hardcover GraphQL fetcher
+- Cleanup: delete defunct hardcover-enricher Cloud Function + book-discovered Pub/Sub topic (two gcloud commands)
+- Step 2-2: build the Scorer function — reads ENRICHED books, calculates a score, sets status to SCORED
 
 ## Watch out for
-- Google app verification still pending — blocks Gmail OAuth for non-test users in production (Phase 6)
-- Amazon Associates 180-day clock is running — need 3 qualifying sales before account closes
+- allUsers IAM binding on nyt-fetcher resets on every redeploy — re-run the add-iam-policy-binding command after any future deploy

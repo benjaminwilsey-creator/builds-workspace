@@ -8,8 +8,11 @@ videos with Amazon affiliate captions for human scheduling in Meta Business Suit
 Two-person project: developer (Benjamin) + non-technical partner (publisher licensing lead).
 
 ## Status
-Phase 0 **complete**. Phase 1 database migrations **complete** as of 2026-03-15.
-Next: seed `seed_books` table (20 BookTok titles), then Phase 2 discovery pipeline.
+Phase 0 **complete**. Phase 1 database **complete**. Phase 2 discovery pipeline **partially deployed** as of 2026-03-15.
+- `nyt-fetcher` Cloud Function deployed and working — fetches NYT Best Sellers + enriches via Hardcover inline
+- 34 books confirmed ENRICHED in Supabase (status = ENRICHED, genre/description/tags populated)
+- Cleanup pending: delete defunct `hardcover-enricher` Cloud Function + `book-discovered` Pub/Sub topic
+Next: Step 2-2 Scorer function (reads ENRICHED books, calculates score, sets status to SCORED)
 
 ### Phase 0 — Complete
 - [x] Amazon Associates — tag: `thesecretpic-20` (Elizabeth Wilsey account)
@@ -31,6 +34,15 @@ Next: seed `seed_books` table (20 BookTok titles), then Phase 2 discovery pipeli
 - [x] Row Level Security enabled on all tenant-scoped tables
 - [x] First tenant created: ReelForge / thesecretpic-20
 - [x] Owner user linked
+
+### Phase 2 — In Progress
+- [x] `nyt-fetcher` Cloud Function deployed (Gen 2, HTTP trigger, us-central1)
+- [x] Enrichment merged inline — no separate enricher function, no Pub/Sub
+- [x] 34 books discovered and enriched end-to-end confirmed
+- [ ] Delete defunct `hardcover-enricher` Cloud Function
+- [ ] Delete defunct `book-discovered` Pub/Sub topic
+- [ ] Step 2-2: Scorer function
+- [ ] Step 2-3: Queue selector
 
 ## GitHub Repo
 - URL: https://github.com/benjaminwilsey-creator/reelforge
@@ -65,11 +77,27 @@ Next: seed `seed_books` table (20 BookTok titles), then Phase 2 discovery pipeli
 
 
 ## Tech Stack (updated 2026-03-15 — AWS replaced by Google Cloud)
-Supabase · Cloudflare R2 · **Google Cloud Functions + Pub/Sub + Cloud Scheduler** · Gemini API · Google TTS + Vision ·
+Supabase · Cloudflare R2 · **Google Cloud Functions + Cloud Scheduler** · Gemini API · Google TTS + Vision ·
 FFmpeg · Vercel + Next.js + shadcn/ui · Amazon Associates · Hardcover.app · NYT Books API ·
 Gmail API (gmail.compose scope only) · Google OAuth 2.0 via next-auth
 
-AWS dropped entirely. Reddit API dropped for this build. See ADR 0004.
+AWS dropped entirely. Reddit API dropped for this build. Pub/Sub not used in current pipeline (may be introduced in later phases). See ADR 0004.
+
+## GCP Secrets (in Secret Manager)
+| Secret | Purpose |
+|--------|---------|
+| `NYT_API_KEY` | NYT Books API |
+| `SUPABASE_URI` | Session Pooler connection string |
+| `TENANT_ID` | ReelForge tenant UUID |
+| `HARDCOVER_TOKEN` | Hardcover.app Bearer token |
+
+Service account: `reelforge-api-runner` — has secretAccessor on all four secrets above.
+
+## GCP Deployment Gotchas
+- **allUsers Cloud Run IAM resets on every deploy** — after each `gcloud functions deploy`, must re-run: `gcloud run services add-iam-policy-binding nyt-fetcher --region=us-central1 --member="allUsers" --role="roles/run.invoker"`
+- **Windows line endings in secrets** — `echo` and `printf` in PowerShell can add `\r\n` to secrets. Use `printf` in PowerShell/Windows Terminal. `_get_secret()` calls `.strip()` as a defensive fix.
+- **Hardcover API**: `search.results` is a JSON scalar (Typesense response), not a typed GraphQL union. Parse `results.hits[0].document` in Python. `query_type` must be `"BOOK"` (string, not enum).
+- **PowerShell `curl`** — PowerShell aliases `curl` to `Invoke-WebRequest`. Use `curl.exe` explicitly.
 
 ## Known Risks (must not be forgotten)
 - **Open Library covers are NOT cleared for commercial use** — backdrop fallback only when no licensed cover
