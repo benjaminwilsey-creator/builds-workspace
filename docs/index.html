@@ -326,14 +326,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  // ── CONFIG — replace both values before deploying ────────────────────────
-  const SUPABASE_URL = 'https://mcnlgvknjgixrjqpixse.supabase.co';    // Settings → API → Project URL
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jbmxndmtuamdpeHJqcXBpeHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzQxOTAsImV4cCI6MjA4OTExMDE5MH0.T_oNX_BcYITSpb0KD9sgFa8CiKCgHU7HrdEtL5Ea3t8';        // Settings → API → anon / public key
-  // ─────────────────────────────────────────────────────────────────────────
+  const SUPABASE_URL = 'https://mcnlgvknjgixrjqpixse.supabase.co';
 
   const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // Key is never stored in code — prompted once and saved to localStorage
+  function getKey() {
+    let key = localStorage.getItem('rf-anon-key');
+    if (!key) {
+      key = prompt('Enter your Supabase anon key (legacy eyJ... format).\nThis will be saved in your browser only.');
+      if (!key) return null;
+      localStorage.setItem('rf-anon-key', key.trim());
+    }
+    return key;
+  }
+
+  const anonKey = getKey();
+  if (!anonKey) {
+    document.getElementById('campaigns').innerHTML = '<p class="error">No API key provided. Refresh to try again.</p>';
+    throw new Error('No API key');
+  }
+
+  const db = createClient(SUPABASE_URL, anonKey);
+
+  
   const SPICE_LABELS = ['clean', 'mild', 'low', 'medium', 'spicy', 'very spicy'];
   const HOOK_COLORS  = {
     CURIOSITY_GAP:   '#6366f1',
