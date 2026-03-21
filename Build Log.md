@@ -1,6 +1,31 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 21 March 2026
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature build
+
+### What was built or changed
+- Built and deployed the TTS voicer (Step 5) — a Google Cloud Function that reads all approved campaigns, converts each script part into an MP3 audio file using Google's WaveNet voice, and uploads the files to Cloudflare R2 storage
+- Fixed a schema bug: the campaign_parts table doesn't have an updated_at column, so the query was failing for every campaign
+- Fixed an env var bug: PowerShell merges comma-separated values in gcloud deploy commands into one broken string — switched to setting each variable individually
+- All 10 campaigns successfully voiced and audio confirmed in R2 — pipeline now reaches VOICED state end-to-end
+- Documented all service account logins (which email owns each service) in memory for future reference
+
+### Current state
+| | Status |
+|---|---|
+| TTS voicer | Deployed and working — Monday 8:20am schedule active |
+| Pipeline | Reaches VOICED state — 10 campaigns with audio in R2 |
+| Next step | Step 6: video composer (FFmpeg renders final MP4) |
+
+### Decisions made this session
+- None requiring a formal ADR
+
+### Outstanding / next steps
+- Step 6: decide whether to use backdrop videos or solid color background (all book cover images are null)
+- Music library tracks are loaded and ready to use in Step 6
+---
 ## Session: 16 March 2026
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Feature build
