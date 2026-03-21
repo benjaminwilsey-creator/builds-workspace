@@ -21,15 +21,7 @@
       "WebSearch",
       "WebFetch(domain:gainium.io)",
       "WebFetch(domain:www.osl.com)",
-      "WebFetch(domain:www.fortraders.com)",
-      "Read(//c/Users/benja/OneDrive/Documents/Builds/**)",
-      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/MEMORY.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/MEMORY.md\")",
-      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/booksmut.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/booksmut.md\")",
-      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/rapid2.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/rapid2.md\")",
-      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/last_session.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/last_session.md\")"
-    ],
-    "additionalDirectories": [
-      "C:\\Users\\benja\\OneDrive\\Documents\\Builds"
+      "WebFetch(domain:www.fortraders.com)"
     ]
   }
 }
