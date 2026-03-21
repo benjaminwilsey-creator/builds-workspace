@@ -1,17 +1,17 @@
 ---
-date: 2026-03-15
+date: 2026-03-16
 project: Booksmut / ReelForge
 ---
 
 ## What we did
-- Deployed the nyt-fetcher Cloud Function — it now fetches NYT Best Sellers and enriches each book via Hardcover automatically, all in one function
-- Fixed two bugs along the way: Windows line endings corrupting the Hardcover API token, and a wrong GraphQL query format for the Hardcover search endpoint
-- Confirmed end-to-end: 34 books discovered and fully enriched (genre, description, tags) in Supabase
-- Updated the Step 2-1 deployment doc to match the simpler single-function architecture
+- Completed Steps 2-3 through 4: queue-selector, script-generator, and moderation UI all deployed and working
+- Script-generator calls Gemini 2.5-flash and writes scripts for 5 campaigns — confirmed SCRIPTED in Supabase
+- Built and deployed a moderation web page (GitHub Pages) where scripts can be reviewed, edited, approved, or sent back for regeneration with tone notes
+- Fixed three issues along the way: Gemini SDK deprecation, retired model names, and an exposed service_role key (rotated and cleaned up)
 
 ## Next up
-- Cleanup: delete defunct hardcover-enricher Cloud Function + book-discovered Pub/Sub topic (two gcloud commands)
-- Step 2-2: build the Scorer function — reads ENRICHED books, calculates a score, sets status to SCORED
+- Step 5: TTS voiceover function — reads MODERATION_SCRIPT campaigns, generates audio per campaign part using Google Cloud Text-to-Speech
 
 ## Watch out for
-- allUsers IAM binding on nyt-fetcher resets on every redeploy — re-run the add-iam-policy-binding command after any future deploy
+- Moderation UI anon key lives in browser localStorage only — if it stops working, clear with localStorage.removeItem('rf-anon-key') in browser console and re-enter
+- tone_note column was added to campaigns table this session — new migrations may need to account for it

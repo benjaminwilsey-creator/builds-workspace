@@ -8,11 +8,11 @@ videos with Amazon affiliate captions for human scheduling in Meta Business Suit
 Two-person project: developer (Benjamin) + non-technical partner (publisher licensing lead).
 
 ## Status
-Phase 0 **complete**. Phase 1 database **complete**. Phase 2 discovery pipeline **partially deployed** as of 2026-03-15.
-- `nyt-fetcher` Cloud Function deployed and working — fetches NYT Best Sellers + enriches via Hardcover inline
-- 34 books confirmed ENRICHED in Supabase (status = ENRICHED, genre/description/tags populated)
-- Cleanup pending: delete defunct `hardcover-enricher` Cloud Function + `book-discovered` Pub/Sub topic
-Next: Step 2-2 Scorer function (reads ENRICHED books, calculates score, sets status to SCORED)
+Phase 0 **complete**. Phase 1 database **complete**. Phase 2 pipeline **complete through Step 4** as of 2026-03-16.
+- Full pipeline working: ENRICHED → SCORED → CAMPAIGN_DRAFT → SCRIPTED → MODERATION_SCRIPT
+- 5 campaigns scripted by Gemini and approved through moderation UI
+- Moderation UI live at: `https://benjaminwilsey-creator.github.io/builds-workspace/`
+Next: Step 5 — TTS voiceover function (reads MODERATION_SCRIPT campaigns, generates audio per part)
 
 ### Phase 0 — Complete
 - [x] Amazon Associates — tag: `thesecretpic-20` (Elizabeth Wilsey account)
@@ -35,14 +35,16 @@ Next: Step 2-2 Scorer function (reads ENRICHED books, calculates score, sets sta
 - [x] First tenant created: ReelForge / thesecretpic-20
 - [x] Owner user linked
 
-### Phase 2 — In Progress
+### Phase 2 — Complete
 - [x] `nyt-fetcher` Cloud Function deployed (Gen 2, HTTP trigger, us-central1)
 - [x] Enrichment merged inline — no separate enricher function, no Pub/Sub
 - [x] 34 books discovered and enriched end-to-end confirmed
-- [ ] Delete defunct `hardcover-enricher` Cloud Function
-- [ ] Delete defunct `book-discovered` Pub/Sub topic
-- [ ] Step 2-2: Scorer function
-- [ ] Step 2-3: Queue selector
+- [ ] Delete defunct `hardcover-enricher` Cloud Function (cleanup — not urgent)
+- [ ] Delete defunct `book-discovered` Pub/Sub topic (cleanup — not urgent)
+- [x] Step 2-2: Scorer function — deployed, scheduler set (Monday 8:05am)
+- [x] Step 2-3: Queue selector — deployed, scheduler set (Monday 8:10am)
+- [x] Step 3: Script generator — deployed, Gemini 2.5-flash, scheduler set (Monday 8:15am)
+- [x] Step 4: Moderation UI — live on GitHub Pages, anon key + RLS
 
 ## GitHub Repo
 - URL: https://github.com/benjaminwilsey-creator/reelforge
@@ -90,14 +92,25 @@ AWS dropped entirely. Reddit API dropped for this build. Pub/Sub not used in cur
 | `SUPABASE_URI` | Session Pooler connection string |
 | `TENANT_ID` | ReelForge tenant UUID |
 | `HARDCOVER_TOKEN` | Hardcover.app Bearer token |
+| `GEMINI_API_KEY` | Gemini API (Google AI Studio) |
 
-Service account: `reelforge-api-runner` — has secretAccessor on all four secrets above.
+Service account: `reelforge-api-runner` — has secretAccessor on all five secrets above.
 
 ## GCP Deployment Gotchas
-- **allUsers Cloud Run IAM resets on every deploy** — after each `gcloud functions deploy`, must re-run: `gcloud run services add-iam-policy-binding nyt-fetcher --region=us-central1 --member="allUsers" --role="roles/run.invoker"`
+- **allUsers Cloud Run IAM resets on every deploy** — after each `gcloud functions deploy`, must re-run: `gcloud run services add-iam-policy-binding <function-name> --region=us-central1 --member="allUsers" --role="roles/run.invoker"`
 - **Windows line endings in secrets** — `echo` and `printf` in PowerShell can add `\r\n` to secrets. Use `printf` in PowerShell/Windows Terminal. `_get_secret()` calls `.strip()` as a defensive fix.
 - **Hardcover API**: `search.results` is a JSON scalar (Typesense response), not a typed GraphQL union. Parse `results.hits[0].document` in Python. `query_type` must be `"BOOK"` (string, not enum).
-- **PowerShell `curl`** — PowerShell aliases `curl` to `Invoke-WebRequest`. Use `curl.exe` explicitly.
+- **PowerShell `curl`** — PowerShell aliases `curl` to `Invoke-WebRequest`. Use `curl.exe` explicitly, or use `Invoke-WebRequest -UseBasicParsing`.
+- **Gemini model**: current working model is `gemini-2.5-flash`. Both `gemini-1.5-flash` and `gemini-2.0-flash` retired March 2026.
+- **Gemini SDK**: use `google-genai>=1.0` (`from google import genai`). The `google-generativeai` package is fully deprecated.
+- **supabase-js v2 + anon key**: v2 requires the legacy `eyJ...` JWT format. The newer `sb_publishable_...` format only works with v3.
+
+## Moderation UI
+- URL: `https://benjaminwilsey-creator.github.io/builds-workspace/`
+- Source: `docs/index.html` in builds-workspace repo — deployed via GitHub Actions on every push to master
+- Auth: anon key stored in browser localStorage (never committed). To reset: `localStorage.removeItem('rf-anon-key')` in browser console
+- RLS policies: SELECT + UPDATE on `campaigns` and `campaign_parts` for anon role
+- `tone_note text` column added to campaigns table — stores regeneration guidance per campaign
 
 ## Known Risks (must not be forgotten)
 - **Open Library covers are NOT cleared for commercial use** — backdrop fallback only when no licensed cover
