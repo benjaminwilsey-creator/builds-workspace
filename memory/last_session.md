@@ -1,17 +1,20 @@
 ---
-date: 2026-03-16
+date: 2026-03-21
 project: Booksmut / ReelForge
 ---
 
 ## What we did
-- Completed Steps 2-3 through 4: queue-selector, script-generator, and moderation UI all deployed and working
-- Script-generator calls Gemini 2.5-flash and writes scripts for 5 campaigns — confirmed SCRIPTED in Supabase
-- Built and deployed a moderation web page (GitHub Pages) where scripts can be reviewed, edited, approved, or sent back for regeneration with tone notes
-- Fixed three issues along the way: Gemini SDK deprecation, retired model names, and an exposed service_role key (rotated and cleaned up)
+- Built and deployed the TTS voicer (Step 5) — reads approved campaigns,
+  generates one MP3 per part via Google TTS, uploads to Cloudflare R2
+- Fixed three bugs along the way: missing updated_at column, PowerShell
+  env var merging, and corrupted GCP_PROJECT value
+- All 10 campaigns successfully voiced — audio confirmed in R2
 
 ## Next up
-- Step 5: TTS voiceover function — reads MODERATION_SCRIPT campaigns, generates audio per campaign part using Google Cloud Text-to-Speech
+- Step 6: video composer — FFmpeg renders 30s MP4 per campaign part
+- First decision needed: backdrop videos in R2, or use solid color
+  background while covers are null?
 
 ## Watch out for
-- Moderation UI anon key lives in browser localStorage only — if it stops working, clear with localStorage.removeItem('rf-anon-key') in browser console and re-enter
-- tone_note column was added to campaigns table this session — new migrations may need to account for it
+- All book cover images are null — backdrop fallback required for all videos
+- Music library tracks are loaded in Supabase — ready for Step 6

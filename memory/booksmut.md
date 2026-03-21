@@ -8,11 +8,11 @@ videos with Amazon affiliate captions for human scheduling in Meta Business Suit
 Two-person project: developer (Benjamin) + non-technical partner (publisher licensing lead).
 
 ## Status
-Phase 0 **complete**. Phase 1 database **complete**. Phase 2 pipeline **complete through Step 4** as of 2026-03-16.
-- Full pipeline working: ENRICHED → SCORED → CAMPAIGN_DRAFT → SCRIPTED → MODERATION_SCRIPT
-- 5 campaigns scripted by Gemini and approved through moderation UI
+Phase 0 **complete**. Phase 1 database **complete**. Phase 2 pipeline **complete through Step 5** as of 2026-03-21.
+- Full pipeline working: ENRICHED → SCORED → CAMPAIGN_DRAFT → SCRIPTED → MODERATION_SCRIPT → VOICED
+- 10 campaigns voiced — audio confirmed in Cloudflare R2 under `audio/{campaign_id}/part_N.mp3`
 - Moderation UI live at: `https://benjaminwilsey-creator.github.io/builds-workspace/`
-Next: Step 5 — TTS voiceover function (reads MODERATION_SCRIPT campaigns, generates audio per part)
+Next: Step 6 — video composer (FFmpeg renders 30s MP4 per campaign part, uploads to R2, advances to COMPOSED)
 
 ### Phase 0 — Complete
 - [x] Amazon Associates — tag: `thesecretpic-20` (Elizabeth Wilsey account)
@@ -85,6 +85,20 @@ Gmail API (gmail.compose scope only) · Google OAuth 2.0 via next-auth
 
 AWS dropped entirely. Reddit API dropped for this build. Pub/Sub not used in current pipeline (may be introduced in later phases). See ADR 0004.
 
+## Service Account Map
+| Service | Login | Notes |
+|---------|-------|-------|
+| GitHub | `benjaminwilsey-creator` | Repos: builds-workspace, reelforge |
+| Google Cloud Console | `benjaminwilsey@gmail.com` | GCP project, Cloud Functions, Scheduler, Secret Manager |
+| Google AI Studio (Gemini) | `benjaminwilsey@gmail.com` | Gemini API key lives here |
+| Supabase | `benjaminwilsey@gmail.com` | Database, RLS, anon key |
+| Vercel | `benjaminwilsey@gmail.com` | reelforge-seven.vercel.app |
+| NYT Books API | `benjaminwilsey@gmail.com` | Trending book discovery |
+| Cloudflare R2 | `book.fun.x@gmail.com` | Bucket: booksmut-videos |
+| Hardcover.app | `book.fun.x@gmail.com` | Book metadata |
+| Amazon Associates | Elizabeth Wilsey account | Tag: thesecretpic-20 |
+| GitHub Pages | `benjaminwilsey-creator` | Moderation UI |
+
 ## GCP Secrets (in Secret Manager)
 | Secret | Purpose |
 |--------|---------|
@@ -93,8 +107,23 @@ AWS dropped entirely. Reddit API dropped for this build. Pub/Sub not used in cur
 | `TENANT_ID` | ReelForge tenant UUID |
 | `HARDCOVER_TOKEN` | Hardcover.app Bearer token |
 | `GEMINI_API_KEY` | Gemini API (Google AI Studio) |
+| `R2_ACCOUNT_ID` | Cloudflare R2 account ID |
+| `R2_ACCESS_KEY_ID` | R2 API token key ID |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret |
 
-Service account: `reelforge-api-runner` — has secretAccessor on all five secrets above.
+Service account: `reelforge-api-runner` — has secretAccessor on all secrets above.
+
+## Cloud Run Env Vars (set via gcloud run services update — not in Secret Manager)
+| Function | Var | Value |
+|----------|-----|-------|
+| tts-voicer | `GCP_PROJECT` | `project-fa5cd39b-46df-4f2a-808` |
+| tts-voicer | `R2_BUCKET_NAME` | `booksmut-videos` |
+| tts-voicer | `R2_PUBLIC_URL_BASE` | `https://pub-8352f6299ee54879bb0e492bc9e8b662.r2.dev` |
+
+## Deployed Cloud Functions
+| Function | URL | Trigger | Schedule |
+|----------|-----|---------|----------|
+| tts-voicer | `https://tts-voicer-kfxuvvfhqa-uc.a.run.app` | Cloud Scheduler | Monday 8:20am |
 
 ## GCP Deployment Gotchas
 - **allUsers Cloud Run IAM resets on every deploy** — after each `gcloud functions deploy`, must re-run: `gcloud run services add-iam-policy-binding <function-name> --region=us-central1 --member="allUsers" --role="roles/run.invoker"`
@@ -104,6 +133,8 @@ Service account: `reelforge-api-runner` — has secretAccessor on all five secre
 - **Gemini model**: current working model is `gemini-2.5-flash`. Both `gemini-1.5-flash` and `gemini-2.0-flash` retired March 2026.
 - **Gemini SDK**: use `google-genai>=1.0` (`from google import genai`). The `google-generativeai` package is fully deprecated.
 - **supabase-js v2 + anon key**: v2 requires the legacy `eyJ...` JWT format. The newer `sb_publishable_...` format only works with v3.
+- **campaign_parts has no updated_at column** — omit it from any UPDATE queries on that table.
+- **PowerShell --set-env-vars merges comma-separated values** — all values collapse into one corrupted env var. Always use `gcloud run services update --update-env-vars "KEY=VALUE"` one at a time instead.
 
 ## Moderation UI
 - URL: `https://benjaminwilsey-creator.github.io/builds-workspace/`
