@@ -77,6 +77,9 @@ Priority order for next development session on the agent/bot:
 3. Watchlist config file — move TIER2/TIER3_WATCHLIST from bot.py to JSON config, hot-reload each scan
 4. `/performance` skill — parse trade logs, report win rate, P&L, signal accuracy
 
+## Feedback / How to Work With Benjamin
+See [feedback_terminal_instructions.md](feedback_terminal_instructions.md) — always specify terminal and directory with every command. PowerShell doesn't support bash for loops — write commands individually.
+
 ## Windows Tooling Gotchas
 - **Edit tool fails** on paths with spaces in directory name (e.g. `rapid2 v1.2`) — workaround: write Python script to `/c/Users/benja/AppData/Local/Temp/`, execute with `/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`
 - **Write tool also fails** with EEXIST error on existing directories — same workaround applies
