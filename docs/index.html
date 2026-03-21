@@ -409,6 +409,7 @@
   // ── Render ───────────────────────────────────────────────────────────────
   function renderCard(c) {
     const book  = c.books;
+    if (!book) return '';
     const parts = (c.campaign_parts || []).sort((a, b) => a.part_number - b.part_number);
     const tags  = (c.hashtags || []).join(', ');
     const spice = SPICE_LABELS[book.spice_level] || book.spice_level;
