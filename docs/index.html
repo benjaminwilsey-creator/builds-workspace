@@ -291,16 +291,133 @@
     .empty p:first-child { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
     .error { color: var(--red); }
     .hint { font-size: 13px; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tab {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .tab.active {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: white;
+    }
+
+    /* ── Video compose card ── */
+    .compose-section {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .compose-section h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .bg-status {
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .bg-status.has-upload { border-color: var(--green); color: var(--green); }
+
+    .upload-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-upload   { background: #6366f1; color: white; }
+    .btn-compose  { background: var(--green); color: white; }
+    .btn-schedule { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .schedule-row label {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .schedule-row select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .upload-progress {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .audio-parts {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .audio-part-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .audio-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
 
 <header>
   <div class="header-top">
-    <h1>Script Moderation</h1>
+    <h1>ReelForge</h1>
     <span id="counter" class="counter">Loading…</span>
   </div>
-  <div class="tone-bar">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('review')">Script Review</button>
+    <button class="tab"        onclick="switchTab('compose')">Video Compose</button>
+  </div>
+  <div id="tone-controls" class="tone-bar" style="margin-top:14px;">
     <label>Default tone for regeneration:</label>
     <select id="global-tone">
       <option value="">— not set —</option>
@@ -326,7 +443,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  const SUPABASE_URL = 'https://mcnlgvknjgixrjqpixse.supabase.co';
+  const SUPABASE_URL    = 'https://mcnlgvknjgixrjqpixse.supabase.co';
+
+  // ── Fill these in after deploying the two new Cloud Functions ──────────────
+  const COMPOSER_URL = 'https://video-composer-kfxuvvfhqa-uc.a.run.app';
+  const PRESIGN_URL  = 'https://r2-presign-kfxuvvfhqa-uc.a.run.app';
+  // ──────────────────────────────────────────────────────────────────────────
 
   const { createClient } = supabase;
 
@@ -366,6 +488,19 @@
   styleEl.value = localStorage.getItem('rf-style') || '';
   toneEl.addEventListener('change',  () => localStorage.setItem('rf-tone',  toneEl.value));
   styleEl.addEventListener('change', () => localStorage.setItem('rf-style', styleEl.value));
+
+  // ── Tab switching ─────────────────────────────────────────────────────────
+  let activeTab = 'review';
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    const toneControls = document.getElementById('tone-controls');
+    toneControls.style.display = tab === 'review' ? '' : 'none';
+    if (tab === 'review') loadCampaigns();
+    else loadVoicedCampaigns();
+  }
 
   // ── Load ─────────────────────────────────────────────────────────────────
   async function loadCampaigns() {
@@ -621,6 +756,197 @@
     } catch (e) {
       alert(`Reject failed: ${e.message}`);
       setButtons(id, false);
+    }
+  }
+
+  // ── Video Compose tab ─────────────────────────────────────────────────────
+  async function loadVoicedCampaigns() {
+    const container = document.getElementById('campaigns');
+    container.innerHTML = '<p class="loading">Loading voiced campaigns…</p>';
+
+    const { data, error } = await db
+      .from('campaigns')
+      .select(`
+        id, campaign_type,
+        books ( title, author ),
+        campaign_parts ( id, part_number, total_parts, audio_url, background_type, custom_video_url )
+      `)
+      .eq('status', 'VOICED')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      container.innerHTML = `<p class="error">Failed to load: ${error.message}</p>`;
+      return;
+    }
+
+    updateCounter(data.length);
+
+    if (data.length === 0) {
+      container.innerHTML = `
+        <div class="empty">
+          <p>No campaigns ready to compose</p>
+          <p class="hint">Approve scripts in the Script Review tab first.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = data.map(c => renderComposeCard(c)).join('');
+  }
+
+  function renderComposeCard(c) {
+    const book  = c.books;
+    if (!book) return '';
+    const parts = (c.campaign_parts || []).sort((a, b) => a.part_number - b.part_number);
+
+    // Detect if any part has a user-uploaded background
+    const hasUpload = parts.some(p => p.background_type === 'user_uploaded' && p.custom_video_url);
+    const bgStatus  = hasUpload
+      ? 'Custom video uploaded'
+      : 'No background set — will use dark gradient fallback';
+
+    const audioPartsHtml = parts.map(p => `
+      <div class="audio-part-row">
+        <span class="audio-dot"></span>
+        <span>Part ${p.part_number} — audio ready</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="card" data-id="${c.id}">
+        <div class="card-header">
+          <div class="book-info">
+            <h2>${esc(book.title)}</h2>
+            <p class="book-meta">${esc(book.author)}</p>
+          </div>
+          <span class="campaign-type">${c.campaign_type}</span>
+        </div>
+
+        <div class="compose-section">
+          <div>
+            <h3>Audio</h3>
+            <div class="audio-parts">${audioPartsHtml}</div>
+          </div>
+
+          <div>
+            <h3>Background Video</h3>
+            <div class="bg-status ${hasUpload ? 'has-upload' : ''}" id="bg-status-${c.id}">
+              ${hasUpload ? '✓ ' + bgStatus : bgStatus}
+            </div>
+            <div class="upload-row" style="margin-top:10px;">
+              <input type="file" id="file-${c.id}" accept="video/*" style="display:none"
+                onchange="handleUpload('${c.id}', this)">
+              <button class="btn-upload" onclick="document.getElementById('file-${c.id}').click()">
+                Upload Video
+              </button>
+              <span class="upload-progress" id="upload-progress-${c.id}"></span>
+            </div>
+          </div>
+
+          <div>
+            <h3>Compose</h3>
+            <div class="schedule-row">
+              <button class="btn-compose" id="compose-btn-${c.id}"
+                onclick="composeNow('${c.id}')">
+                Compose Now
+              </button>
+              <label>Auto-schedule:</label>
+              <select id="schedule-${c.id}" title="Auto-schedule (coming soon)">
+                <option value="">Manual only</option>
+                <option value="mon_0825" disabled>Monday 8:25am (coming soon)</option>
+                <option value="mon_0900" disabled>Monday 9:00am (coming soon)</option>
+              </select>
+            </div>
+            <div class="upload-progress" id="compose-status-${c.id}" style="margin-top:8px;"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function handleUpload(campaignId, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (!PRESIGN_URL) {
+      alert('PRESIGN_URL is not configured. Add it to the script constants after deploying r2-presign.');
+      return;
+    }
+
+    const progressEl = document.getElementById(`upload-progress-${campaignId}`);
+    const bgStatusEl = document.getElementById(`bg-status-${campaignId}`);
+    progressEl.textContent = 'Getting upload URL…';
+
+    try {
+      // Step 1: get presigned URL
+      const presignRes = await fetch(PRESIGN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campaign_id: campaignId, filename: file.name }),
+      });
+      if (!presignRes.ok) throw new Error(`Presign failed: ${presignRes.status}`);
+      const { presigned_url, public_url } = await presignRes.json();
+
+      // Step 2: upload directly to R2
+      progressEl.textContent = 'Uploading…';
+      const uploadRes = await fetch(presigned_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'video/mp4' },
+        body: file,
+      });
+      if (!uploadRes.ok) throw new Error(`R2 upload failed: ${uploadRes.status}`);
+
+      // Step 3: update all parts for this campaign in Supabase
+      progressEl.textContent = 'Saving…';
+      const { error } = await db
+        .from('campaign_parts')
+        .update({ custom_video_url: public_url, background_type: 'user_uploaded' })
+        .eq('campaign_id', campaignId);
+      if (error) throw new Error(`DB update failed: ${error.message}`);
+
+      progressEl.textContent = '';
+      bgStatusEl.textContent  = '✓ Custom video uploaded';
+      bgStatusEl.classList.add('has-upload');
+    } catch (e) {
+      progressEl.textContent = `Upload failed: ${e.message}`;
+    }
+  }
+
+  async function composeNow(campaignId) {
+    if (!COMPOSER_URL) {
+      alert('COMPOSER_URL is not configured. Add it to the script constants after deploying video-composer.');
+      return;
+    }
+
+    const btn      = document.getElementById(`compose-btn-${campaignId}`);
+    const statusEl = document.getElementById(`compose-status-${campaignId}`);
+    btn.disabled   = true;
+    statusEl.textContent = 'Composing… this takes about 2 minutes per part.';
+
+    try {
+      const res = await fetch(COMPOSER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campaign_id: campaignId }),
+      });
+      const text = await res.text();
+      if (!res.ok) throw new Error(text);
+
+      statusEl.textContent = text;
+      // Remove card after a short delay — campaign is now COMPOSED
+      setTimeout(() => {
+        const card = getCard(campaignId);
+        if (card) {
+          card.classList.add('removing');
+          setTimeout(() => {
+            card.remove();
+            const remaining = document.querySelectorAll('.card').length;
+            updateCounter(remaining);
+          }, 300);
+        }
+      }, 2000);
+    } catch (e) {
+      statusEl.textContent = `Compose failed: ${e.message}`;
+      btn.disabled = false;
     }
   }
 
