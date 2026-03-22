@@ -245,7 +245,9 @@ All Supabase tables with fields, types, and purpose.
 | hook_text, hook_category | text | Exact opening line + psychological category for performance tracking |
 | audio_url, video_url, thumbnail_url | text | R2 URLs of generated assets |
 | caption | text | Per-part caption variant |
-| background_type | text ENUM | cover_only \| setting_video \| ai_mood_image |
+| background_type | text ENUM | `cover_only` \| `setting_video` \| `ai_mood_image` \| `user_uploaded` \| `ai_generated` |
+| custom_video_url | text | R2 URL of user-uploaded or AI-generated background video — used when background_type is `user_uploaded` or `ai_generated` |
+| ai_prompt | text | Prompt used to generate the background (Option 3B) — empty for all other background types. Stored from day one for performance tracking. |
 | music_track_id | uuid FK | References music_library |
 | status | text ENUM | PENDING \| VOICED \| COMPOSED \| READY \| SCHEDULED \| PUBLISHED \| VOICE_FAILED \| COMPOSE_FAILED |
 
@@ -493,29 +495,63 @@ Ordered by dependency — nothing is built before its foundation exists.
 - TEST: Generate 5 QUICK_TAKE scripts across different books. Confirm hook categories vary.
   Confirm FTC disclosure present in every caption.
 
-### PHASE 5 — FFmpeg Compositor
+### PHASE 5 — FFmpeg Compositor `[UPDATED — Google Cloud, not AWS]`
 
-- Build FFmpeg Lambda layer — package minimal FFmpeg binary (libx264, aac, scale, drawtext,
-  overlay codecs only) as Lambda layer. Use a pre-built minimal layer to stay within the
-  250MB unzipped limit.
-- **Configure compositor Lambda ephemeral storage to 2048 MB (2 GB)** `[CORRECTED]`:
-  - Lambda default /tmp is 512 MB — insufficient for 1080×1920 video rendering
-  - Set in Lambda function configuration under "Ephemeral storage"
-  - This is separate from memory allocation and has no cost impact at our volume
-  - Do NOT leave at the 512 MB default
-- Build compositor Lambda — takes campaign_part, assembles: background (cover/backdrop), Ken
-  Burns motion, text overlays (hook, tropes, CTA), audio track, music underlay
+> ADR 0004: AWS replaced by Google Cloud. This phase runs as a Google Cloud Function Gen 2,
+> not a Lambda. Lambda-specific notes (layer size limits, ephemeral storage config) do not apply.
+> Cloud Functions Gen 2 supports up to 32GB memory, 60min timeout, and a static FFmpeg binary
+> bundled with the deployment package.
+
+#### Video Background Options
+
+The compositor supports four background sources. The `background_type` field on `campaign_parts`
+determines which is used. The compositor resolves the background to a URL first, then passes
+that URL to FFmpeg — the FFmpeg command does not change based on source type.
+
+| Option | background_type | Source | Status |
+|--------|----------------|--------|--------|
+| 1 | `cover_only` | Licensed book cover image (Ken Burns zoom) | Build in Phase 5 |
+| 2 | `setting_video` | Pre-uploaded backdrop clip from R2 backdrop library | Build in Phase 5 |
+| 3 | `user_uploaded` | Partner uploads their own video via UI — stored to R2 | Build in Phase 5 |
+| 4 | `ai_generated` | AI video generation (Google Veo or Runway ML) from `ai_prompt` | Future phase — see below |
+
+#### Build Steps
+
+- Bundle static FFmpeg binary with the Cloud Function deployment package (Linux x86-64 static build)
+- Build `video-composer` Cloud Function — takes VOICED campaign_parts, resolves background
+  source to a URL, assembles: background video, Ken Burns motion (Option 1 only), text overlays
+  (hook, tropes, CTA), voiceover audio, music underlay
+- **Build Option 3 — user upload:** Add file upload to moderation UI → R2 upload endpoint →
+  store URL in `custom_video_url`, set `background_type = user_uploaded`
 - Implement part overlay logic — 'Part 1 of 3' badge, 'Follow for Part 2' end card on
   non-final parts
-- Build moderation_video Lambda — extract 3 frames from rendered video, run Cloud Vision on
-  each + on cover image, store flags
+- Build `moderation-video` Cloud Function — extract 3 frames from rendered video, run Cloud
+  Vision on each + on cover image, store flags
 - Implement MODERATION_FAILED routing for video gate — same human review requirement as
   script gate
-- Load test: Confirm FFmpeg completes within Lambda 15-minute timeout for 30-second video
-  at 1080×1920. **Also verify /tmp peak disk usage stays below 1.5 GB** (run `df -h /tmp`
-  in Lambda execution and log it).
 - TEST: Download rendered video, verify Meta spec compliance using ffprobe. Confirm moderation
   gate triggers on a test cover image.
+
+#### Option 4 — AI Video Generation (Future Phase, prep done now)
+
+**Do not build this until the pipeline is fully operational.** The following prep steps are
+already in place and make integration a single Cloud Function addition:
+
+- `background_type` ENUM already includes `ai_generated` — no DB migration needed
+- `custom_video_url` field already exists — AI-generated clip URL stores here, same as user upload
+- `ai_prompt` field already exists — prompt text stored from the moment she types it
+- Compositor already reads from `custom_video_url` — no FFmpeg changes needed when 4 ships
+
+**When ready to build Option 4:**
+- Create `ai-video-generator` Cloud Function
+- Accepts: campaign_part_id + ai_prompt text
+- Calls Google Veo API (preferred — already on GCP, likely free tier credits available)
+  or Runway ML as fallback
+- Stores generated clip to R2 → writes URL to `custom_video_url` → sets `background_type = ai_generated`
+- Add prompt input field to UI (Phase 6 dashboard or moderation UI)
+- No changes required to compositor, state machine, or R2 structure
+- **Cost note:** AI video generation is not free. Budget ~$0.05–0.50 per clip depending on provider
+  and clip length. Evaluate Google Veo pricing when the time comes — GCP credits may cover initial volume.
 
 ### PHASE 6 — UI Dashboard
 
