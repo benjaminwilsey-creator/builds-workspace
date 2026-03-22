@@ -1,0 +1,5 @@
+functions-framework==3.*
+psycopg2-binary==2.*
+google-cloud-secret-manager==2.*
+google-cloud-texttospeech==2.*
+boto3==1.*
