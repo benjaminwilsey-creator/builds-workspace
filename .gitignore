@@ -1,6 +1,9 @@
 # Subprojects with their own git repos — exclude them here
 Rapid2/
-# Booksmut has no separate repo — tracked in builds-workspace
+Booksmut/
+model-skills/
+Architect/
+Sportsball/
 
 # Claude Desktop Skills folder on Desktop (ephemeral output)
 # Never commit secrets or credentials
@@ -25,4 +28,3 @@ __pycache__/
 
 # VS Code user settings (keep workspace file, exclude user-specific)
 .vscode/settings.json
-Architect/
