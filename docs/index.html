@@ -481,6 +481,331 @@
 
     .btn-publish:hover { background: #14532d; }
     .btn-publish:disabled { opacity: 0.5; cursor: default; }
+
+    /* ── Publisher Licenses tab ── */
+    .pub-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    .pub-stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pub-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      min-width: 90px;
+      text-align: center;
+    }
+
+    .pub-stat-num {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pub-stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pub-stat-green .pub-stat-num { color: var(--green); }
+    .pub-stat-blue  .pub-stat-num { color: #60a5fa; }
+    .pub-stat-amber .pub-stat-num { color: var(--amber); }
+
+    .pub-header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .btn-add-pub {
+      background: #6366f1;
+      color: white;
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .btn-focus-mode {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .btn-focus-mode.is-active {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+    }
+
+    .pub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .pub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pub-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pub-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .pub-domain {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pub-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      flex-shrink: 0;
+    }
+
+    .badge-green { background: var(--green-dim);  color: var(--green); }
+    .badge-blue  { background: #1e3a5f;            color: #60a5fa; }
+    .badge-amber { background: var(--amber-dim);   color: var(--amber); }
+    .badge-red   { background: var(--red-dim);     color: var(--red); }
+    .badge-muted { background: var(--surface2);    color: var(--muted); border: 1px solid var(--border); }
+
+    .pub-checklist {
+      display: flex;
+      gap: 14px;
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .pub-check-item {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pub-check-item.done { color: var(--green); }
+
+    .pub-contact {
+      padding: 8px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pub-contact-name { color: var(--text); }
+
+    a.pub-contact-email {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    a.pub-contact-email:hover { text-decoration: underline; }
+
+    .pub-inline-form {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pub-inline-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .pub-dates {
+      padding: 8px 18px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pub-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pub-date-warn { color: var(--amber); }
+
+    .pub-portal {
+      padding: 8px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    a.pub-portal-link {
+      font-size: 13px;
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    a.pub-portal-link:hover { text-decoration: underline; }
+
+    .pub-actions {
+      padding: 12px 18px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .btn-pub-action {
+      font-size: 13px;
+      padding: 7px 16px;
+      border-radius: 7px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-pub-green { background: var(--green-dim); color: var(--green); }
+    .btn-pub-amber { background: var(--amber-dim); color: var(--amber); }
+    .btn-pub-red   { background: var(--red-dim);   color: var(--red); }
+    .btn-pub-muted { background: var(--surface2);  color: var(--muted); border: 1px solid var(--border); }
+    .btn-pub-indigo { background: #6366f1; color: white; }
+
+    .pub-action-done {
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 600;
+      padding: 7px 0;
+    }
+
+    .pub-action-status {
+      padding: 0 18px 10px;
+      font-size: 12px;
+      color: var(--red);
+      min-height: 4px;
+    }
+
+    .btn-save-contact {
+      background: #6366f1;
+      color: white;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    .btn-cancel-inline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 6px;
+    }
+
+    /* Focus mode */
+    .pub-focus-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-top: 4px;
+    }
+
+    .pub-focus-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-focus-nav {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      padding: 7px 16px;
+      border-radius: 7px;
+    }
+
+    .pub-focus-counter {
+      font-size: 13px;
+      color: var(--muted);
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .pub-focus-card {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    /* Add Publisher modal */
+    .pub-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .pub-modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pub-modal-box h3 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .pub-modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -494,6 +819,7 @@
     <button class="tab active" onclick="switchTab('review')">Script Review</button>
     <button class="tab"        onclick="switchTab('compose')">Video Compose</button>
     <button class="tab"        onclick="switchTab('delivery')">Delivery</button>
+    <button class="tab"        onclick="switchTab('publishers')">Publishers</button>
   </div>
   <div id="tone-controls" class="tone-bar" style="margin-top:14px;">
     <label>Default tone for regeneration:</label>
@@ -576,9 +902,10 @@
     event.target.classList.add('active');
     const toneControls = document.getElementById('tone-controls');
     toneControls.style.display = tab === 'review' ? '' : 'none';
-    if (tab === 'review')        loadCampaigns();
-    else if (tab === 'compose')  loadVoicedCampaigns();
-    else                         loadComposedCampaigns();
+    if (tab === 'review')           loadCampaigns();
+    else if (tab === 'compose')     loadVoicedCampaigns();
+    else if (tab === 'delivery')    loadComposedCampaigns();
+    else if (tab === 'publishers')  loadPublishers();
   }
 
   // ── Load ─────────────────────────────────────────────────────────────────
@@ -1165,6 +1492,356 @@
   }
 
   loadCampaigns();
+
+  // ── Publisher Licenses tab ─────────────────────────────────────────────────
+
+  let pubFocusMode  = false;
+  let pubFocusIndex = 0;
+  let pubRecords    = [];
+
+  async function loadPublishers() {
+    const container = document.getElementById('campaigns');
+    container.innerHTML = '<p class="loading">Loading publishers…</p>';
+
+    const { data, error } = await db
+      .from('publisher_licenses')
+      .select('*')
+      .order('publisher_name');
+
+    if (error) {
+      container.innerHTML = `<p class="error">Failed to load: ${esc(error.message)}</p>`;
+      return;
+    }
+
+    pubRecords = data || [];
+    renderPublishers();
+  }
+
+  function renderPublishers() {
+    const container = document.getElementById('campaigns');
+    if (pubFocusMode) renderFocusMode(container);
+    else              renderDashboard(container);
+  }
+
+  // Sort: IN_DISCUSSION first, then OUTREACH_PENDING, LICENSED, EXPIRED, DECLINED
+  const PUB_STATUS_ORDER = { IN_DISCUSSION: 0, OUTREACH_PENDING: 1, LICENSED: 2, EXPIRED: 3, DECLINED: 4 };
+
+  function sortedPubs() {
+    return [...pubRecords].sort((a, b) => {
+      const so = (PUB_STATUS_ORDER[a.status] ?? 5) - (PUB_STATUS_ORDER[b.status] ?? 5);
+      return so !== 0 ? so : a.publisher_name.localeCompare(b.publisher_name);
+    });
+  }
+
+  function renderDashboard(container) {
+    const sorted      = sortedPubs();
+    const total       = sorted.length;
+    const licensed    = sorted.filter(p => p.status === 'LICENSED').length;
+    const discussing  = sorted.filter(p => p.status === 'IN_DISCUSSION').length;
+    const pending     = sorted.filter(p => p.status === 'OUTREACH_PENDING').length;
+
+    const focusBtnClass = pubFocusMode ? 'btn-focus-mode is-active' : 'btn-focus-mode';
+
+    container.innerHTML = `
+      <div class="pub-header">
+        <div class="pub-stats">
+          <div class="pub-stat">
+            <span class="pub-stat-num">${total}</span>
+            <span class="pub-stat-label">Total</span>
+          </div>
+          <div class="pub-stat pub-stat-green">
+            <span class="pub-stat-num">${licensed}</span>
+            <span class="pub-stat-label">Licensed</span>
+          </div>
+          <div class="pub-stat pub-stat-blue">
+            <span class="pub-stat-num">${discussing}</span>
+            <span class="pub-stat-label">In Discussion</span>
+          </div>
+          <div class="pub-stat pub-stat-amber">
+            <span class="pub-stat-num">${pending}</span>
+            <span class="pub-stat-label">Pending Outreach</span>
+          </div>
+        </div>
+        <div class="pub-header-actions">
+          <button class="${focusBtnClass}" onclick="togglePubFocus()">Focus Mode</button>
+          <button class="btn-add-pub" onclick="openAddPublisher()">+ Add Publisher</button>
+        </div>
+      </div>
+      <div class="pub-grid">
+        ${sorted.length === 0
+          ? `<div style="grid-column:1/-1"><p class="empty"><strong>No publishers yet.</strong><br><span class="hint">Click + Add Publisher to start tracking outreach.</span></p></div>`
+          : sorted.map(p => pubCardHtml(p)).join('')}
+      </div>
+      ${addPublisherModalHtml()}
+    `;
+  }
+
+  function renderFocusMode(container) {
+    const sorted = sortedPubs();
+    const focusBtnClass = 'btn-focus-mode is-active';
+
+    if (sorted.length === 0) {
+      container.innerHTML = `
+        <div class="pub-focus-wrap">
+          <div class="pub-focus-nav">
+            <button class="${focusBtnClass}" onclick="togglePubFocus()">Exit Focus Mode</button>
+          </div>
+          <p class="empty">No publishers to focus on.</p>
+        </div>
+        ${addPublisherModalHtml()}`;
+      return;
+    }
+
+    if (pubFocusIndex >= sorted.length) pubFocusIndex = 0;
+    const pub = sorted[pubFocusIndex];
+
+    container.innerHTML = `
+      <div class="pub-focus-wrap">
+        <div class="pub-focus-nav">
+          <button class="btn-focus-nav" onclick="focusPubNav(-1)"
+            ${pubFocusIndex === 0 ? 'disabled' : ''}>← Prev</button>
+          <span class="pub-focus-counter">${pubFocusIndex + 1} / ${sorted.length}</span>
+          <button class="btn-focus-nav" onclick="focusPubNav(1)"
+            ${pubFocusIndex === sorted.length - 1 ? 'disabled' : ''}>Next →</button>
+          <button class="${focusBtnClass}" onclick="togglePubFocus()">Exit Focus Mode</button>
+        </div>
+        <div class="pub-focus-card">${pubCardHtml(pub)}</div>
+      </div>
+      ${addPublisherModalHtml()}`;
+  }
+
+  function pubCardHtml(pub) {
+    const contactDone = !!pub.contact_email;
+    const sentDone    = !!pub.outreach_date;
+    const replyDone   = !!pub.response_date || ['IN_DISCUSSION','LICENSED','DECLINED'].includes(pub.status);
+
+    const check = (done, label) =>
+      `<span class="pub-check-item ${done ? 'done' : ''}">${done ? '✓' : '○'} ${label}</span>`;
+
+    const statusBadgeClass = {
+      OUTREACH_PENDING: 'badge-amber',
+      IN_DISCUSSION:    'badge-blue',
+      LICENSED:         'badge-green',
+      DECLINED:         'badge-red',
+      EXPIRED:          'badge-muted',
+    }[pub.status] || 'badge-muted';
+
+    const statusLabel = pub.status.replace(/_/g, ' ');
+
+    let contactHtml = '';
+    if (pub.contact_name || pub.contact_email) {
+      contactHtml = `<div class="pub-contact">
+        ${pub.contact_name ? `<span class="pub-contact-name">${esc(pub.contact_name)}</span>` : ''}
+        ${pub.contact_name && pub.contact_email ? ' · ' : ''}
+        ${pub.contact_email ? `<a class="pub-contact-email" href="mailto:${esc(pub.contact_email)}">${esc(pub.contact_email)}</a>` : ''}
+      </div>`;
+    }
+
+    let datesHtml = '';
+    const dateParts = [];
+    if (pub.outreach_date)  dateParts.push(`<span class="pub-date">Sent ${fmtDate(pub.outreach_date)}</span>`);
+    if (pub.response_date)  dateParts.push(`<span class="pub-date">Replied ${fmtDate(pub.response_date)}</span>`);
+    if (pub.license_expiry) {
+      const warn = new Date(pub.license_expiry) < new Date();
+      dateParts.push(`<span class="pub-date ${warn ? 'pub-date-warn' : ''}">Expires ${fmtDate(pub.license_expiry)}</span>`);
+    }
+    if (dateParts.length) datesHtml = `<div class="pub-dates">${dateParts.join('')}</div>`;
+
+    const portalHtml = pub.asset_portal_url
+      ? `<div class="pub-portal"><a class="pub-portal-link" href="${esc(pub.asset_portal_url)}" target="_blank">↗ Asset Portal</a></div>`
+      : '';
+
+    // Inline contact form (hidden by default, shown when "Add contact email" clicked)
+    const inlineFormHtml = `
+      <div id="contact-form-${pub.id}" class="pub-inline-form" style="display:none;">
+        <input class="field" type="text"  id="cname-${pub.id}"  placeholder="Contact name (optional)">
+        <input class="field" type="email" id="cemail-${pub.id}" placeholder="contact@publisher.com *">
+        <div class="pub-inline-actions">
+          <button class="btn-save-contact" onclick="saveContact('${pub.id}')">Save</button>
+          <button class="btn-cancel-inline" onclick="document.getElementById('contact-form-${pub.id}').style.display='none'">Cancel</button>
+        </div>
+      </div>`;
+
+    return `
+      <div class="pub-card" id="pub-card-${pub.id}">
+        <div class="pub-card-header">
+          <div>
+            <div class="pub-name">${esc(pub.publisher_name)}</div>
+            <div class="pub-domain">${esc(pub.publisher_domain || '')}</div>
+          </div>
+          <span class="pub-badge ${statusBadgeClass}">${statusLabel}</span>
+        </div>
+        <div class="pub-checklist">
+          ${check(contactDone, 'Found contact')}
+          ${check(sentDone,    'Sent email')}
+          ${check(replyDone,   'Got reply')}
+        </div>
+        ${contactHtml}
+        ${inlineFormHtml}
+        ${datesHtml}
+        ${portalHtml}
+        <div class="pub-actions">${pubNextActionHtml(pub)}</div>
+        <div id="pub-status-${pub.id}" class="pub-action-status"></div>
+      </div>`;
+  }
+
+  function pubNextActionHtml(pub) {
+    const id = pub.id;
+    switch (pub.status) {
+      case 'OUTREACH_PENDING':
+        if (!pub.contact_email) {
+          return `<button class="btn-pub-action btn-pub-amber" onclick="showContactForm('${id}')">Add contact email</button>`;
+        }
+        return `<button class="btn-pub-action btn-pub-amber" onclick="pubMarkSent('${id}')">Mark Sent</button>
+                <button class="btn-pub-action btn-pub-muted"  onclick="showContactForm('${id}')">Edit contact</button>`;
+      case 'IN_DISCUSSION':
+        return `<button class="btn-pub-action btn-pub-green" onclick="pubUpdateStatus('${id}','LICENSED')">Mark Licensed</button>
+                <button class="btn-pub-action btn-pub-red"   onclick="pubUpdateStatus('${id}','DECLINED')">Mark Declined</button>`;
+      case 'LICENSED':
+        return `<span class="pub-action-done">✓ Licensed</span>`;
+      case 'DECLINED':
+        return `<button class="btn-pub-action btn-pub-muted" onclick="pubUpdateStatus('${id}','OUTREACH_PENDING')">Re-open</button>`;
+      case 'EXPIRED':
+        return `<button class="btn-pub-action btn-pub-amber" onclick="pubUpdateStatus('${id}','IN_DISCUSSION')">Mark Renewed</button>`;
+      default:
+        return '';
+    }
+  }
+
+  function addPublisherModalHtml() {
+    return `
+      <div id="add-pub-modal" class="pub-modal" style="display:none;" onclick="closePubModalOnBackdrop(event)">
+        <div class="pub-modal-box">
+          <h3>Add Publisher</h3>
+          <div class="field-group">
+            <label>Publisher name *</label>
+            <input class="field" id="new-pub-name"   type="text"  placeholder="Tor Books">
+          </div>
+          <div class="field-group">
+            <label>Domain *</label>
+            <input class="field" id="new-pub-domain" type="text"  placeholder="tor.com">
+          </div>
+          <div class="field-group">
+            <label>Contact name</label>
+            <input class="field" id="new-pub-cname"  type="text"  placeholder="Jane Smith">
+          </div>
+          <div class="field-group">
+            <label>Contact email</label>
+            <input class="field" id="new-pub-cemail" type="email" placeholder="permissions@tor.com">
+          </div>
+          <div class="pub-modal-actions">
+            <button class="btn-pub-action btn-pub-indigo" onclick="saveNewPublisher()">Add Publisher</button>
+            <button class="btn-cancel-inline" onclick="closeAddPublisher()">Cancel</button>
+          </div>
+          <div id="add-pub-error" style="color:var(--red);font-size:13px;"></div>
+        </div>
+      </div>`;
+  }
+
+  function fmtDate(iso) {
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function togglePubFocus() {
+    pubFocusMode  = !pubFocusMode;
+    pubFocusIndex = 0;
+    renderPublishers();
+  }
+
+  function focusPubNav(dir) {
+    const sorted = sortedPubs();
+    pubFocusIndex = Math.max(0, Math.min(sorted.length - 1, pubFocusIndex + dir));
+    renderPublishers();
+  }
+
+  function showContactForm(id) {
+    document.getElementById(`contact-form-${id}`).style.display = 'flex';
+    document.getElementById(`contact-form-${id}`).style.flexDirection = 'column';
+  }
+
+  async function saveContact(id) {
+    const name  = document.getElementById(`cname-${id}`).value.trim();
+    const email = document.getElementById(`cemail-${id}`).value.trim();
+    if (!email) { alert('Contact email is required.'); return; }
+
+    const { error } = await db.from('publisher_licenses')
+      .update({ contact_name: name || null, contact_email: email })
+      .eq('id', id);
+
+    if (error) { alert(`Save failed: ${error.message}`); return; }
+
+    const rec = pubRecords.find(p => p.id === id);
+    if (rec) { rec.contact_name = name || null; rec.contact_email = email; }
+    renderPublishers();
+  }
+
+  async function pubMarkSent(id) {
+    const now = new Date().toISOString();
+    const { error } = await db.from('publisher_licenses')
+      .update({ outreach_date: now, status: 'IN_DISCUSSION' })
+      .eq('id', id);
+
+    if (error) { alert(`Failed: ${error.message}`); return; }
+
+    const rec = pubRecords.find(p => p.id === id);
+    if (rec) { rec.outreach_date = now; rec.status = 'IN_DISCUSSION'; }
+    renderPublishers();
+  }
+
+  async function pubUpdateStatus(id, status) {
+    const updates = { status };
+    if (['IN_DISCUSSION','LICENSED','DECLINED'].includes(status)) {
+      updates.response_date = new Date().toISOString();
+    }
+
+    const { error } = await db.from('publisher_licenses').update(updates).eq('id', id);
+    if (error) { alert(`Failed: ${error.message}`); return; }
+
+    const rec = pubRecords.find(p => p.id === id);
+    if (rec) { Object.assign(rec, updates); }
+    renderPublishers();
+  }
+
+  function openAddPublisher() {
+    document.getElementById('add-pub-modal').style.display = 'flex';
+  }
+
+  function closeAddPublisher() {
+    document.getElementById('add-pub-modal').style.display = 'none';
+  }
+
+  function closePubModalOnBackdrop(event) {
+    if (event.target === document.getElementById('add-pub-modal')) closeAddPublisher();
+  }
+
+  async function saveNewPublisher() {
+    const name   = document.getElementById('new-pub-name').value.trim();
+    const domain = document.getElementById('new-pub-domain').value.trim();
+    const cname  = document.getElementById('new-pub-cname').value.trim();
+    const cemail = document.getElementById('new-pub-cemail').value.trim();
+    const errEl  = document.getElementById('add-pub-error');
+    errEl.textContent = '';
+
+    if (!name || !domain) {
+      errEl.textContent = 'Publisher name and domain are required.';
+      return;
+    }
+
+    const { data, error } = await db.from('publisher_licenses').insert({
+      publisher_name:            name,
+      publisher_domain:          domain,
+      contact_name:              cname  || null,
+      contact_email:             cemail || null,
+      status:                    'OUTREACH_PENDING',
+      contact_discovery_method:  'MANUAL',
+    }).select().single();
+
+    if (error) { errEl.textContent = `Failed: ${error.message}`; return; }
+
+    pubRecords.push(data);
+    closeAddPublisher();
+    renderPublishers();
+  }
 </script>
 </body>
 </html>
