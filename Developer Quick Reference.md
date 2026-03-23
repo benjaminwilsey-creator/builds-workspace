@@ -45,6 +45,7 @@ planning a new feature, clear first.
 
 | When | Command | What it does |
 |------|---------|--------------|
+| Before every deploy | `/test` | Run pytest — returns PASSED/FAILED, blocks deploy on failure |
 | Before every deploy | `/review` | Code quality + security check — returns Approved / Blocked |
 | After a key decision | `/decide` | Saves a permanent record of what was decided and why |
 | Ready to ship | `/deploy` | SCP to EC2 + git tag + restart + confirms healthy |
@@ -69,7 +70,7 @@ New session          ->  /catchup
 Unfamiliar topic     ->  /spike
 Planning anything    ->  /think
 Editing existing     ->  /impact
-Done coding          ->  /review
+Done coding          ->  /test + /review
 Ship it              ->  /deploy
 Something broke      ->  /rollback
 Made a key decision  ->  /decide
