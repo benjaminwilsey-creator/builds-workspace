@@ -8,11 +8,17 @@ videos with Amazon affiliate captions for human scheduling in Meta Business Suit
 Two-person project: developer (Benjamin) + non-technical partner (publisher licensing lead).
 
 ## Status
-Phase 0 **complete**. Phase 1 database **complete**. Phase 2 pipeline **complete through Step 5** as of 2026-03-21.
-- Full pipeline working: ENRICHED → SCORED → CAMPAIGN_DRAFT → SCRIPTED → MODERATION_SCRIPT → VOICED
-- 10 campaigns voiced — audio confirmed in Cloudflare R2 under `audio/{campaign_id}/part_N.mp3`
+Phase 0 **complete**. Phase 1 database **complete**. Phase 2 pipeline **complete — all steps** as of 2026-03-23.
+- Full pipeline working: ENRICHED → SCORED → CAMPAIGN_DRAFT → SCRIPTED → MODERATION_SCRIPT → VOICED → COMPOSED → PUBLISHED
 - Moderation UI live at: `https://benjaminwilsey-creator.github.io/builds-workspace/`
-Next: Step 6 — video composer (FFmpeg renders 30s MP4 per campaign part, uploads to R2, advances to COMPOSED)
+- Tabs: Script Review (SCRIPTED), Video Compose (VOICED), Delivery (COMPOSED), Publishers (publisher_licenses)
+- ~10 campaigns in VOICED state need composing (were blocked by bugs now fixed)
+- Publisher Licenses tab live as of 2026-03-23: dashboard + focus mode, ADR 0001 Framework B design, RLS policies added
+Next: compose VOICED campaigns, then Gmail outreach integration (ADR 0003) — "Generate Draft" button on publisher card
+
+### Known video-composer bugs fixed (2026-03-23)
+- Cloudflare 403: switched `urllib` to `requests` with Mozilla User-Agent
+- FFmpeg filter crash on single quotes in text: replaced `\'` escaping with Unicode `\u2019`
 
 ### Phase 0 — Complete
 - [x] Amazon Associates — tag: `thesecretpic-20` (Elizabeth Wilsey account)

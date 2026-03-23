@@ -4,7 +4,7 @@
 Primary workspace: `E:\Builds - Copy` (dedicated dev drive — migration complete 2026-03-22). C drive (`c:\Users\benja\OneDrive\Documents\Builds`) is no longer primary.
 
 1. **Rapid2** — Production crypto trading bot (OpenClaw) — primary active project
-2. **Booksmut** — ReelForge BookTok affiliate video pipeline — Phase 2 complete through Step 4. Full pipeline ENRICHED→SCRIPTED→MODERATION_SCRIPT working. Moderation UI live. Next: Step 5 TTS voiceover.
+2. **Booksmut** — ReelForge BookTok affiliate video pipeline — Full pipeline complete as of 2026-03-23. ENRICHED→SCORED→SCRIPTED→VOICED→COMPOSED→PUBLISHED. Delivery tab + Publisher Licenses tab live. Next: Gmail outreach integration (ADR 0003).
 3. **Architect** — Claude skill files for developer workflow — standalone repo
 4. **Model Skills** — AI model-specific configs (Gemini, Qwen) — standalone repo
 5. **3DPrint** (name TBD) — Plain-language to STL converter for Ricky's Bambu A1 — concept only, not yet scaffolded
