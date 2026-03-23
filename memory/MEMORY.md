@@ -1,19 +1,20 @@
 # Memory
 
 ## Project Overview
-Primary workspace: `e:\Builds - Copy` (moved from OneDrive permanently 2026-03-15)
-Rapid2 source still lives at: `c:\Users\benja\OneDrive\Documents\Builds\Rapid2\rapid2 v1.2\`
+Current workspace: `c:\Users\benja\OneDrive\Documents\Builds` — MIGRATING to `E:\Builds - Copy` (dedicated dev drive, in progress as of 2026-03-22).
+After migration: clone all repos fresh from GitHub onto dev drive. See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for clone commands and full details.
 
 1. **Rapid2** — Production crypto trading bot (OpenClaw) — primary active project
 2. **Booksmut** — ReelForge BookTok affiliate video pipeline — Phase 2 complete through Step 4. Full pipeline ENRICHED→SCRIPTED→MODERATION_SCRIPT working. Moderation UI live. Next: Step 5 TTS voiceover.
-3. **Architect** — Claude skill files for markdown hierarchy processing
-4. **Sportsball** — College football content pipeline for Ricky's brand — scaffolded, architecture planned
+3. **Architect** — Claude skill files for developer workflow — standalone repo
+4. **Model Skills** — AI model-specific configs (Gemini, Qwen) — standalone repo
 5. **3DPrint** (name TBD) — Plain-language to STL converter for Ricky's Bambu A1 — concept only, not yet scaffolded
 
 See [rapid2.md](rapid2.md) for full Rapid2 details.
 See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
-See [sportsball.md](sportsball.md) for full Sportsball details.
 See [3dprint.md](3dprint.md) for full 3DPrint details.
+See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for full repo/branch layout and migration instructions.
+See [pending_migration.md](pending_migration.md) for exact clone commands and post-clone checklist.
 
 ## User Preferences
 - Platform: Windows with MSYS bash
@@ -31,15 +32,19 @@ See [3dprint.md](3dprint.md) for full 3DPrint details.
 | Server | IP | SSH Alias | Service | Purpose |
 |--------|-----|-----------|---------|---------|
 | Rapid2 v1 (Retired) | `3.131.96.193` | none | `openclaw` | TERMINATED 2026-03-04 — instance gone |
-| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money |
+| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money (bot.py) |
+| Rapid2 v1.3 (Paper) | `3.138.144.246` | `rapid2` | `openclaw-paper-v1.3` | Paper trading — validating v1.3 (paper_bot.py) |
 
 ## GitHub Repos
-| Repo | URL | What's in it |
-|------|-----|--------------|
-| builds-workspace | https://github.com/benjaminwilsey-creator/builds-workspace | CLAUDE.md, all skills, memory backups, workspace config |
-| openclaw-v1.2 | https://github.com/benjaminwilsey-creator/openclaw-v1.2 | Production bot source code (v1.2) |
-| openclaw-v1 | https://github.com/benjaminwilsey-creator/openclaw-v1 | Retired v1 source code |
-| reelforge | https://github.com/benjaminwilsey-creator/reelforge | Booksmut/ReelForge — BookTok pipeline (Codespaces ready) |
+| Repo | Branches | What's in it |
+|------|----------|--------------|
+| builds-workspace | master, develop | CLAUDE.md, Developer Quick Reference. PUBLIC. Architect/ gitignored. |
+| openclaw | master, develop, v1.2, v1 | All trading bot versions. master=v1.3, v1.2/v1=archived history. |
+| architect-skills | master, develop | All Claude Code .skill files |
+| reelforge | main, develop | Booksmut/ReelForge BookTok pipeline. NOTE: local main diverged — git pull needed. |
+| model-specific-skills | main, develop, gemini, qwen | Gemini config on gemini branch. Qwen placeholder. |
+| openclaw-v1.2 | — | ARCHIVED. Code preserved in openclaw repo v1.2 branch. |
+| openclaw-v1 | — | ARCHIVED. Code preserved in openclaw repo v1 branch. |
 
 Note: memory files are backed up to `Builds/memory/` in builds-workspace repo. Update both locations when memory changes.
 
