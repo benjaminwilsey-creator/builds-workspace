@@ -1,8 +1,7 @@
 # Memory
 
 ## Project Overview
-Current workspace: `c:\Users\benja\OneDrive\Documents\Builds` — MIGRATING to `E:\Builds - Copy` (dedicated dev drive, in progress as of 2026-03-22).
-After migration: clone all repos fresh from GitHub onto dev drive. See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for clone commands and full details.
+Primary workspace: `E:\Builds - Copy` (dedicated dev drive — migration complete 2026-03-22). C drive (`c:\Users\benja\OneDrive\Documents\Builds`) is no longer primary.
 
 1. **Rapid2** — Production crypto trading bot (OpenClaw) — primary active project
 2. **Booksmut** — ReelForge BookTok affiliate video pipeline — Phase 2 complete through Step 4. Full pipeline ENRICHED→SCRIPTED→MODERATION_SCRIPT working. Moderation UI live. Next: Step 5 TTS voiceover.
@@ -14,7 +13,6 @@ See [rapid2.md](rapid2.md) for full Rapid2 details.
 See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
 See [3dprint.md](3dprint.md) for full 3DPrint details.
 See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for full repo/branch layout and migration instructions.
-See [pending_migration.md](pending_migration.md) for exact clone commands and post-clone checklist.
 
 ## User Preferences
 - Platform: Windows with MSYS bash
@@ -38,15 +36,28 @@ See [pending_migration.md](pending_migration.md) for exact clone commands and po
 ## GitHub Repos
 | Repo | Branches | What's in it |
 |------|----------|--------------|
-| builds-workspace | master, develop | CLAUDE.md, Developer Quick Reference. PUBLIC. Architect/ gitignored. |
+| builds-workspace | master, develop | CLAUDE.md, Developer Quick Reference. PUBLIC. Architect/, Booksmut/, model-skills/, Sportsball/ all gitignored. |
 | openclaw | master, develop, v1.2, v1 | All trading bot versions. master=v1.3, v1.2/v1=archived history. |
 | architect-skills | master, develop | All Claude Code .skill files |
-| reelforge | main, develop | Booksmut/ReelForge BookTok pipeline. NOTE: local main diverged — git pull needed. |
+| reelforge | main, develop | Booksmut/ReelForge BookTok pipeline. |
 | model-specific-skills | main, develop, gemini, qwen | Gemini config on gemini branch. Qwen placeholder. |
 | openclaw-v1.2 | — | ARCHIVED. Code preserved in openclaw repo v1.2 branch. |
 | openclaw-v1 | — | ARCHIVED. Code preserved in openclaw repo v1 branch. |
 
 Note: memory files are backed up to `Builds/memory/` in builds-workspace repo. Update both locations when memory changes.
+
+Note: Booksmut is fully tracked in reelforge repo — no longer in builds-workspace.
+
+## E Drive Layout (primary workspace)
+| Folder | Repo | Branch |
+|--------|------|--------|
+| `E:\Builds - Copy\` | builds-workspace | master |
+| `E:\Builds - Copy\Architect\` | architect-skills | master |
+| `E:\Builds - Copy\Booksmut\` | reelforge | main |
+| `E:\Builds - Copy\Rapid2\rapid2 v1.2\` | openclaw | v1.2 |
+| `E:\Builds - Copy\Rapid2\rapid2 v1.3\` | openclaw | develop |
+| `E:\Builds - Copy\model-skills\` | model-specific-skills | main |
+| `E:\Builds - Copy\Sportsball\` | (gitignored — GitKraken lock, do not delete) | — |
 
 ## EC2 Monitoring
 | Monitor | What it watches | Alert method |
@@ -68,6 +79,8 @@ Five skills now run as isolated sub-agents via the Agent tool:
 
 Pattern: main agent spawns Agent tool (subagent_type="general-purpose") with self-contained
 task prompt. Sub-agent does all data gathering, returns only the formatted report.
+
+Note: catchup.skill now uses E drive paths and runs git pull at session start.
 
 ## Context Hygiene
 - `/clear` between unrelated topics — prevents context drift
