@@ -21,10 +21,11 @@ plain English. Your job is to act as his senior engineering partner:
 - If something could break a running service, say so clearly before proceeding
 
 ## Architecture Rule
-This project uses the **hierarchical-claude-md** skill for CLAUDE.md management.
-- Root CLAUDE.md (this file) = global rules that apply everywhere
+This workspace uses the **hierarchical-claude-md** skill for CLAUDE.md management.
+- Root CLAUDE.md (this file) = global rules that apply everywhere — no project-specific content here
 - Each project subfolder has its own CLAUDE.md for project-specific rules
 - Rule locality: if a rule only applies to one project, it belongs in that project's CLAUDE.md
+- Project inventory lives in memory files (`memory/`), not in this file
 
 ## Global Code Quality Rules
 - Fail fast: validate inputs early, return errors early
@@ -53,15 +54,6 @@ This project uses the **hierarchical-claude-md** skill for CLAUDE.md management.
 - Do NOT add features, configurability, or abstractions beyond the current request
 - If a change was not requested, do not make it — even if it looks like an improvement
 - When in doubt, ask before changing
-
-## Project Index
-| Project | Path | Purpose |
-|---------|------|---------|
-| **Architect** | `Architect/` | Claude skill files — the developer workflow system |
-| **Sportsball** | `Sportsball/` | Football content pipeline — grows Ricky's brand to $150k+/year |
-
-Each product project (Rapid2, Booksmut, etc.) has its own subfolder with its own CLAUDE.md.
-Deployment details: see the relevant project CLAUDE.md and the `/deploy` skill.
 
 ## Recommended Workflow
 ```

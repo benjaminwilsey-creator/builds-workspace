@@ -1,20 +1,19 @@
 ---
-date: 2026-03-21
-project: Booksmut / ReelForge
+date: 2026-03-22
+project: Rapid2 v1.2
 ---
 
 ## What we did
-- Built and deployed the TTS voicer (Step 5) — reads approved campaigns,
-  generates one MP3 per part via Google TTS, uploads to Cloudflare R2
-- Fixed three bugs along the way: missing updated_at column, PowerShell
-  env var merging, and corrupted GCP_PROJECT value
-- All 10 campaigns successfully voiced — audio confirmed in R2
+- Built the /test skill — runs pytest tests/ -v and reports PASS/FAIL
+- Fixed 3 broken tests left over from the strategy overhaul (trailing stop
+  functions gained an exchange param but tests weren't updated)
+- Updated Developer Quick Reference to include /test in the workflow
 
 ## Next up
-- Step 6: video composer — FFmpeg renders 30s MP4 per campaign part
-- First decision needed: backdrop videos in R2, or use solid color
-  background while covers are null?
+- Find the v1.3 branch — check GitHub (openclaw-v1.2 repo) and C drive
+  for any v1.3 branch or folder; do this as a dedicated session
+- S3 state backup or Watchlist config file (priority #1/2 from list)
 
 ## Watch out for
-- All book cover images are null — backdrop fallback required for all videos
-- Music library tracks are loaded in Supabase — ready for Step 6
+- v1.3 work-in-progress branch location unknown — locate before building new features
+- CLAUDE.md in rapid2 v1.2 has an uncommitted doc update — include in next deploy commit

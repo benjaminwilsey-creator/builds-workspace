@@ -8,6 +8,7 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 |---------|------|--------|
 | v1 (Retired) | `Builds\Rapid2\rapid2 (Program)\` | EC2 instance terminated 2026-03-04 |
 | v1.2 (Production) | `Builds\Rapid2\rapid2 v1.2\` | Live on EC2, real money — replaced v1 |
+| v1.3 (In progress?) | Unknown — C drive | Branch exists somewhere on C drive; check GitHub (openclaw-v1.2 repo) for v1.3 branch and search `C:\Users\benja\OneDrive\Documents\Builds\Rapid2\` — locate before building new features |
 
 ## Tech Stack
 - Python 3.12, ccxt, python-telegram-bot v20+ (async), apscheduler, python-dotenv, boto3

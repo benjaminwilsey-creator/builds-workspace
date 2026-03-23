@@ -72,10 +72,9 @@ task prompt. Sub-agent does all data gathering, returns only the formatted repor
 
 ## Planned Improvements (not yet built)
 Priority order for next development session on the agent/bot:
-1. `/test` skill — run pytest before deploy, block deploy on failure
-2. S3 state backup — save paper_state.json to S3 after each trade, load on startup if local missing
-3. Watchlist config file — move TIER2/TIER3_WATCHLIST from bot.py to JSON config, hot-reload each scan
-4. `/performance` skill — parse trade logs, report win rate, P&L, signal accuracy
+1. S3 state backup — save paper_state.json to S3 after each trade, load on startup if local missing
+2. Watchlist config file — move TIER2/TIER3_WATCHLIST from bot.py to JSON config, hot-reload each scan
+3. `/performance` skill — parse trade logs, report win rate, P&L, signal accuracy
 
 ## Feedback / How to Work With Benjamin
 See [feedback_terminal_instructions.md](feedback_terminal_instructions.md) — always specify terminal and directory with every command. PowerShell doesn't support bash for loops — write commands individually.

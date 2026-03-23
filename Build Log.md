@@ -1,6 +1,29 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 22 March 2026
+**Projects touched:** Rapid2 v1.2
+**Session type:** Maintenance
+
+### What was built or changed
+- Built the /test skill — you can now run /test before any deploy to automatically check that all automated tests pass; if they fail, the skill tells you not to deploy
+- Fixed 3 tests that were silently broken since the strategy overhaul — the trailing stop functions had a new parameter added in that session but the tests weren't updated to match
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | Running on EC2 (live trading) |
+| Production bot | Retired |
+| Last deploy | Not deployed this session |
+
+### Decisions made this session
+- None — maintenance only
+
+### Outstanding / next steps
+- v1.3 branch exists somewhere on the C drive — needs to be found and reviewed before building new features
+- S3 state backup is next on the planned improvements list
+- Uncommitted CLAUDE.md doc update in rapid2 v1.2 — include in next deploy commit
+---
 ## Session: 21 March 2026
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Feature build
