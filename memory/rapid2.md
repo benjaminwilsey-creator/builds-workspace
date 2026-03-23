@@ -8,10 +8,11 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 |---------|------|--------|
 | v1 (Retired) | `Builds\Rapid2\rapid2 (Program)\` | EC2 instance terminated 2026-03-04 |
 | v1.2 (Production) | `Builds\Rapid2\rapid2 v1.2\` | Live on EC2, real money — replaced v1 |
-| v1.3 (In progress?) | Unknown — C drive | Branch exists somewhere on C drive; check GitHub (openclaw-v1.2 repo) for v1.3 branch and search `C:\Users\benja\OneDrive\Documents\Builds\Rapid2\` — locate before building new features |
+| v1.3 (Paper) | `Builds\Rapid2\rapid2 v1.3\` | Paper bot live on EC2 2026-03-22; validating before real money |
 
 ## Tech Stack
-- Python 3.12, ccxt, python-telegram-bot v20+ (async), apscheduler, python-dotenv, boto3
+- v1.2: Python 3.12, ccxt, python-telegram-bot, apscheduler, python-dotenv, boto3
+- v1.3: Python 3.12, ccxt, python-telegram-bot, apscheduler, python-dotenv, requests (boto3 dropped)
 
 ## Key Files (v1.2)
 - **bot.py** — Live trading infrastructure (Kraken connection, order execution, Telegram, load_dotenv). Refactored 2026-03-06: scan_and_enter split into _scan_tier3 + _scan_tier2; load_existing_positions split into _classify_tier + _build_position
@@ -34,20 +35,35 @@ To tune strategy: edit strategy.py only.
 
 Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest tier.
 
-## Signal System (5 signals, score 0–5)
+## Signal System — v1.2 (score 0–5)
 1. **CryptoCompare** — Reddit posts_per_hour (>= 2.0) + active_users (>= 200)
-   - Two-step lookup: coinId from `/data/all/coinlist` (cached in `_CC_ID_CACHE`), then `/data/social/coin/latest`
-   - `_CC_LIST_FETCHED` sentinel prevents retry storms if coin list fetch fails on startup
 2. **CoinGecko** — trending coins list (no key required)
 3. **Reddit** — mention spike ratio, public JSON API, unauthenticated
 4. **Volume** — 3x 7-day average daily volume
-5. **RSI** — RSI-14 on 1h candles > 60 (new — momentum confirmation)
+5. **RSI** — RSI-14 on 1h candles > 60
 
-**T3 entry requires score >= 3** (was 2 out of 4)
-**T2 entry requires score >= 4** (was same out of 4)
-**Position sizing:** 1 signal = $3.60, 2 signals = $5, 3+ signals = $8 (reduced from $4/$7/$12)
-**T3 max positions: 3** (was 6)
-**Social thresholds raised:** posts_per_hour 0.5 → 2.0, active_users 50 → 200
+**T3 entry requires score >= 3 | T2 entry requires score >= 4**
+**Position sizing:** 1 signal = $3.60, 2 signals = $5, 3+ signals = $8
+
+## Signal System — v1.3 (price action, no scoring)
+**Primary triggers** (either fires an entry candidate):
+- EMA 9/21 crossover on 15m chart
+- Breakout above consolidation range
+
+**Confirmation layer** (all must pass):
+- Volume above average
+- RSI-14 not overbought
+- MACD crossed above signal on 1h
+- Price above 50 EMA (trend filter)
+- Swing low bounce check
+
+**Sentiment gate** (optional, market-wide):
+- Fear & Greed Index (alternative.me, free, no key) — score 0–100
+- Per-tier minimum: ANCHOR=0 (disabled), MID_CAP=50, DUST=60
+- Score 8 = Extreme Fear as of 2026-03-22 — gate is blocking entries
+
+**Tiers:** ANCHOR (BTC/ETH) | MID_CAP (SOL/AVAX/LINK etc.) | DUST (memes)
+**Exit ladder:** TP1=40% out, TP2=40% out, trailing 20% remainder
 
 ## Concentration Rules (added 2026-03-06)
 - `TIER2_MAX_SINGLE_PCT = 0.20` — no more than 20% of account in any one T2 coin
@@ -55,14 +71,20 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Consolidation is also blocked if the projected post-buy % would exceed the cap
 - Coins on TIER2_WATCHLIST priced below $1 get loaded as T3 on startup (e.g. HBAR at $0.10) — managed by trailing stop not TP/SL
 
-## EC2 — v1.2 (Production)
+## EC2 (shared instance — both versions run here)
 - Instance: t2.micro, Ubuntu, us-east-2
 - IP: `3.138.144.246` — SSH alias: `rapid2`
-- Service: `openclaw-paper` (name unchanged even though it now runs bot.py / live trading)
-- Deploy path: `/home/ubuntu/rapid2-v1.2/`
+
+### v1.2 (live trading — real money)
+- Service: `openclaw-paper` → `/home/ubuntu/rapid2-v1.2/bot.py`
 - Venv: `/home/ubuntu/rapid2-v1.2/.venv/bin/python`
-- Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper.service -n 50 --no-pager"`
-- `openclaw.service` (stale v1 code) was found running alongside v1.2 on 2026-03-06 — stopped + disabled
+- Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper -n 50 --no-pager"`
+
+### v1.3 (paper trading — validation)
+- Service: `openclaw-paper-v1.3` → `/home/ubuntu/rapid2-v1.3/paper_bot.py`
+- Venv: `/home/ubuntu/rapid2-v1.3/.venv/bin/python`
+- Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper-v1.3 -n 50 --no-pager"`
+- Deploy: `bash deploy.sh paper` (from v1.3 local folder)
 
 ## GitHub
 - v1.2 (production): https://github.com/benjaminwilsey-creator/openclaw-v1.2
@@ -84,10 +106,10 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Several magic numbers (0.0001 dust, anti-chase 1.05, score thresholds 3/4) should be CONFIG constants
 
 ## Known Issues / Gotchas
-- Service still named `openclaw-paper.service` even though it runs `bot.py` (live trading) — low priority rename
-- `bot.py` requires `load_dotenv()` before `os.getenv()` calls — systemd does NOT inherit shell env vars, so missing this silently uses fallback placeholders. Already fixed in current code.
+- `load_dotenv()` must be called BEFORE importing any local module that calls `os.getenv()` at module level — fixed in v1.3 paper_bot.py; verify in bot.py too if issues arise
+- LunarCrush free tier has NO coin-level data access — every endpoint returns 402 or "Individual subscription required"; replaced with Fear & Greed Index in v1.3
 - Kraken API key has IP whitelist — if server IP changes, must update in Kraken dashboard before bot can connect
 - Entry prices on startup are set to current market price (not actual cost basis) — P&L display starts from restart
-- `_CC_LIST_FETCHED` resets on restart — CryptoCompare coin list fetched fresh each boot
-- Reddit scraping (unauthenticated) is best-effort — may break without warning
 - Dust positions (sub-penny balances like BONK, FLOKI dust) are silently skipped on sell — harmless, logged as WARNING
+- Reddit scraping (unauthenticated, v1.2 only) is best-effort — may break without warning
+- EC2 security group SSH rule must allow your current IP — update in AWS console if connection times out
