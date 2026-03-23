@@ -1,6 +1,30 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 22 March 2026 (evening)
+**Projects touched:** Rapid2 v1.3
+**Session type:** Infrastructure / Deploy
+
+### What was built or changed
+- Deployed v1.3 to EC2 for the first time — it now runs as a paper trading bot alongside v1.2, which continues trading real money unchanged
+- Replaced LunarCrush (free tier blocks all coin data) with the Crypto Fear & Greed Index — a completely free market-wide sentiment score that needs no API key
+- Fixed a bug where the sentiment score wasn't loading because the config file was being read before environment variables were loaded
+- Gave v1.3 its own dedicated systemd service (`openclaw-paper-v1.3`) so it doesn't interfere with the v1.2 live bot
+
+### Current state
+| | Status |
+|---|---|
+| v1.2 live bot | Active — real money, 5 open positions (PEPE, PONKE, SHIB, SOL, TURBO) |
+| v1.3 paper bot | Active — paper trading, Fear & Greed score 8 (Extreme Fear — sentiment gate blocking entries) |
+| Last deploy | 2026-03-22 |
+
+### Decisions made this session
+- Replaced LunarCrush with Fear & Greed Index — LunarCrush free tier has no coin-level data; F&G is free, needs no key, and maps cleanly to the existing sentiment thresholds
+
+### Outstanding / next steps
+- Monitor v1.3 paper signals for a few days before considering switching it to live trading
+- Market is in Extreme Fear (score 8) — v1.3 sentiment gate will block most entries until sentiment recovers above 50
+---
 ## Session: 22 March 2026
 **Projects touched:** Rapid2 v1.2
 **Session type:** Maintenance
