@@ -404,6 +404,83 @@
       background: var(--green);
       flex-shrink: 0;
     }
+
+    /* ── Delivery tab ── */
+    .delivery-section {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .delivery-section h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .download-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-download {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-download:hover { background: #1e40af; }
+    .btn-download:disabled { opacity: 0.5; cursor: default; }
+
+    .caption-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text);
+    }
+
+    .btn-copy {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .btn-copy:hover { background: var(--border); }
+
+    .btn-publish {
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid var(--green-dim);
+      border-radius: 6px;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-publish:hover { background: #14532d; }
+    .btn-publish:disabled { opacity: 0.5; cursor: default; }
   </style>
 </head>
 <body>
@@ -416,6 +493,7 @@
   <div class="tabs">
     <button class="tab active" onclick="switchTab('review')">Script Review</button>
     <button class="tab"        onclick="switchTab('compose')">Video Compose</button>
+    <button class="tab"        onclick="switchTab('delivery')">Delivery</button>
   </div>
   <div id="tone-controls" class="tone-bar" style="margin-top:14px;">
     <label>Default tone for regeneration:</label>
@@ -498,8 +576,9 @@
     event.target.classList.add('active');
     const toneControls = document.getElementById('tone-controls');
     toneControls.style.display = tab === 'review' ? '' : 'none';
-    if (tab === 'review') loadCampaigns();
-    else loadVoicedCampaigns();
+    if (tab === 'review')        loadCampaigns();
+    else if (tab === 'compose')  loadVoicedCampaigns();
+    else                         loadComposedCampaigns();
   }
 
   // ── Load ─────────────────────────────────────────────────────────────────
@@ -946,6 +1025,141 @@
       }, 2000);
     } catch (e) {
       statusEl.textContent = `Compose failed: ${e.message}`;
+      btn.disabled = false;
+    }
+  }
+
+  // ── Delivery tab ──────────────────────────────────────────────────────────
+  async function loadComposedCampaigns() {
+    const container = document.getElementById('campaigns');
+    container.innerHTML = '<p class="loading">Loading composed campaigns…</p>';
+
+    const { data, error } = await db
+      .from('campaigns')
+      .select(`
+        id, campaign_type, caption, hashtags,
+        books ( title, author ),
+        campaign_parts ( part_number, video_url )
+      `)
+      .eq('status', 'COMPOSED')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      container.innerHTML = `<p class="error">Failed to load: ${error.message}</p>`;
+      return;
+    }
+
+    updateCounter(data.length);
+
+    if (data.length === 0) {
+      container.innerHTML = `
+        <div class="empty">
+          <p>No composed videos ready</p>
+          <p class="hint">Compose videos in the Video Compose tab first.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = data.map(c => renderDeliveryCard(c)).join('');
+  }
+
+  function renderDeliveryCard(c) {
+    const book  = c.books;
+    if (!book) return '';
+    const parts   = (c.campaign_parts || []).sort((a, b) => a.part_number - b.part_number);
+    const tags    = (c.hashtags || []).join(' ');
+    const caption = (c.caption || '') + (tags ? '\n\n' + tags : '');
+
+    const downloadButtons = parts.map(p => `
+      <button class="btn-download" id="dl-btn-${c.id}-${p.part_number}"
+        onclick="downloadPart('${p.video_url}', '${esc(book.title).replace(/[^a-z0-9]/gi,'_')}_part${p.part_number}.mp4', '${c.id}', ${p.part_number})">
+        ⬇ Download Part ${p.part_number}
+      </button>
+    `).join('');
+
+    return `
+      <div class="card" data-id="${c.id}">
+        <div class="card-header">
+          <div class="book-info">
+            <h2>${esc(book.title)}</h2>
+            <p class="book-meta">${esc(book.author)}</p>
+          </div>
+          <span class="campaign-type">${c.campaign_type}</span>
+        </div>
+
+        <div class="delivery-section">
+          <div>
+            <h3>Video${parts.length > 1 ? 's' : ''}</h3>
+            <div class="download-row">${downloadButtons}</div>
+          </div>
+
+          <div>
+            <h3>Caption &amp; Hashtags</h3>
+            <div class="caption-box" id="caption-${c.id}">${esc(caption)}</div>
+            <button class="btn-copy" onclick="copyCaption('${c.id}')">Copy caption</button>
+          </div>
+
+          <div>
+            <button class="btn-publish" id="publish-btn-${c.id}"
+              onclick="markPublished('${c.id}')">
+              ✓ Mark as Published
+            </button>
+            <span class="upload-progress" id="publish-status-${c.id}" style="margin-left:10px;"></span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function downloadPart(url, filename, campaignId, partNum) {
+    const btn = document.getElementById(`dl-btn-${campaignId}-${partNum}`);
+    btn.disabled = true;
+    btn.textContent = 'Downloading…';
+    try {
+      const res  = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const a    = document.createElement('a');
+      a.href     = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      btn.textContent = '✓ Downloaded';
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = `⬇ Download Part ${partNum}`;
+      alert(`Download failed: ${e.message}`);
+    }
+  }
+
+  function copyCaption(campaignId) {
+    const text = document.getElementById(`caption-${campaignId}`).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = 'Copy caption'; }, 2000);
+    });
+  }
+
+  async function markPublished(campaignId) {
+    const btn      = document.getElementById(`publish-btn-${campaignId}`);
+    const statusEl = document.getElementById(`publish-status-${campaignId}`);
+    btn.disabled   = true;
+    statusEl.textContent = 'Saving…';
+    try {
+      const { error } = await db.from('campaigns')
+        .update({ status: 'PUBLISHED', updated_at: new Date().toISOString() })
+        .eq('id', campaignId);
+      if (error) throw new Error(error.message);
+      const card = getCard(campaignId);
+      card.classList.add('removing');
+      setTimeout(() => {
+        card.remove();
+        const remaining = document.querySelectorAll('.card').length;
+        updateCounter(remaining);
+      }, 300);
+    } catch (e) {
+      statusEl.textContent = `Failed: ${e.message}`;
       btn.disabled = false;
     }
   }
