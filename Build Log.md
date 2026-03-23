@@ -1,6 +1,58 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 23 March 2026
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature build
+
+### What was built or changed
+- Fixed two bugs in the video composer: Cloudflare was blocking the Python script from downloading book covers (fixed by pretending to be a browser), and book titles with apostrophes were crashing the video builder (fixed by swapping in a curly quote character)
+- Built the Delivery tab in the moderation tool — your partner can now download the finished MP4 videos, copy the caption and hashtags, and mark a campaign as published, all from one screen
+- Built the Publisher Licenses tab in the moderation tool — tracks every publisher through the outreach process (pending → in discussion → licensed), with a mini-checklist per publisher and a Focus Mode that shows one publisher at a time for distraction-free working
+- Supabase database permissions set up so the anon key can read and write the publisher_licenses table
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.3) | Running on EC2 |
+| Production bot (v1.2) | Running on EC2 |
+| Moderation UI | Live — 4 tabs: Script Review, Video Compose, Delivery, Publishers |
+| Last deploy | 2026-03-23 |
+
+### Decisions made this session
+- None new — Publisher Licenses UI design was already locked in ADR 0001
+
+### Outstanding / next steps
+- Compose the ~10 VOICED campaigns still waiting (do this in the Video Compose tab — no code needed)
+- Build Gmail outreach button on publisher cards (ADR 0003): Gemini writes the email, one click pushes a draft to partner's Gmail inbox
+---
+## Session: 22 March 2026
+**Projects touched:** Workspace, builds-workspace, reelforge, openclaw, architect-skills
+**Session type:** Infrastructure / Migration
+
+### What was built or changed
+- E drive (`E:\Builds - Copy`) is now the official primary workspace — all projects cloned fresh from GitHub as standalone git repos
+- Booksmut's three newest cloud functions (r2-presign, tts-voicer, video-composer) were saved to the reelforge GitHub repo and removed from the workspace root — Booksmut is now fully self-contained
+- The workspace root .gitignore was updated so Booksmut, Architect, model-skills, and Sportsball are all properly excluded
+- Developer Quick Reference updated to include a /test step before code review in the pre-deploy checklist
+- The /catchup skill was updated to pull the latest from GitHub at the start of every session, and now uses E drive paths
+- rapid2 v1.2 documentation updated to reflect the RSI-14 signal and revised trading thresholds, and saved to the openclaw GitHub repo
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.3) | Running on EC2 — develop branch |
+| Production bot (v1.2) | Running on EC2 |
+| Last deploy | No deploy this session |
+
+### Decisions made this session
+- E drive is now primary workspace — C drive OneDrive copy is kept but not used for development
+- Booksmut files removed from builds-workspace root — reelforge repo is the single source of truth for Booksmut
+
+### Outstanding / next steps
+- Sportsball folder on E drive cannot be deleted (GitKraken lock) — gitignored for now
+- Monitor v1.3 paper bot before switching to live trading
+---
 ## Session: 22 March 2026 (evening)
 **Projects touched:** Rapid2 v1.3
 **Session type:** Infrastructure / Deploy
