@@ -147,6 +147,30 @@
       letter-spacing: 0.5px;
     }
 
+    /* ── Book summary ── */
+    .book-summary {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .book-summary summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    .book-summary p {
+      margin-top: 8px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
     /* ── Script parts ── */
     .parts {
       padding: 16px 20px;
@@ -917,7 +941,7 @@
       .from('campaigns')
       .select(`
         id, campaign_type, caption, hashtags, tone_note,
-        books ( title, author, genre, spice_level ),
+        books ( title, author, genre, spice_level, description ),
         campaign_parts ( part_number, total_parts, hook, body, cta, hook_category )
       `)
       .eq('status', 'SCRIPTED')
@@ -990,6 +1014,12 @@
           </div>
           <span class="campaign-type">${c.campaign_type}</span>
         </div>
+
+        ${book.description ? `
+        <details class="book-summary">
+          <summary>About this book</summary>
+          <p>${esc(book.description)}</p>
+        </details>` : ''}
 
         <div class="parts">${partsHtml}</div>
 
