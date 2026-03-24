@@ -1,6 +1,34 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 23 March 2026 (late)
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature planning + Infrastructure setup
+
+### What was built or changed
+- Researched TikTok's Content Posting API end-to-end — confirmed the right approach is file upload to inbox (video lands as a draft in TikTok, Benjamin reviews and taps publish from the app)
+- Discovered that Cloudflare's shared R2 URL can't be verified with TikTok — the URL shortcut won't work without buying a domain; chose direct file upload instead to avoid that cost
+- Created Terms of Service and Privacy Policy pages on GitHub Pages — required fields for TikTok app registration
+- Created an OAuth callback page so TikTok redirects back after login and displays the auth code to copy
+- Benjamin submitted the TikTok developer app for review
+
+### Current state
+| | Status |
+|---|---|
+| TikTok integration | In progress — waiting on app review + Client Key/Secret |
+| Booksmut pipeline | Fully working end-to-end (ENRICHED → PUBLISHED) |
+| Publisher Licenses tab | Live |
+| Gmail outreach | Planned (ADR 0003) — not started |
+
+### Decisions made this session
+- File upload (not URL pull) for TikTok — avoids needing a custom domain, works with current R2 setup
+- Draft/inbox mode (not direct post) — video goes to TikTok drafts for human review before publishing
+
+### Outstanding / next steps
+- Get Client Key + Secret from TikTok once app is approved
+- Do one-time OAuth browser login to connect the BookTok account and store tokens in GCP Secret Manager
+- Build the Cloud Function and "Post to TikTok" button in the Delivery tab
+---
 ## Session: 23 March 2026 (evening)
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Feature build

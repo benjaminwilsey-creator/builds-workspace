@@ -14,7 +14,7 @@ Phase 0 **complete**. Phase 1 database **complete**. Phase 2 pipeline **complete
 - Tabs: Script Review (SCRIPTED), Video Compose (VOICED), Delivery (COMPOSED), Publishers (publisher_licenses)
 - ~10 campaigns in VOICED state need composing (were blocked by bugs now fixed)
 - Publisher Licenses tab live as of 2026-03-23: dashboard + focus mode, ADR 0001 Framework B design, RLS policies added
-Next: compose VOICED campaigns, then Gmail outreach integration (ADR 0003) — "Generate Draft" button on publisher card
+Next: TikTok auto-post integration in progress (see TikTok Integration section below). Also pending: Gmail outreach integration (ADR 0003).
 
 ### Known video-composer bugs fixed (2026-03-23)
 - Cloudflare 403: switched `urllib` to `requests` with Mozilla User-Agent
@@ -149,6 +149,33 @@ Service account: `reelforge-api-runner` — has secretAccessor on all secrets ab
 - RLS policies: SELECT + UPDATE on `campaigns` and `campaign_parts` for anon role; SELECT + INSERT + UPDATE on `publisher_licenses` for anon role
 - `tone_note text` column added to campaigns table — stores regeneration guidance per campaign
 - Script Review cards show a collapsible "About this book" description — pulled from `books.description`, collapsed by default
+
+## TikTok Integration (in progress — 2026-03-23)
+
+### Approach
+- **File upload to inbox (draft mode)** — video lands in TikTok drafts, Benjamin reviews and taps Publish from the app
+- No caption pre-fill in draft mode — caption added manually in TikTok app before publishing
+- No custom domain needed (avoids R2 shared URL limitation)
+
+### Why not PULL_FROM_URL
+- R2 public URL (`pub-....r2.dev`) is on Cloudflare's shared domain — cannot be DNS-verified with TikTok
+- Would require buying a custom domain; chose file upload instead to avoid that cost
+
+### Key Gotchas
+- **Token refresh trap**: every refresh call kills the old refresh token and returns a new one — Cloud Function must save new token back to Secret Manager immediately or access is permanently lost
+- **App review required for production** — sandbox works immediately; production review takes ~5–10 days; TikTok may flag no mobile app (internal tool argument should work)
+- **Draft mode only**: `video.upload` scope; if caption pre-fill is needed later, switch to `video.publish` (direct post, no review step)
+
+### Setup State
+- TikTok developer app submitted for review — waiting on Client Key + Secret + sandbox user approval
+- OAuth redirect URI: `https://benjaminwilsey-creator.github.io/builds-workspace/tiktok-callback.html`
+- ToS page: `https://benjaminwilsey-creator.github.io/builds-workspace/tos.html`
+- Privacy Policy: `https://benjaminwilsey-creator.github.io/builds-workspace/privacy.html`
+
+### What's Left to Build
+1. One-time OAuth browser login → store access + refresh tokens in GCP Secret Manager
+2. `tiktok-poster` Cloud Function — downloads MP4 from R2, uploads to TikTok as draft
+3. "Post to TikTok" button in Delivery tab of Moderation UI
 
 ## Known Risks (must not be forgotten)
 - **Open Library covers are NOT cleared for commercial use** — backdrop fallback only when no licensed cover

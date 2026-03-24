@@ -1,16 +1,19 @@
 ---
 date: 2026-03-23
-project: Booksmut — ReelForge UI additions
+project: Booksmut — TikTok Integration Setup
 ---
 
 ## What we did
-- Pushed Publisher Licenses tab live (Supabase RLS confirmed, GitHub Pages deployed)
-- Added collapsible book description to Script Review cards so partner can read a plain-English summary of each book while reviewing the script
+- Spiked TikTok Content Posting API — chose file upload (draft/inbox) approach, no custom domain needed
+- Created Terms of Service, Privacy Policy, and OAuth callback pages on GitHub Pages for TikTok app registration
+- Benjamin submitted TikTok developer app for review
 
 ## Next up
-- Compose the ~10 VOICED campaigns (Video Compose tab → Compose Now — no code needed)
-- Build Gmail outreach button on publisher cards (ADR 0003)
+- Get Client Key + Client Secret from TikTok once app is approved (or sandbox credentials appear)
+- Do one-time OAuth browser login to connect the BookTok TikTok account and store tokens in GCP Secret Manager
+- Build tiktok-poster Cloud Function + "Post to TikTok" button in Delivery tab
 
 ## Watch out for
-- publisher_licenses table has no tenant_id filter on RLS — fine for now, revisit if multi-tenant
-- VOICED campaigns that errored stay VOICED and retry on next Compose Now (expected behaviour)
+- Token refresh trap: every TikTok token refresh returns a NEW refresh token — old one dies immediately; must save to Secret Manager before function exits
+- Draft mode has no caption pre-fill — caption added manually in TikTok app before publishing
+- TikTok app review may flag no mobile app — internal tool argument should resolve it
