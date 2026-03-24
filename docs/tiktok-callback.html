@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReelForge — TikTok Auth</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f172a; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 40px; max-width: 560px; width: 100%; text-align: center; }
+    h1 { font-size: 1.4rem; margin-bottom: 8px; }
+    .sub { color: #94a3b8; margin-bottom: 32px; font-size: 0.9rem; }
+    .code-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 0.85rem; word-break: break-all; color: #38bdf8; margin-bottom: 16px; text-align: left; }
+    .copy-btn { background: #22c55e; color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 0.95rem; cursor: pointer; }
+    .copy-btn:hover { background: #16a34a; }
+    .copied { background: #166534 !important; }
+    .error { color: #ef4444; }
+    .instruction { color: #94a3b8; font-size: 0.85rem; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>TikTok Authorization</h1>
+    <p class="sub">Copy the code below and give it to Claude to complete setup.</p>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+    const content = document.getElementById('content');
+
+    if (error) {
+      content.innerHTML = `<p class="error">Authorization failed: ${error}</p>`;
+    } else if (code) {
+      content.innerHTML = `
+        <div class="code-box" id="code">${code}</div>
+        <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+        <p class="instruction">Paste this code into your Claude conversation to complete the TikTok connection.</p>
+      `;
+    } else {
+      content.innerHTML = `<p class="error">No authorization code found in URL.</p>`;
+    }
+
+    function copyCode() {
+      navigator.clipboard.writeText(document.getElementById('code').textContent);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('copied'); }, 2000);
+    }
+  </script>
+</body>
+</html>
