@@ -1,6 +1,29 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 23 March 2026 (evening)
+**Projects touched:** Booksmut / ReelForge
+**Session type:** Feature build
+
+### What was built or changed
+- Pushed the Publisher Licenses tab live after confirming the database permissions were set up correctly
+- Added a collapsible "About this book" summary to each campaign card in the Script Review tab — the description was already stored in the database from enrichment, it just wasn't being shown anywhere; now your partner can read a plain-English summary of the book while reviewing its script
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.3) | Running on EC2 |
+| Production bot (v1.2) | Running on EC2 |
+| Moderation UI | Live — 4 tabs: Script Review, Video Compose, Delivery, Publishers |
+| Last deploy | 2026-03-23 |
+
+### Decisions made this session
+- None — both changes were already planned
+
+### Outstanding / next steps
+- Compose the ~10 VOICED campaigns waiting in Video Compose tab (no code needed — just click Compose Now)
+- Build Gmail outreach button on publisher cards (ADR 0003)
+---
 ## Session: 23 March 2026
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Feature build

@@ -146,8 +146,9 @@ Service account: `reelforge-api-runner` — has secretAccessor on all secrets ab
 - URL: `https://benjaminwilsey-creator.github.io/builds-workspace/`
 - Source: `docs/index.html` in builds-workspace repo — deployed via GitHub Actions on every push to master
 - Auth: anon key stored in browser localStorage (never committed). To reset: `localStorage.removeItem('rf-anon-key')` in browser console
-- RLS policies: SELECT + UPDATE on `campaigns` and `campaign_parts` for anon role
+- RLS policies: SELECT + UPDATE on `campaigns` and `campaign_parts` for anon role; SELECT + INSERT + UPDATE on `publisher_licenses` for anon role
 - `tone_note text` column added to campaigns table — stores regeneration guidance per campaign
+- Script Review cards show a collapsible "About this book" description — pulled from `books.description`, collapsed by default
 
 ## Known Risks (must not be forgotten)
 - **Open Library covers are NOT cleared for commercial use** — backdrop fallback only when no licensed cover
