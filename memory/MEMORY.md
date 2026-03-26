@@ -30,8 +30,9 @@ See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for ful
 | Server | IP | SSH Alias | Service | Purpose |
 |--------|-----|-----------|---------|---------|
 | Rapid2 v1 (Retired) | `3.131.96.193` | none | `openclaw` | TERMINATED 2026-03-04 — instance gone |
-| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money (bot.py) |
-| Rapid2 v1.3 (Paper) | `3.138.144.246` | `rapid2` | `openclaw-paper-v1.3` | Paper trading — validating v1.3 (paper_bot.py) |
+| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money, now runs v1.3 regime code |
+| Rapid2 v1.3 (Paper) | `3.138.144.246` | `rapid2` | `openclaw-paper-v1.3` | Paper trading — v1.3 regime strategy |
+| Old openclaw (disabled) | `3.138.144.246` | `rapid2` | `openclaw` | Stopped & disabled 2026-03-25 — was causing Telegram conflicts |
 
 ## GitHub Repos
 | Repo | Branches | What's in it |
@@ -96,6 +97,7 @@ Priority order for next development session on the agent/bot:
 
 ## Feedback / How to Work With Benjamin
 See [feedback_terminal_instructions.md](feedback_terminal_instructions.md) — always specify terminal and directory with every command. PowerShell doesn't support bash for loops — write commands individually.
+See [feedback_contrarian_strategy.md](feedback_contrarian_strategy.md) — fear = accumulation, greed = defense. Never block entries during fear.
 
 ## Windows Tooling Gotchas
 - **Edit tool fails** on paths with spaces in directory name (e.g. `rapid2 v1.2`) — workaround: write Python script to `/c/Users/benja/AppData/Local/Temp/`, execute with `/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`

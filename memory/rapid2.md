@@ -7,8 +7,8 @@ Multi-tier crypto trading bot for Kraken exchange, controlled via Telegram, runn
 | Version | Path | Status |
 |---------|------|--------|
 | v1 (Retired) | `Builds\Rapid2\rapid2 (Program)\` | EC2 instance terminated 2026-03-04 |
-| v1.2 (Production) | `Builds\Rapid2\rapid2 v1.2\` | Live on EC2, real money — replaced v1 |
-| v1.3 (Paper) | `Builds\Rapid2\rapid2 v1.3\` | Paper bot live on EC2 2026-03-22; validating before real money |
+| v1.2 (Production) | `Builds\Rapid2\rapid2 v1.2\` | Live on EC2, real money — now runs v1.3 regime code (deployed 2026-03-25) |
+| v1.3 (Paper) | `Builds\Rapid2\rapid2 v1.3\` | Paper bot live on EC2 2026-03-22; also deployed to live bot 2026-03-25 |
 
 ## Tech Stack
 - v1.2: Python 3.12, ccxt, python-telegram-bot, apscheduler, python-dotenv, boto3
@@ -57,10 +57,21 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Price above 50 EMA (trend filter)
 - Swing low bounce check
 
-**Sentiment gate** (optional, market-wide):
+**Regime system** (market-wide, drives entry/exit behavior):
 - Fear & Greed Index (alternative.me, free, no key) — score 0–100
-- Per-tier minimum: ANCHOR=0 (disabled), MID_CAP=50, DUST=60
-- Score 8 = Extreme Fear as of 2026-03-22 — gate is blocking entries
+- 5 regimes: EXTREME_FEAR (0-20), FEAR (21-40), NEUTRAL (41-60), GREED (61-80), EXTREME_GREED (81-100)
+- Contrarian: fear = accumulation opportunity, greed = defense/block
+- EXTREME_GREED blocks all new entries; EXTREME_FEAR widens RSI bands, waives MACD, allows downtrend
+- Position sizing scaled by regime: 50% during Extreme Fear, 75% Fear, 100% Neutral, 75% Greed, 0% Extreme Greed
+
+**Additional signals** (free, no API keys):
+- BTC 200-day MA distance — % below 200 EMA signals accumulation zone (threshold: -25%)
+- Capitulation volume — 3x+ avg volume on red candles = potential bounce
+- During EXTREME_FEAR, Gate 7 requires at least one of: swing low bounce, capitulation volume, BTC near 200MA
+
+**Exit adjustments by regime:**
+- Trailing stops tighten 50% during GREED/EXTREME_GREED
+- Max hold days extend 50% during FEAR/EXTREME_FEAR
 
 **Tiers:** ANCHOR (BTC/ETH) | MID_CAP (SOL/AVAX/LINK etc.) | DUST (memes)
 **Exit ladder:** TP1=40% out, TP2=40% out, trailing 20% remainder
@@ -75,7 +86,11 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Instance: t2.micro, Ubuntu, us-east-2
 - IP: `3.138.144.246` — SSH alias: `rapid2`
 
-### v1.2 (live trading — real money)
+### Old `openclaw` service — STOPPED & DISABLED (2026-03-25)
+- Was running from `/home/ubuntu/rapid2/` (v1 code) — caused Telegram conflicts
+- `sudo systemctl stop openclaw && sudo systemctl disable openclaw`
+
+### v1.2 (live trading — real money, now running v1.3 code)
 - Service: `openclaw-paper` → `/home/ubuntu/rapid2-v1.2/bot.py`
 - Venv: `/home/ubuntu/rapid2-v1.2/.venv/bin/python`
 - Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper -n 50 --no-pager"`
@@ -107,7 +122,8 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 
 ## Known Issues / Gotchas
 - `load_dotenv()` must be called BEFORE importing any local module that calls `os.getenv()` at module level — fixed in v1.3 paper_bot.py; verify in bot.py too if issues arise
-- LunarCrush free tier has NO coin-level data access — every endpoint returns 402 or "Individual subscription required"; replaced with Fear & Greed Index in v1.3
+- LunarCrush fully replaced — `lunarcrush.py` deleted, `sentiment.py` uses free Fear & Greed API (alternative.me). No API key needed.
+- Existing positions loaded from v1.2 state file classify as `tier=dust` — new entries use proper tier classification
 - Kraken API key has IP whitelist — if server IP changes, must update in Kraken dashboard before bot can connect
 - Entry prices on startup are set to current market price (not actual cost basis) — P&L display starts from restart
 - Dust positions (sub-penny balances like BONK, FLOKI dust) are silently skipped on sell — harmless, logged as WARNING
