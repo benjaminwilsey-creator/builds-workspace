@@ -19,7 +19,7 @@ See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for ful
 - IDE: VS Code
 - Deployment: AWS EC2 (scp push + systemd restart)
 - Communication: plain English, no jargon, explain the "why"
-- python-docx installed on Python 3.14 (`/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`) — can convert .md -> .docx
+- python-docx and ccxt installed on Python 3.14 (`/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`) — can convert .md -> .docx, run backtests
 
 ## Key Credentials Locations
 - Rapid2 v1 `.env`: `Builds\Rapid2\rapid2 (Program)\.env` (retired — but still holds working Kraken creds)

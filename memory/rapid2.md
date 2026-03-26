@@ -106,8 +106,22 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - v1 (retired): https://github.com/benjaminwilsey-creator/openclaw-v1
 - Account: benjaminwilsey-creator
 
+## Quick Flip Mode (added 2026-03-26 — LOCAL ONLY, not deployed)
+Toggle via `/mode` Telegram command. Sprint strategy to grow $116 → $300 through rapid small wins.
+
+**Status:** Code complete in strategy.py, bot.py, paper_bot.py. Backtest showed entry gates too strict (3 trades in 8 days, all SL hits). Needs tuning before deploy.
+
+**Parameters:**
+- TP: +6% (nets ~5.5% after fees) | SL: -2% | Max hold: 24h
+- Max 2 positions at 45% account each
+- Entry: volatility ≥3% + (pullback to 9 EMA OR EMA 9/21 crossover) + RSI 42-58 + volume ≥1.5x
+- Scan interval: 60s (vs 180s regime) | Scans MID_CAP + ANCHOR, ranked by volatility
+- Kill switch: 3 consecutive losses or 10% drawdown → auto-revert to regime mode
+
+**New functions in strategy.py:** `qf_reset_tracking()`, `qf_record_trade_result()`, `qf_should_kill_switch()`, `get_recent_volatility()`, `detect_pullback_to_ema()`, `build_quick_flip_signals()`, `evaluate_quick_flip_entry()`, `evaluate_quick_flip_exit()`, `format_quick_flip_entry_alert()` + `QuickFlipSignals`, `QuickFlipDecision` dataclasses
+
 ## Telegram Commands (live bot, bot.py)
-`/status`, `/positions`, `/portfolio`, `/watchlist`, `/pause`, `/resume`, `/report`, `/help`
+`/status`, `/positions`, `/portfolio`, `/watchlist`, `/pause`, `/resume`, `/report`, `/mode`, `/help`
 
 ## New Functions (strategy overhaul 2026-03-11)
 - `get_rsi_signal(exchange, symbol)` — fetches 16 x 1h OHLCV candles, calculates RSI-14 (Wilder's smoothing), returns True if RSI > 60
@@ -129,3 +143,6 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Dust positions (sub-penny balances like BONK, FLOKI dust) are silently skipped on sell — harmless, logged as WARNING
 - Reddit scraping (unauthenticated, v1.2 only) is best-effort — may break without warning
 - EC2 security group SSH rule must allow your current IP — update in AWS console if connection times out
+- **Kraken+ zero fees do NOT apply to API trades** — only app/web Buy/Sell/Convert. Bot pays 0.16% maker / 0.26% taker via ccxt. TP targets must account for ~0.4-0.5% round-trip fee drag.
+- **MATIC/USD rebranded to POL/USD on Kraken** — update watchlists if MATIC is referenced
+- **Kraken OHLCV 15m data capped at ~720 candles (~8 days)** — for backtesting, use Binance (USDT pairs) which paginates properly. Prices are nearly identical for major coins.
