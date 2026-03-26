@@ -1,6 +1,34 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 26 March 2026
+**Projects touched:** Rapid2 v1.3
+**Session type:** Feature build + Backtesting
+
+### What was built or changed
+- Added "Quick Flip" mode to the trading bot — a sprint strategy that tries to grow the account through rapid 6% wins with tight 2% stop losses, toggled on/off via a /mode Telegram command
+- Discovered that Kraken+ zero-fee promotion does NOT apply to trades made through the API (which is how the bot trades) — the bot has been paying 0.16%/0.26% fees all along, so profit targets were adjusted upward to compensate
+- Fixed duplicate code in strategy.py left over from the previous session's patching approach
+- Built a backtest script that downloads real price data and simulates the Quick Flip strategy — first run showed the entry filters are too strict (only 3 trades in 8 days, all losses)
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | active on EC2 — running regime mode, Quick Flip code NOT yet deployed |
+| Production bot | active on EC2 — running regime mode |
+| Last deploy | 2026-03-25 (regime strategy) |
+
+### Decisions made this session
+- Quick Flip implemented as a mode toggle inside the existing bot (not a separate bot) — simpler, one codebase to maintain
+- Take profit raised from 5% to 6% to cover round-trip API trading fees (~0.4-0.5%)
+- User chose to backtest before deploying — backtest revealed problems that need fixing first
+
+### Outstanding / next steps
+- Run backtest v2 with 30 days of data (Binance source — Kraken only returns 8 days of 15m candles)
+- Analyze which entry gate is too strict and loosen it so the bot actually trades
+- Deploy to paper bot only after backtest shows a positive edge
+
+---
 ## Session: 25 March 2026
 **Projects touched:** Rapid2 v1.3
 **Session type:** Feature build + Live deploy
