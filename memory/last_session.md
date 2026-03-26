@@ -1,18 +1,16 @@
 ---
 date: 2026-03-26
-project: Rapid2 v1.3 — Quick Flip Mode
+project: Rapid2 v1.3 — Quick Flip Mode + TIER_MAP Bug Fix
 ---
 
 ## What we did
-- Built Quick Flip mode — a sprint trading strategy (6% TP / 2% SL / 24h max hold) toggled via /mode command
-- Discovered Kraken+ zero fees don't cover API trades — bot actually pays 0.16%/0.26% maker/taker
-- Ran first backtest — only 3 trades in 8 days, all hit stop loss, kill switch triggered immediately
+- Built Quick Flip mode (6% TP / 2% SL / 24h hold) with /mode toggle — backtest showed entry gates too strict
+- Found critical TIER_MAP bug — bot was classifying ALL coins as dust because the map used Kraken symbols not CCXT symbols. Fixed locally.
 
 ## Next up
-- Run backtest v2 with 30 days of Binance data (script written, not yet executed)
-- Analyze gate diagnostics to find which entry filter is too strict and tune it
-- Deploy to paper bot only after backtest shows positive edge
+- Deploy TIER_MAP fix to EC2 (both live and paper bots) — this is the highest priority, it affects real money
+- Run backtest v2 with 30 days of Binance data (script ready at Temp\backtest_qf.py)
+- Tune Quick Flip entry gates based on backtest diagnostics
 
 ## Watch out for
-- All Quick Flip code is LOCAL ONLY — nothing deployed to EC2 yet
-- Backtest v2 script at C:\Users\benja\AppData\Local\Temp\backtest_qf.py ready to run
+- TIER_MAP fix is LOCAL ONLY — not deployed yet. Live bot is still misclassifying everything as dust.

@@ -10,6 +10,7 @@
 - Discovered that Kraken+ zero-fee promotion does NOT apply to trades made through the API (which is how the bot trades) — the bot has been paying 0.16%/0.26% fees all along, so profit targets were adjusted upward to compensate
 - Fixed duplicate code in strategy.py left over from the previous session's patching approach
 - Built a backtest script that downloads real price data and simulates the Quick Flip strategy — first run showed the entry filters are too strict (only 3 trades in 8 days, all losses)
+- Found and fixed a critical bug: the bot's tier classification map was using the wrong symbol format, so every coin (including BTC and ETH) was being treated as a micro-cap meme coin — tiny position sizes, most conservative exits. Fix is local only, not yet deployed.
 
 ### Current state
 | | Status |
@@ -24,9 +25,10 @@
 - User chose to backtest before deploying — backtest revealed problems that need fixing first
 
 ### Outstanding / next steps
+- **Deploy TIER_MAP fix to EC2 — highest priority, affects real money trades**
 - Run backtest v2 with 30 days of data (Binance source — Kraken only returns 8 days of 15m candles)
 - Analyze which entry gate is too strict and loosen it so the bot actually trades
-- Deploy to paper bot only after backtest shows a positive edge
+- Deploy Quick Flip to paper bot only after backtest shows a positive edge
 
 ---
 ## Session: 25 March 2026

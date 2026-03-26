@@ -137,7 +137,7 @@ Toggle via `/mode` Telegram command. Sprint strategy to grow $116 → $300 throu
 ## Known Issues / Gotchas
 - `load_dotenv()` must be called BEFORE importing any local module that calls `os.getenv()` at module level — fixed in v1.3 paper_bot.py; verify in bot.py too if issues arise
 - LunarCrush fully replaced — `lunarcrush.py` deleted, `sentiment.py` uses free Fear & Greed API (alternative.me). No API key needed.
-- Existing positions loaded from v1.2 state file classify as `tier=dust` — new entries use proper tier classification
+- Existing positions loaded from v1.2 state file classify as `tier=dust` — new entries use proper tier classification. **TIER_MAP bug (fixed locally 2026-03-26) was also misclassifying ALL new entries as dust — deploy fix to EC2 ASAP.**
 - Kraken API key has IP whitelist — if server IP changes, must update in Kraken dashboard before bot can connect
 - Entry prices on startup are set to current market price (not actual cost basis) — P&L display starts from restart
 - Dust positions (sub-penny balances like BONK, FLOKI dust) are silently skipped on sell — harmless, logged as WARNING
@@ -146,3 +146,4 @@ Toggle via `/mode` Telegram command. Sprint strategy to grow $116 → $300 throu
 - **Kraken+ zero fees do NOT apply to API trades** — only app/web Buy/Sell/Convert. Bot pays 0.16% maker / 0.26% taker via ccxt. TP targets must account for ~0.4-0.5% round-trip fee drag.
 - **MATIC/USD rebranded to POL/USD on Kraken** — update watchlists if MATIC is referenced
 - **Kraken OHLCV 15m data capped at ~720 candles (~8 days)** — for backtesting, use Binance (USDT pairs) which paginates properly. Prices are nearly identical for major coins.
+- **TIER_MAP was keyed with Kraken raw symbols (XBTUSD) not CCXT (BTC/USD)** — every coin classified as DUST. Fixed locally 2026-03-26: added CCXT keys + missing mid-caps (LTC, DOGE, XLM, HBAR). **NOT YET DEPLOYED** — deploy strategy.py to both live and paper bots.
