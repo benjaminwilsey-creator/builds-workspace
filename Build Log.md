@@ -1,6 +1,34 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 25 March 2026
+**Projects touched:** Rapid2 v1.3
+**Session type:** Feature build + Live deploy
+
+### What was built or changed
+- Built a 5-regime trading strategy that flips the bot's relationship with fear and greed — instead of blocking entries during scary markets, the bot now treats Extreme Fear as an accumulation window (with extra confirmation checks) and blocks entries during Extreme Greed
+- Added two new free data signals: BTC's distance from its 200-day moving average (accumulation zone detector) and capitulation volume (panic selling = potential bounce)
+- Replaced the old LunarCrush module (paid, broken) with a free Fear & Greed Index API — no API key needed
+- Deployed the new strategy to both the paper bot AND the live bot (live account is in reset phase, mostly cash — $116 value)
+- Found and disabled an orphaned service on the server that was fighting with the live bot for Telegram access
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot (v1.3) | Active — running regime strategy, F&G=10 (Extreme Fear) |
+| Production bot | Active — running v1.3 regime code, $116 account, 18 positions (all legacy tier=dust) |
+| Last deploy | 2026-03-25 |
+
+### Decisions made this session
+- Contrarian philosophy: fear = buy opportunity, greed = defense — fundamental shift from the old threshold gate
+- Deployed to live bot despite being "v1.3 paper" code — account is mostly cash in reset phase, acceptable risk
+- Used free alternative.me F&G API instead of paid LunarCrush — no key needed, updates daily
+
+### Outstanding / next steps
+- Monitor logs over next scan cycles to see if regime-aware entries fire during Extreme Fear
+- Existing 18 positions loaded as tier=dust — will self-correct for new entries
+- S3 state backup still on the planned improvements list
+---
 ## Session: 23 March 2026 (late)
 **Projects touched:** Booksmut / ReelForge
 **Session type:** Feature planning + Infrastructure setup
