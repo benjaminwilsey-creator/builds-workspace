@@ -1,16 +1,17 @@
 ---
 date: 2026-03-26
-project: Rapid2 v1.3 — Quick Flip Mode + TIER_MAP Bug Fix
+project: Rapid2
 ---
 
 ## What we did
-- Built Quick Flip mode (6% TP / 2% SL / 24h hold) with /mode toggle — backtest showed entry gates too strict
-- Found critical TIER_MAP bug — bot was classifying ALL coins as dust because the map used Kraken symbols not CCXT symbols. Fixed locally.
+- Built 3-layer CryptoCompare social signal integration into v1.3 strategy (watchlist ranking, momentum bonus, dead-coin gate) and deployed to both live and paper bots
+- Diagnosed historic CryptoCompare API overage as coming from v1.2 era — v1.3 makes zero CryptoCompare calls
 
 ## Next up
-- Deploy TIER_MAP fix to EC2 (both live and paper bots) — this is the highest priority, it affects real money
-- Run backtest v2 with 30 days of Binance data (script ready at Temp\backtest_qf.py)
-- Tune Quick Flip entry gates based on backtest diagnostics
+- Get a fresh CryptoCompare free API key from cryptocompare.com
+- Update both EC2 .env files with the new key, then restart both services
+- Verify logs show "[Social] Loaded 19000+ CryptoCompare coin IDs" after restart
 
 ## Watch out for
-- TIER_MAP fix is LOCAL ONLY — not deployed yet. Live bot is still misclassifying everything as dust.
+- Social features are SILENTLY INACTIVE on both bots — expired API key, not a code bug
+- Confirm TIER_MAP fix is live by checking that new entries log correct tiers (not DUST)
