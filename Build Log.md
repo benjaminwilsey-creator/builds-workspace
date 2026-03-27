@@ -1,6 +1,32 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 26 March 2026 (evening)
+**Projects touched:** Rapid2 v1.3
+**Session type:** Feature build + Deploy
+
+### What was built or changed
+- Added social signal awareness to the trading bot — it now checks CryptoCompare for Reddit activity per coin (posts per hour, active users) and uses that to rank which coins to scan first, boost confidence on coins with rising buzz, and skip coins that are completely dead (no one talking about them)
+- Designed the system to stay well within the free API limit: 16 coins refreshed every 2 hours = 192 calls/day vs 367/day budget
+- Deployed the update to both the live bot and paper bot on EC2
+- Diagnosed the CryptoCompare overage on the dashboard (15,253 calls vs 11,000 limit) — confirmed it was all from the old v1.2 code which no longer runs; v1.3 makes zero social API calls
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | Active — social features offline (expired API key) |
+| Production bot | Active — social features offline (expired API key) |
+| Last deploy | 2026-03-26 (social signal layer) |
+
+### Decisions made this session
+- Used 2-hour cache per coin rather than per-scan calls — keeps monthly call count well inside the free tier ceiling
+- All 3 social layers silently skip if the API key is missing or invalid — no disruption to core trading logic
+
+### Outstanding / next steps
+- Get a fresh free CryptoCompare API key at cryptocompare.com and update both EC2 .env files
+- Verify TIER_MAP fix (from earlier today) is live — new entries should log correct tiers, not DUST
+
+---
 ## Session: 26 March 2026
 **Projects touched:** Rapid2 v1.3
 **Session type:** Feature build + Backtesting
