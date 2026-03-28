@@ -21,7 +21,41 @@
       "WebSearch",
       "WebFetch(domain:gainium.io)",
       "WebFetch(domain:www.osl.com)",
-      "WebFetch(domain:www.fortraders.com)"
+      "WebFetch(domain:www.fortraders.com)",
+      "Read(//c/Users/benja/OneDrive/Documents/Builds/Rapid2/rapid2 v1.2/**)",
+      "Read(//c/Users/benja/OneDrive/Documents/Builds/**)",
+      "Bash(find 'e:/Builds - Copy' -name *.md -path */decisions/*)",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/MEMORY.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/MEMORY.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/rapid2.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/rapid2.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/last_session.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/last_session.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/booksmut.md\" \"C:/Users/benja/OneDrive/Documents/Builds/memory/booksmut.md\")",
+      "Bash(where code:*)",
+      "Bash(\"C:\\\\Users\\\\benja\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\bin\\\\code.cmd\" tunnel --help)",
+      "Bash(\"C:\\\\Users\\\\benja\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\bin\\\\code.cmd\" tunnel status)",
+      "Bash(ls \"e:/Builds - Copy/Rapid2/rapid2 \\(Program\\)/\")",
+      "Bash(ssh -i \"C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem\" -o StrictHostKeyChecking=no ubuntu@3.138.144.246 \"sudo journalctl -u openclaw-paper-v1.3 -n 80 --no-pager\")",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe /c/Users/benja/AppData/Local/Temp/update_strategy.py)",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe /c/Users/benja/AppData/Local/Temp/update_bot.py)",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe -c \"import ast; ast.parse\\(open\\(r''E:\\\\Builds - Copy\\\\Rapid2\\\\rapid2 v1.3\\\\bot.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''Syntax OK''\\)\")",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe C:/Users/benja/AppData/Local/Temp/patch_strategy.py)",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe -c \"import ast; ast.parse\\(open\\(r''E:\\\\Builds - Copy\\\\Rapid2\\\\rapid2 v1.3\\\\strategy.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''Syntax OK''\\)\")",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe -c \"import ast; ast.parse\\(open\\(r''E:\\\\Builds - Copy\\\\Rapid2\\\\rapid2 v1.3\\\\paper_bot.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''Syntax OK''\\)\")",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pytest tests/ -v)",
+      "Read(//c/Users/benja/AppData/Roaming/Code/User/workspaceStorage/8a3568d1a31aedc1fe57ca0857f0f7df/GitHub.copilot-chat/memory-tool/memories/ZWRjODRiMzMtYWRiYi00NWI3LWFjYzEtYjk1ZTUxZWMxYmY2/**)",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe C:/Users/benja/AppData/Local/Temp/backtest_qf.py)",
+      "Bash(/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pip install ccxt)",
+      "Bash(scp \"E:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py\" rapid2:/home/ubuntu/rapid2-v1.3/strategy.py)",
+      "Bash(scp \"E:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py\" rapid2:/home/ubuntu/rapid2-v1.2/strategy.py)",
+      "Bash(scp \"E:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py\" \"E:/Builds - Copy/Rapid2/rapid2 v1.3/bot.py\" rapid2:/home/ubuntu/rapid2-v1.2/)",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/MEMORY.md\" \"E:/Builds - Copy/memory/MEMORY.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/rapid2.md\" \"E:/Builds - Copy/memory/rapid2.md\")",
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/last_session.md\" \"E:/Builds - Copy/memory/last_session.md\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\benja\\OneDrive\\Documents\\Builds\\Rapid2\\rapid2 v1.2\\tests",
+      "C:\\Users\\benja\\.claude\\commands",
+      "c:\\Users\\benja\\OneDrive\\Documents\\Builds",
+      "C:\\Users\\benja\\AppData\\Local\\Temp"
     ]
   }
 }

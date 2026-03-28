@@ -1,0 +1,118 @@
+Document 1: The Build Manual
+Project: OpenClaw Cloud Trading Bot
+Infrastructure: AWS EC2 (t3.large) + Ubuntu 24.04
+Stack: Python 3 + CCXT + Pandas + Telegram
+
+Phase 1: The Server Setup
+Launch Instance:
+
+Go to AWS EC2 Console > "Launch Instance".
+
+OS: Ubuntu Server 24.04 LTS.
+
+Instance Type: t3.large (Required for VS Code stability).
+
+Key Pair: Create new (.pem), save it to a safe folder.
+
+Network: Allow SSH (Port 22) from "My IP".
+
+Elastic IP (Optional but Recommended):
+
+Go to EC2 > Network & Security > Elastic IPs.
+
+Allocate New Address > Associate with your instance. (This keeps your IP from changing if you stop the server).
+
+Phase 2: The Connection
+VS Code Remote:
+
+Install "Remote - SSH" extension.
+
+Press F1 > Remote-SSH: Open Configuration File.
+
+Add Host:
+
+Plaintext
+Host OpenClaw
+    HostName <YOUR_AWS_IP_ADDRESS>
+    User ubuntu
+    IdentityFile "C:\Path\To\Your\Key.pem"
+Connect via the bottom-left green button.
+
+Phase 3: The Environment (Terminal Commands)
+Run these commands inside the VS Code terminal to install the "brain."
+
+Update & Install System Tools:
+
+Bash
+sudo apt update && sudo apt install -y python3-pip screen
+Install Python Libraries:
+
+Bash
+pip3 install ccxt pandas requests --break-system-packages
+Create Swap Memory (Prevents Crashes):
+
+Bash
+sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+Phase 4: The Bot Code
+Create the file: code paper_bot.py
+
+Paste the final code (ensure you update TELEGRAM_TOKEN and TELEGRAM_CHAT_ID):
+
+Python
+import ccxt
+import pandas as pd
+import time
+import requests
+from datetime import datetime
+
+# --- CONFIGURATION ---
+TELEGRAM_TOKEN = "YOUR_TOKEN_HERE"
+TELEGRAM_CHAT_ID = "YOUR_ID_HERE"
+symbol = 'BTC/USD'
+timeframe = '1h'
+usd_balance = 10000.00
+btc_balance = 0.0
+in_position = False
+exchange = ccxt.coinbase()
+
+def send_telegram(message):
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
+        requests.post(url, json=payload)
+    except Exception as e:
+        print(f"❌ Telegram Error: {e}")
+
+print("------------------------------------------")
+send_telegram(f"🤖 OpenClaw is ONLINE!\n💰 Balance: ${usd_balance:,.2f}")
+
+while True:
+    try:
+        ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=100)
+        df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+        df['SMA_20'] = df['close'].rolling(window=20).mean()
+        df['SMA_50'] = df['close'].rolling(window=50).mean()
+        
+        latest = df.iloc[-1]
+        price = latest['close']
+        
+        if latest['SMA_20'] > latest['SMA_50'] and not in_position:
+            btc_balance = usd_balance / price
+            usd_balance = 0
+            in_position = True
+            send_telegram(f"🚀 BUY: {btc_balance:.4f} BTC @ ${price:,.2f}")
+
+        elif latest['SMA_20'] < latest['SMA_50'] and in_position:
+            usd_balance = btc_balance * price
+            btc_balance = 0
+            in_position = False
+            send_telegram(f"🐻 SELL: Balance ${usd_balance:,.2f}")
+            
+        print(f"⏳ Price: ${price:,.2f} | Waiting...")
+        time.sleep(60)
+    except Exception as e:
+        print(f"Error: {e}")
+        time.sleep(10)

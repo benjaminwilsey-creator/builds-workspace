@@ -1,0 +1,104 @@
+Document 2: The Operations Manual
+Goal: How to manage the bot day-to-day.
+
+1. How to Connect & Check the Bot
+Step 1: Open VS Code and connect to the Host (OpenClaw).
+
+Step 2: Open the terminal (Ctrl + ~).
+
+Step 3: Reattach to the background screen session:
+
+Bash
+screen -r tradebot
+You will now see the live logs scrolling.
+
+2. How to Stop the Bot
+Step 1: While watching the logs (after reattaching), press:
+Ctrl + C
+
+This kills the Python script.
+
+3. How to Edit the Strategy
+Step 1: Ensure the bot is stopped.
+
+Step 2: Open the file editor:
+
+Bash
+code paper_bot.py
+Step 3: Make your changes (e.g., change BTC/USD to ETH/USD or adjust SMA_20 to SMA_100).
+
+Step 4: Save (Ctrl + S).
+
+4. How to Restart & Disconnect (Run Forever)
+Step 1: If you are not already in a screen session, create one:
+
+Bash
+screen -S tradebot
+(If it says "Socket... exists", just attach with screen -r tradebot).
+
+Step 2: Run the bot:
+
+Bash
+python3 paper_bot.py
+Step 3: The Magic Move (Detach):
+
+Press Ctrl + A, release, then press D.
+
+The terminal will say [Detached].
+
+Step 4: You can now safely close VS Code. The bot will keep running on AWS.
+
+Rapid 2
+Here is your updated Operations Manual. I have adjusted the host references to match your rapid2 naming convention.
+
+Document 2: The Operations Manual
+Goal: How to manage the bot day-to-day.
+
+1. How to Connect & Check the Bot
+Step 1: Open VS Code on your computer.
+
+Step 2: Click the green button in the bottom-left corner and select Connect to Host....
+
+Step 3: Choose rapid2 from the list.
+
+Step 4: Open the terminal (Ctrl + ~) and reattach to the background session:
+
+Bash
+screen -r tradebot
+You will now see the live logs of your bot as it checks the market.
+
+2. How to Stop the Bot
+Step 1: While watching the logs (after reattaching), press:
+Ctrl + C
+
+Step 2: This kills the Python process. You will see the standard ubuntu@... command prompt return.
+
+3. How to Edit the Strategy
+Step 1: Ensure the bot is stopped (Ctrl + C).
+
+Step 2: Open the file editor by typing:
+
+Bash
+code paper_bot.py
+Step 3: Make your changes in the editor window (e.g., updating the balance, changing the crypto symbol, or adjusting the SMA values).
+
+Step 4: Save your changes with Ctrl + S.
+
+4. How to Restart & Run Forever (Backgrounding)
+Step 1: If you are not already in the screen session, enter it:
+
+Bash
+screen -r tradebot
+(If it says "There is no screen to be resumed," create a new one with screen -S tradebot).
+
+Step 2: Launch the bot:
+
+Bash
+python3 paper_bot.py
+Step 3: The Magic Move (Detach):
+
+Press Ctrl + A, then let go and press D.
+
+The terminal will say [detached from tradebot].
+
+Step 4: You can now safely close VS Code. The bot will keep running on your rapid2 AWS server.
