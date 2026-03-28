@@ -64,6 +64,12 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - EXTREME_GREED blocks all new entries; EXTREME_FEAR widens RSI bands, waives MACD, allows downtrend
 - Position sizing scaled by regime: 50% during Extreme Fear, 75% Fear, 100% Neutral, 75% Greed, 0% Extreme Greed
 
+**Extreme Fear overrides (deployed 2026-03-28):**
+- Portfolio guard losing ratio threshold: 60% → 85% (crashes make everything red — guard was blocking contrarian entries)
+- Stop losses widened: ANCHOR 7% → 15%, MID_CAP 10% → 18% (survive whipsaw volatility before the bounce)
+- DUST tier blocked entirely (Gate 0b) — meme coins lead the crash, lag the recovery
+- Volume gate lowered: 1.5x → 1.2x avg (early recoveries start on quiet volume)
+
 **Additional signals** (free, no API keys):
 - BTC 200-day MA distance — % below 200 EMA signals accumulation zone (threshold: -25%)
 - Capitulation volume — 3x+ avg volume on red candles = potential bounce
@@ -98,10 +104,12 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Was running from `/home/ubuntu/rapid2/` (v1 code) — caused Telegram conflicts
 - `sudo systemctl stop openclaw && sudo systemctl disable openclaw`
 
-### v1.2 (live trading — real money, now running v1.3 code)
+### v1.2 (live trading — real money, runs full v1.3 codebase)
 - Service: `openclaw-paper` → `/home/ubuntu/rapid2-v1.2/bot.py`
 - Venv: `/home/ubuntu/rapid2-v1.2/.venv/bin/python`
 - Logs: `ssh rapid2 "sudo journalctl -u openclaw-paper -n 50 --no-pager"`
+- **Deploy source: v1.3 local folder** — `deploy.sh live` uploads bot.py, strategy.py, sentiment.py from `rapid2 v1.3/`
+- **Local `rapid2 v1.2/` folder is historical reference only** — changes there are NOT deployed anywhere
 
 ### v1.3 (paper trading — validation)
 - Service: `openclaw-paper-v1.3` → `/home/ubuntu/rapid2-v1.3/paper_bot.py`
@@ -110,8 +118,9 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Deploy: `bash deploy.sh paper` (from v1.3 local folder)
 
 ## GitHub
-- v1.2 (production): https://github.com/benjaminwilsey-creator/openclaw-v1.2
-- v1 (retired): https://github.com/benjaminwilsey-creator/openclaw-v1
+- v1.3 (active): https://github.com/benjaminwilsey-creator/openclaw — branch `1.3try`
+- v1.2 (archived): https://github.com/benjaminwilsey-creator/openclaw-v1.2
+- v1 (archived): https://github.com/benjaminwilsey-creator/openclaw-v1
 - Account: benjaminwilsey-creator
 
 ## Quick Flip Mode (added 2026-03-26 — LOCAL ONLY, not deployed)
@@ -154,5 +163,4 @@ Toggle via `/mode` Telegram command. Sprint strategy to grow $116 → $300 throu
 - **Kraken+ zero fees do NOT apply to API trades** — only app/web Buy/Sell/Convert. Bot pays 0.16% maker / 0.26% taker via ccxt. TP targets must account for ~0.4-0.5% round-trip fee drag.
 - **MATIC/USD rebranded to POL/USD on Kraken** — update watchlists if MATIC is referenced
 - **Kraken OHLCV 15m data capped at ~720 candles (~8 days)** — for backtesting, use Binance (USDT pairs) which paginates properly. Prices are nearly identical for major coins.
-- **TIER_MAP was keyed with Kraken raw symbols (XBTUSD) not CCXT (BTC/USD)** — every coin classified as DUST. Fixed locally 2026-03-26. strategy.py was deployed as part of social signal deploy (2026-03-26) — verify in logs that new entries classify correctly (not DUST).
-- **CryptoCompare API key on EC2 is EXPIRED** — logs show `[Social] Loaded 0 CryptoCompare coin IDs`. Social features silently inactive on both bots. Get fresh free key at cryptocompare.com → update `/home/ubuntu/rapid2-v1.2/.env` and `/home/ubuntu/rapid2-v1.3/.env` → restart both services.
+- **CryptoCompare social showing 0 coin IDs** — logs show `[Social] Loaded 0 CryptoCompare coin IDs` on both bots. API key was re-added to both .env files (2026-03-25) but issue persists. Social features silently inactive; bot runs fine without them. Investigate coin list fetch endpoint next session.
