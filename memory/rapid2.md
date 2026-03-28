@@ -69,6 +69,14 @@ Allocation was flipped from 15/35/50 → 50/30/20 — most capital now in safest
 - Capitulation volume — 3x+ avg volume on red candles = potential bounce
 - During EXTREME_FEAR, Gate 7 requires at least one of: swing low bounce, capitulation volume, BTC near 200MA
 
+**Social signal layer** (CryptoCompare, deployed 2026-03-26):
+- Layer 1: `social_rank_symbols()` sorts watchlist by buzz (posts/hr × 10 + active_users × 0.01) before each scan
+- Layer 2: "Rising" momentum (+30% posts/hr vs last reading) adds +1 confidence bonus
+- Layer 3: Gate 8 — rejects dead coins when posts/hr < 0.5 AND active_users < 30
+- 2-hour per-coin TTL cache: 16 coins × 12 refreshes/day = 192 API calls/day (free tier: 11,000/month)
+- Requires `CRYPTOCOMPARE_API_KEY` in EC2 `.env` — all 3 layers silently skip if key missing/invalid
+- New CONFIG keys: CC_API_KEY, CC_CACHE_TTL_SECONDS (7200), CC_SOCIAL_FLOOR_POSTS_HR (0.5), CC_SOCIAL_FLOOR_USERS (30), CC_MOMENTUM_RISING (1.3), CC_MOMENTUM_FALLING (0.7)
+
 **Exit adjustments by regime:**
 - Trailing stops tighten 50% during GREED/EXTREME_GREED
 - Max hold days extend 50% during FEAR/EXTREME_FEAR
@@ -146,4 +154,5 @@ Toggle via `/mode` Telegram command. Sprint strategy to grow $116 → $300 throu
 - **Kraken+ zero fees do NOT apply to API trades** — only app/web Buy/Sell/Convert. Bot pays 0.16% maker / 0.26% taker via ccxt. TP targets must account for ~0.4-0.5% round-trip fee drag.
 - **MATIC/USD rebranded to POL/USD on Kraken** — update watchlists if MATIC is referenced
 - **Kraken OHLCV 15m data capped at ~720 candles (~8 days)** — for backtesting, use Binance (USDT pairs) which paginates properly. Prices are nearly identical for major coins.
-- **TIER_MAP was keyed with Kraken raw symbols (XBTUSD) not CCXT (BTC/USD)** — every coin classified as DUST. Fixed locally 2026-03-26: added CCXT keys + missing mid-caps (LTC, DOGE, XLM, HBAR). **NOT YET DEPLOYED** — deploy strategy.py to both live and paper bots.
+- **TIER_MAP was keyed with Kraken raw symbols (XBTUSD) not CCXT (BTC/USD)** — every coin classified as DUST. Fixed locally 2026-03-26. strategy.py was deployed as part of social signal deploy (2026-03-26) — verify in logs that new entries classify correctly (not DUST).
+- **CryptoCompare API key on EC2 is EXPIRED** — logs show `[Social] Loaded 0 CryptoCompare coin IDs`. Social features silently inactive on both bots. Get fresh free key at cryptocompare.com → update `/home/ubuntu/rapid2-v1.2/.env` and `/home/ubuntu/rapid2-v1.3/.env` → restart both services.
