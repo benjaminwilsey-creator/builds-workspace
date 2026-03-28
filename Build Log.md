@@ -1,6 +1,35 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 28 March 2026
+**Projects touched:** Rapid2 v1.3 (live + paper bots)
+**Session type:** Feature build + Deploy
+
+### What was built or changed
+- Taught the bot to behave differently during market crashes — previously it would block all new trades when most positions were losing, even though that's exactly when the contrarian strategy says to buy. Now during "Extreme Fear" (market panic score 0-20), the guard is much more lenient and the bot can still enter trades
+- Widened the stop losses during Extreme Fear from 7-10% to 15-18% — crash markets swing wildly before recovering, so tight stops were getting triggered by noise rather than real trend breaks
+- Blocked the bot from buying meme coins (DUST tier) during Extreme Fear entirely — meme coins crash hardest and recover last; during a panic, only buy the quality coins (BTC, ETH, SOL, LINK)
+- Lowered the volume requirement for entries during Extreme Fear from 1.5x average down to 1.2x — the first bounce after a crash happens on quiet volume, so the old gate was too strict
+- Fixed the deployment script — it was missing bot.py when pushing to the live server, which caused a dangerous mismatch (exits weren't working for about 5 minutes until caught and fixed)
+- Removed the trading bot folder from the workspace gitignore — documentation files are now tracked, and the code itself is already on GitHub separately
+
+### Current state
+| | Status |
+|---|---|
+| Live bot (openclaw-paper) | Active — F&G 12 (Extreme Fear), guard now passing, actively scanning for entries |
+| Paper bot (openclaw-paper-v1.3) | Active — same changes deployed |
+| BTC | ~$66,789 — 22.5% below 200-day moving average (deep accumulation zone) |
+| Last deploy | 28 March 2026 |
+
+### Decisions made this session
+- Raised the losing-position guard threshold from 60% → 85% during Extreme Fear only — the core insight is that "everything is losing" is normal in a crash, not a reason to stop buying contrarian entries
+- Blocked meme coins during Extreme Fear rather than just making their stops wider — the right call because they're the worst risk/reward in a crash, not just riskier
+
+### Outstanding / next steps
+- CryptoCompare social signals still showing "0 coin IDs" on both bots — API key is set but something is wrong with the coin list fetch. Social features silently inactive. Needs investigation
+- Monitor whether the regime changes produce any actual entries during the current Extreme Fear period
+
+---
 ## Session: 26 March 2026 (evening)
 **Projects touched:** Rapid2 v1.3
 **Session type:** Feature build + Deploy

@@ -30,7 +30,7 @@ See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for ful
 | Server | IP | SSH Alias | Service | Purpose |
 |--------|-----|-----------|---------|---------|
 | Rapid2 v1 (Retired) | `3.131.96.193` | none | `openclaw` | TERMINATED 2026-03-04 — instance gone |
-| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money, now runs v1.3 regime code |
+| Rapid2 v1.2 (Production) | `3.138.144.246` | `rapid2` | `openclaw-paper` | Live trading — real money, runs FULL v1.3 codebase (bot.py + strategy.py + sentiment.py from v1.3 folder) |
 | Rapid2 v1.3 (Paper) | `3.138.144.246` | `rapid2` | `openclaw-paper-v1.3` | Paper trading — v1.3 regime strategy |
 | Old openclaw (disabled) | `3.138.144.246` | `rapid2` | `openclaw` | Stopped & disabled 2026-03-25 — was causing Telegram conflicts |
 
@@ -38,7 +38,7 @@ See [github_restructure_2026-03-22.md](github_restructure_2026-03-22.md) for ful
 | Repo | Branches | What's in it |
 |------|----------|--------------|
 | builds-workspace | master, develop | CLAUDE.md, Developer Quick Reference. PUBLIC. Architect/, Booksmut/, model-skills/, Sportsball/ all gitignored. |
-| openclaw | master, develop, v1.2, v1 | All trading bot versions. master=v1.3, v1.2/v1=archived history. |
+| openclaw | master, 1.3try, v1.2, v1 | All trading bot versions. 1.3try=active development, v1.2/v1=archived history. |
 | architect-skills | master, develop | All Claude Code .skill files |
 | reelforge | main, develop | Booksmut/ReelForge BookTok pipeline. |
 | model-specific-skills | main, develop, gemini, qwen | Gemini config on gemini branch. Qwen placeholder. |
@@ -56,7 +56,7 @@ Note: Booksmut is fully tracked in reelforge repo — no longer in builds-worksp
 | `E:\Builds - Copy\Architect\` | architect-skills | master |
 | `E:\Builds - Copy\Booksmut\` | reelforge | main |
 | `E:\Builds - Copy\Rapid2\rapid2 v1.2\` | openclaw | v1.2 |
-| `E:\Builds - Copy\Rapid2\rapid2 v1.3\` | openclaw | develop |
+| `E:\Builds - Copy\Rapid2\rapid2 v1.3\` | openclaw | 1.3try |
 | `E:\Builds - Copy\model-skills\` | model-specific-skills | main |
 | `E:\Builds - Copy\Sportsball\` | (gitignored — GitKraken lock, do not delete) | — |
 
