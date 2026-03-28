@@ -1,6 +1,8 @@
 # Subprojects with their own git repos — exclude them here
-Rapid2/
 Booksmut/
+Rapid2/rapid2 (Program)/
+Rapid2/rapid2 v1.2/
+Rapid2/rapid2 v1.3/
 model-skills/
 Architect/
 Sportsball/
