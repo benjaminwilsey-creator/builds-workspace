@@ -1,6 +1,31 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 10 April 2026
+**Projects touched:** HF Agents Course
+**Session type:** Learning / Environment Setup
+
+### What was built or changed
+- Built a complete local Python environment for the Hugging Face Agents Course — all packages installed, Jupyter kernel registered so notebooks run in VS Code
+- Got the course's "Dummy Agent Library" notebook running locally, with the HF token loading securely from a .env file
+- Downloaded the First Agent Template (a Gradio chat UI connected to an AI agent) from HF Spaces and got it running locally — the HF Space itself was stuck in a build queue
+- Fixed several breakages caused by the course being written for an older version of the smolagents library (renamed classes, removed parameters, Windows encoding bug)
+- Added 4 tools to the agent: web search via DuckDuckGo, image generation, timezone lookup, and a menu suggestion tool
+
+### Current state
+| | Status |
+|---|---|
+| HF Agents Course | Local env running — start with `PYTHONUTF8=1 python app.py` in HF Agents Course folder |
+| HF Space (Rapidcosine/First_agent_template) | Unknown — was stuck building, not checked since |
+| Rapid2 | Not touched this session |
+
+### Decisions made this session
+- Kept smolagents at latest version (1.24.0) and patched the course code to match, rather than downgrading — downgrade was incompatible with Python 3.14
+
+### Outstanding / next steps
+- Continue HF Agents Course lessons (custom tool creation is next)
+- Check if HF Space build completed
+---
 ## Session: 28 March 2026
 **Projects touched:** Rapid2 v1.3 (live + paper bots)
 **Session type:** Feature build + Deploy
