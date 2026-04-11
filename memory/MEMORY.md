@@ -8,6 +8,7 @@ Primary workspace: `E:\Builds - Copy` (dedicated dev drive — migration complet
 3. **Architect** — Claude skill files for developer workflow — standalone repo
 4. **Model Skills** — AI model-specific configs (Gemini, Qwen) — standalone repo
 5. **3DPrint** (name TBD) — Plain-language to STL converter for Ricky's Bambu A1 — concept only, not yet scaffolded
+6. **HF Agents Course** — Hugging Face agents learning project — local env running at `E:\Builds - Copy\HF Agents Course\`
 
 See [rapid2.md](rapid2.md) for full Rapid2 details.
 See [booksmut.md](booksmut.md) for full Booksmut/ReelForge details.
@@ -98,6 +99,13 @@ Priority order for next development session on the agent/bot:
 ## Feedback / How to Work With Benjamin
 See [feedback_terminal_instructions.md](feedback_terminal_instructions.md) — always specify terminal and directory with every command. PowerShell doesn't support bash for loops — write commands individually.
 See [feedback_contrarian_strategy.md](feedback_contrarian_strategy.md) — fear = accumulation, greed = defense. Never block entries during fear.
+
+## HF Agents Course Setup
+- Venv: `E:\Builds - Copy\HF Agents Course\.venv` (Python 3.14, kernel registered as "HF Agents Course")
+- Packages: smolagents 1.24.0, huggingface_hub 0.36.2, gradio, toolkit extras, ipykernel
+- Run app: `cd "HF Agents Course" && PYTHONUTF8=1 python app.py` — UTF-8 flag is required or Unicode in web search results crashes the UI
+- HF Space: `Rapidcosine/First_agent_template` — duplicated from course template, may still be building
+- smolagents 1.24.0 renames: `HfApiModel` → `InferenceClientModel`, `grammar=` param removed from CodeAgent
 
 ## Windows Tooling Gotchas
 - **Edit tool fails** on paths with spaces in directory name (e.g. `rapid2 v1.2`) — workaround: write Python script to `/c/Users/benja/AppData/Local/Temp/`, execute with `/c/Users/benja/AppData/Local/Python/pythoncore-3.14-64/python.exe`
