@@ -1,16 +1,14 @@
 ---
-date: 2026-04-18
+date: 2026-04-17
 project: Rapid2 (live bot)
-originSessionId: d3f08e11-e9fa-454a-a64e-797cf6b2e776
+originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
 ---
 ## What we did
-- Diagnosed why Quick Flip mode hadn't triggered any buys in 3 days — the volatility gate (3%) was blocking all 16 coins in the current quiet market
-- Lowered two QF thresholds on the live EC2 bot: volatility gate from 3% → 2%, volume multiplier from 1.5x → 1.2x
+- Applied the Kraken lot-minimum fix to the live bot — BEAM, LINK, and USDG now get silently removed from tracking instead of erroring every 3 minutes forever
+- Synced local bot.py to match EC2 (they were out of sync after the fix)
 
 ## Next up
-- Apply the BEAM/LINK/USDG lot-minimum fix to EC2's bot.py (full code in rapid2_bot.md)
-- Sync local strategy.py with EC2 values (vol=0.02, volume_mult=1.2)
+- No pending fixes — bot is clean, local files match EC2
 
 ## Watch out for
-- Local strategy.py is out of sync with EC2 — don't push it or you'll overwrite the tuned config
-- scp requires explicit key path (see rapid2_bot.md gotchas)
+- Local strategy.py may still be out of sync with EC2 QF tuning (vol=0.02, volume_mult=1.2)
