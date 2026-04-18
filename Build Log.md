@@ -2,6 +2,30 @@
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
 ## Session: 18 April 2026
+**Projects touched:** Rapid2 (live bot)
+**Session type:** Diagnosis + Config tuning
+
+### What was built or changed
+- Investigated why the bot hadn't made a single trade in 3 days since switching to Quick Flip mode — turned out the volatility gate (requiring 3% price range in 6 hours) was silently blocking every coin during a quiet market, with no log entry to show it
+- Built a live diagnostic script on the server that prints exactly why each coin is being rejected — showed all 16 watched coins were failing the vol and/or volume gates
+- Lowered the volatility requirement from 3% → 2% and the volume requirement from 1.5x average → 1.2x on the live bot, based on statistical analysis: with a 6% target / 2% stop (3:1 ratio), the bot only needs to win 25% of trades to be profitable, so loosening the entry gates is still mathematically sound
+- Confirmed via math that ADA and LINK are closest to triggering a buy once the market picks up
+
+### Current state
+| | Status |
+|---|---|
+| Production bot | Live on EC2, QF mode, no open positions, waiting for market vol to return |
+| Last deploy | 2026-04-18 (strategy.py config tuned — vol gate + volume multiplier) |
+
+### Decisions made this session
+- Set QF volatility gate to 2% (from 3%) — 3% excluded the entire watchlist during a quiet market; 2% is statistically justified given 3:1 reward:risk ratio
+- Set volume multiplier to 1.2x (from 1.5x) — still requires above-average volume but not extreme
+
+### Outstanding / next steps
+- Apply Kraken lot-minimum fix to bot.py (BEAM/LINK/USDG errors, every 180s) — code ready in rapid2_bot.md
+- Sync local strategy.py with the EC2 values that were changed this session
+---
+## Session: 18 April 2026
 **Projects touched:** Workspace infrastructure
 **Session type:** Tooling / Setup
 

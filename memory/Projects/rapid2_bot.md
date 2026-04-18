@@ -1,48 +1,57 @@
 ---
-name: EC2 bot deploy state + pending Kraken lot-minimum fix
-description: Current EC2 state after 2026-04-14 session — v1.3 strategy.py deployed, pending fix for BEAM/LINK/USDG Kraken lot-minimum errors in bot.py
+name: EC2 bot deploy state + pending fixes
+description: Current EC2 state as of 2026-04-18 — QF mode active, thresholds tuned, local strategy.py out of sync, BEAM/LINK/USDG lot-minimum fix still pending
 type: project
-originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
+originSessionId: d3f08e11-e9fa-454a-a64e-797cf6b2e776
 ---
-## Current EC2 State (as of 2026-04-14)
+## Current EC2 State (as of 2026-04-18)
 
 **Server:** ubuntu@3.138.144.246 (ssh alias: rapid2)
 **Service:** `openclaw-paper.service` (mis-named — this IS the live trading bot)
 **Directory:** `/home/ubuntu/rapid2-v1.2/`
 **Bot is LIVE and running real money.**
+**Mode: Quick Flip (QF)**
 
 ### What's deployed:
 - `bot.py` — v1.3 code (has `strat.Tier` enum, `ALL_WATCHLISTS`, `execute_sell_partial`)
-- `strategy.py` — v1.3 code, just deployed 2026-04-14. `MIN_ORDER_USD = 3.80` (raised from 3.60)
-- The local v1.2 CLAUDE.md is outdated — EC2 was already running v1.3 bot.py before this session
+- `strategy.py` — v1.3 QF mode. Key QF config values (as of 2026-04-18):
+  - `QF_MIN_VOLATILITY_PCT = 0.02` (lowered from 0.03 on 2026-04-18)
+  - `VOLUME_CONFIRM_MULTIPLIER = 1.2` (lowered from 1.5 on 2026-04-18)
+  - `MIN_ORDER_USD = 3.80`
+
+### Local strategy.py is OUT OF SYNC:
+- `e:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py` still has old values (vol=0.03, volume_mult=1.5)
+- EC2 is the authoritative source — sync local file before making further edits
 
 ### What the `.bak` files are:
-- `bot.py.bak` and `strategy.py.bak` in the EC2 directory are the OLD v1.2 versions. Do NOT restore them.
+- `bot.py.bak` and `strategy.py.bak` in the EC2 directory are OLD v1.2. Do NOT restore.
 
 ---
 
-## Pending Fix — Option 2 (next task after compact)
+## EC2 Gotchas
 
-**Problem:** BEAM, LINK, and USDG hit Kraken API every cycle and get rejected:
+**scp key must be specified explicitly:**
+- `ssh rapid2` (alias) works fine
+- `scp ubuntu@3.138.144.246:...` fails with "Permission denied (publickey)"
+- Fix: `scp -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.138.144.246:...`
+
+**Diagnostic script:**
+- `/tmp/qf_diag2.py` on EC2 — shows live gate readings (vol, RSI, volume ratio, trigger) for all QF symbols
+- Run: `ssh rapid2 "python3 /tmp/qf_diag2.py"`
+
+---
+
+## Pending Fix — Kraken Lot-Minimum (BEAM/LINK/USDG)
+
+**Problem:** BEAM, LINK, and USDG are rejected by Kraken every cycle:
 ```
 [SELL] BEAM/USD failed: kraken {"error":["EGeneral:Invalid arguments:volume minimum not met"]}
-[SELL] LINK/USD failed: kraken {"error":["EGeneral:Invalid arguments:volume minimum not met"]}
-[SELL] USDG/USD failed: kraken {"error":["EGeneral:Invalid arguments:volume minimum not met"]}
 ```
-These coins have dollar values above $3.80 (pass MIN_ORDER_USD check) but their token *quantity* is below Kraken's per-coin minimum lot size. They can **never** be sold. The bot retries every 180 seconds forever.
+Dollar value passes `MIN_ORDER_USD` check, but token *quantity* is below Kraken's per-coin minimum. These can **never** be sold. Bot retries every 180 seconds forever.
 
-**Fix:** In EC2's `/home/ubuntu/rapid2-v1.2/bot.py`, modify both `execute_sell` (line 251) and `execute_sell_partial` (line 299) — in the `except Exception as e:` block, detect the Kraken error string and remove the position from tracking instead of logging an error.
+**Fix:** In EC2's `/home/ubuntu/rapid2-v1.2/bot.py`, modify both `execute_sell` (~line 293) and `execute_sell_partial` (~line 347) — catch "volume minimum not met" and remove position from tracking.
 
-### Exact code change for `execute_sell` (around line 293):
-
-**Before:**
-```python
-    except Exception as e:
-        logger.error(f"[SELL] {symbol} failed: {e}")
-        return None
-```
-
-**After:**
+### execute_sell — change except block to:
 ```python
     except Exception as e:
         if "volume minimum not met" in str(e):
@@ -55,16 +64,7 @@ These coins have dollar values above $3.80 (pass MIN_ORDER_USD check) but their 
         return None
 ```
 
-### Exact code change for `execute_sell_partial` (around line 347):
-
-**Before:**
-```python
-    except Exception as e:
-        logger.error(f"[SELL-PARTIAL] {symbol} failed: {e}")
-        return None
-```
-
-**After:**
+### execute_sell_partial — change except block to:
 ```python
     except Exception as e:
         if "volume minimum not met" in str(e):
@@ -77,11 +77,9 @@ These coins have dollar values above $3.80 (pass MIN_ORDER_USD check) but their 
         return None
 ```
 
-### Workflow to apply:
-1. `scp ubuntu@3.138.144.246:/home/ubuntu/rapid2-v1.2/bot.py "e:/Builds - Copy/Rapid2/rapid2 v1.3/bot_ec2.py"` — pull EC2 bot.py to a temp local file
+### Workflow:
+1. `scp -i "C:/Users/benja/OneDrive/Documents/KeePass/AWS/rapid2-key.pem" ubuntu@3.138.144.246:/home/ubuntu/rapid2-v1.2/bot.py "e:/Builds - Copy/Rapid2/rapid2 v1.3/bot_ec2.py"`
 2. Apply the two edits above
 3. `scp` it back to `/home/ubuntu/rapid2-v1.2/bot.py`
 4. `ssh rapid2 "sudo systemctl restart openclaw-paper.service"`
-5. Wait one cycle (180s) and check logs — BEAM/LINK/USDG should disappear from logs after first run
-
-**Why:** The position is unexitable (Kraken permanently rejects). Retrying every cycle wastes API calls and pollutes logs. Removing from tracking is correct — the coin stays in the Kraken account as dust, the bot just stops managing it.
+5. Wait one cycle (180s), check logs — BEAM/LINK/USDG should be gone
