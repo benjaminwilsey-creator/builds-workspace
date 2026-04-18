@@ -1,6 +1,28 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 17 April 2026
+**Projects touched:** Rapid2 (live bot)
+**Session type:** Bug fix
+
+### What was built or changed
+- Fixed a persistent error where three coins (BEAM, LINK, USDG) were hitting Kraken's minimum order size limit every 3 minutes — they had enough dollar value to pass the bot's own check, but their token quantity was permanently below what Kraken allows.
+- The bot now detects this specific Kraken rejection, quietly removes those coins from its tracking list, and stops retrying. The coins remain in the Kraken account as dust.
+- Synced the local bot.py file to match what's running on EC2 — they were out of sync after the fix was applied.
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | inactive |
+| Production bot | active — v1.3, 18 positions, QF mode |
+| Last deploy | 2026-04-17 (bot.py — lot-minimum fix) |
+
+### Decisions made this session
+- None — straightforward fix with no architectural tradeoffs
+
+### Outstanding / next steps
+- None — bot is clean and local files are in sync with EC2
+---
 ## Session: 18 April 2026
 **Projects touched:** Rapid2 (live bot)
 **Session type:** Diagnosis + Config tuning
