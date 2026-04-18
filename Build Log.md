@@ -1,6 +1,27 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 18 April 2026
+**Projects touched:** Workspace infrastructure
+**Session type:** Tooling / Setup
+
+### What was built or changed
+- Set up Obsidian as a "second brain" — Claude's memory files are now organized into folders and viewable in the Obsidian app as a knowledge base
+- Updated the /remember command to automatically back up memory to the SSD (E: drive) and OneDrive at the end of every session, so nothing is lost
+
+### Current state
+| | Status |
+|---|---|
+| Paper bot | N/A this session |
+| Production bot | Live on EC2, running real money |
+| Last deploy | 2026-04-14 (strategy.py v1.3) |
+
+### Decisions made this session
+- Chose `E:\Builds - Copy\memory\` as the Obsidian vault path — already version-controlled and on the SSD
+
+### Outstanding / next steps
+- Apply Kraken lot-minimum fix to bot.py (BEAM/LINK/USDG errors, every 180s)
+---
 ## Session: 10 April 2026
 **Projects touched:** HF Agents Course
 **Session type:** Learning / Environment Setup
