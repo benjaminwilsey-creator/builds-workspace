@@ -1,6 +1,30 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 19 April 2026
+**Projects touched:** Autonomous Agent (infrastructure)
+**Session type:** Infrastructure / tooling upgrade
+
+### What was built or changed
+- Researched a tool called "Conductor" from GitHub — a structured project management system for Claude. Decided it's too complex for solo use (built for teams with product docs, style guides, and validators).
+- Designed a lightweight version called "Lite Conductor" — tasks now need a Track ID, a one-sentence Spec, and an Acceptance line before Claude will touch them.
+- Rewrote the /autonomous skill so it executes one phase at a time, reports to Slack after each phase, and waits for Benjamin to say "proceed" before moving to the next. No more auto-cascading through all phases in one go.
+
+### Current state
+| Project | Status |
+|---|---|
+| Rapid2 bot | Live on EC2, no changes this session |
+| BusyMomBrainDump | No tasks.md yet — needs one in new Lite Conductor format |
+| FinancialManager | Scaffolded, 3 setup steps pending |
+| feature/autonomous-agent | Built, not yet merged to master |
+
+### Decisions made this session
+- Chose Lite Conductor over full Conductor plugin — solo workflow doesn't need team-facing artifacts like product.md or style guides
+
+### Outstanding / next steps
+- Create tasks.md in Lite Conductor format for whichever project runs next
+- Merge feature/autonomous-agent to master
+---
 ## Session: 18 April 2026 (2)
 **Projects touched:** FinancialManager (new project)
 **Session type:** New project scaffold
