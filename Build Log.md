@@ -1,6 +1,32 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 18 April 2026
+**Projects touched:** Claude Code tooling, BusyMomBrainDump, Autonomous Agent system
+**Session type:** Infrastructure / Tooling build
+
+### What was built or changed
+- Built a full autonomous coding agent system — Benjamin can now add tasks to a queue file (tasks.md), start the agent, and walk away. It works through the tasks one at a time using fresh sub-agents (so it never runs out of memory), commits each task to its own branch, and sends a Slack message when done.
+- Built a Slack-based remote control — while away, Benjamin can send commands like STOP, PAUSE, SKIP, or ADD: new task to the #claude-agent channel and the agent will obey without needing a remote desktop session.
+- Built 6 new global assistant skills: /batch (edit many files at once), /debug (fix bugs from logs), /btw (quick side questions), /doctor (health check the Claude Code install), /autonomous (the agent orchestrator), and /remote-control (the Slack command bridge).
+- Audited the BusyMomBrainDump backend and discovered Phase 1 is already fully built — the build plan document was out of date. The real remaining work is tests, an OpenAPI schema for the main endpoint, and properly declaring environment variables for Render deployment.
+- Queued those 4 tasks in tasks.md, ready to run with /autonomous next session.
+
+### Current state
+| | Status |
+|---|---|
+| Rapid2 bot | Live on EC2, QF mode, no changes this session |
+| BusyMomBrainDump | Backend complete, 4 tasks queued, not yet run |
+| Autonomous agent | Built, on feature/autonomous-agent branch, not yet merged |
+
+### Decisions made this session
+- Chose sub-agent architecture for /autonomous — each task gets its own fresh context window instead of one agent accumulating context across the whole queue. This prevents context overflow on long sessions.
+- Tasks run sequentially, not in parallel — BusyMomBrainDump tasks depend on each other (e.g. tests assume the endpoint exists), so parallel runs would cause conflicts.
+
+### Outstanding / next steps
+- Merge feature/autonomous-agent into master
+- Run /autonomous on the BusyMomBrainDump task queue (tests, OpenAPI schema, render.yaml)
+---
 ## Session: 17 April 2026
 **Projects touched:** Rapid2 (live bot)
 **Session type:** Bug fix
