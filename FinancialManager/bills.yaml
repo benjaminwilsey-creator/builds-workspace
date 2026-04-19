@@ -1,0 +1,98 @@
+# Bill Schedule
+# Fill in your due_day and fixed_amount for each bill.
+# payee_keywords: words Plaid will see in your Truist transaction names — check your
+#   bank statement for the exact merchant name and add keywords from it.
+
+bills:
+
+  # ── Fixed-amount bills ──────────────────────────────────────────────────────
+
+  - name: Car Payment
+    due_day: 1                        # ← change to your actual due date
+    amount_type: fixed
+    fixed_amount: 0.00                # ← fill in your monthly payment
+    payee_keywords:
+      - "auto loan"
+      - "car payment"
+      - "ally"                        # ← replace with your lender name
+    notes: "Replace 'ally' with your actual lender name in payee_keywords"
+
+  - name: Car Insurance
+    due_day: 15                       # ← change to your actual due date
+    amount_type: fixed
+    fixed_amount: 0.00                # ← fill in your monthly premium
+    payee_keywords:
+      - "geico"                       # ← replace with your insurer
+      - "state farm"
+      - "progressive"
+      - "insurance"
+    notes: "Replace with your actual insurer name in payee_keywords"
+
+  - name: Cell Phone
+    due_day: 20                       # ← change to your actual due date
+    amount_type: fixed
+    fixed_amount: 0.00                # ← fill in your monthly bill
+    payee_keywords:
+      - "verizon"                     # ← replace with your carrier
+      - "at&t"
+      - "t-mobile"
+    notes: "Replace with your actual carrier name in payee_keywords"
+
+  - name: Orthodontist
+    due_day: 1                        # ← change to your actual due date
+    amount_type: fixed
+    fixed_amount: 0.00                # ← fill in your monthly payment
+    payee_keywords:
+      - "orthodon"
+      - "ortho"
+    notes: "Update payee_keywords with your orthodontist's name"
+
+  - name: Student Loan
+    due_day: 1                        # ← change to your actual due date
+    amount_type: fixed
+    fixed_amount: 0.00                # ← fill in your monthly payment
+    payee_keywords:
+      - "navient"                     # ← replace with your servicer
+      - "mohela"
+      - "aidvantage"
+      - "student loan"
+    notes: "Replace with your actual loan servicer name in payee_keywords"
+
+  # ── Variable-amount bills (amount read from Plaid each month) ───────────────
+
+  - name: Electric
+    due_day: 15                       # ← change to your actual due date
+    amount_type: variable
+    payee_keywords:
+      - "duke energy"                 # ← replace with your electric company
+      - "dominion"
+      - "electric"
+    notes: "Replace with your actual electric company name in payee_keywords"
+
+  - name: Gas
+    due_day: 20                       # ← change to your actual due date
+    amount_type: variable
+    payee_keywords:
+      - "piedmont natural gas"        # ← replace with your gas company
+      - "atmos"
+      - "natural gas"
+    notes: "Replace with your actual gas company name in payee_keywords"
+
+  - name: Water
+    due_day: 10                       # ← change to your actual due date
+    amount_type: variable
+    payee_keywords:
+      - "water"
+      - "city of"
+      - "utilities"
+    notes: "Update payee_keywords with your water authority's name"
+
+  - name: Sanitation
+    due_day: 10                       # ← change to your actual due date
+    amount_type: variable
+    payee_keywords:
+      - "waste"
+      - "sanitation"
+      - "trash"
+      - "republic services"
+    notes: "Update payee_keywords with your sanitation provider's name"

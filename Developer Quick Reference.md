@@ -60,6 +60,32 @@ planning a new feature, clear first.
 | Deploy broke something | `/rollback` | Restores last known-good version |
 | Starting a brand new project | `/new-project` | Scaffolds full project (git, CI, tests, rules) |
 | Project rules need updating | `/hierarchical-claude-md` | Updates the CLAUDE.md for a project |
+| Claude Code acting weird | `/doctor` | Health check — version, config files, MCP servers, env vars |
+
+---
+
+## Autonomous Development (while away)
+
+Add tasks to `tasks.md`, start the agent, walk away. It works through the queue and Slacks you when done.
+
+| When | Command | What it does |
+|------|---------|--------------|
+| Before leaving | add to `tasks.md` | Write tasks under `## Pending` in plain English |
+| Starting the agent | `/autonomous` | Picks up tasks one by one, sub-agent per task, Slack updates |
+| Mid-session from phone | Slack `#claude-agent` | Send `STOP`, `PAUSE`, `SKIP`, `STATUS`, or `ADD: new task` |
+| Agent receives Slack command | `/remote-control` | Checks `#claude-agent` and obeys — runs automatically between tasks |
+
+**Agent safety rules (hardcoded):** never pushes to master, never deploys to EC2, never guesses past a blocker.
+
+---
+
+## Utilities
+
+| Situation | Command | What it does |
+|-----------|---------|--------------|
+| Quick side question mid-task | `/btw [question]` | Answers without disrupting the current task |
+| Apply same change to many files | `/batch` | Reads all targets, edits in parallel, produces pass/fail report |
+| Bug from an error or log | `/debug [description]` | Finds root cause, applies fix, tells you how to verify |
 
 ---
 
@@ -75,6 +101,12 @@ Ship it              ->  /deploy
 Something broke      ->  /rollback
 Made a key decision  ->  /decide
 End of session       ->  /remember
+
+Bug to fix           ->  /debug
+Many files to change ->  /batch
+Quick question       ->  /btw
+Going away           ->  tasks.md + /autonomous
+Something wrong      ->  /doctor
 ```
 
 ---
