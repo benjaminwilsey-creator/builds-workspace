@@ -159,6 +159,53 @@ Use this when you're ready to push code to your live or staging server.
 
 ---
 
+### Debugging and bulk edits
+
+**`/debug [description]` — Fix a bug**
+Use this when something is broken and you have an error message or log to share.
+- Input: paste the error, describe what's wrong, or point to a log file
+- Output: root cause in plain English, fix applied, instructions for how to verify it worked
+- Claude reads the actual code before touching anything — it never guesses
+- Example: `/debug — the bot crashed with "KeyError: order_id" when trying to sell`
+
+**`/batch` — Apply one change to many files**
+Use this when you need the same edit made in multiple places at once.
+- Input: what to change and which files it applies to
+- Output: Claude reads every file, makes all edits in parallel, produces a pass/fail report
+- Safe: it lists the targets and confirms before touching anything
+- Example: `/batch — rename the function get_price to fetch_price across all files in src/`
+
+**`/btw [question]` — Quick side question**
+Use this when you have a small question mid-task and don't want to interrupt the flow.
+- Claude answers briefly (2–5 sentences) without losing track of what it was doing
+- Example: `/btw what does "idempotent" mean in the context of API calls?`
+
+---
+
+### Autonomous development
+
+**`/autonomous` — Work while you're away**
+Use this to let Claude work through a task queue while you're away (at an event, in a meeting, etc.).
+- Before you leave: add tasks to `tasks.md` under `## Pending` in plain English
+- Start the agent with `/autonomous` — it picks up tasks one by one, each in a fresh sub-agent
+- Each task gets its own git branch — work is isolated and safe to review
+- When done: Slacks you on `#claude-agent` with what was built and which branch to review
+- Safety rules: never pushes to master, never deploys to EC2, stops and asks if stuck
+
+**`/remote-control` — Send commands while the agent is running**
+Use this to redirect the agent mid-session without sitting at your computer.
+- Send a message to `#claude-agent` on Slack from your phone
+- Supported commands: `STOP`, `PAUSE`, `SKIP` (current task), `STATUS`, `ADD: new task`
+- The agent checks for your commands between every task automatically
+
+**`/doctor` — Diagnose Claude Code itself**
+Use this if Claude Code is behaving unexpectedly or a command isn't working.
+- Checks: version, config files, MCP servers, environment variables
+- Returns a health report with specific items to fix
+- Example: run `/doctor` if an MCP integration stops working
+
+---
+
 ### Operations
 
 **`/status` — Health check**
@@ -220,6 +267,18 @@ Use this when a project's rules or context need updating.
 3. `/think` — agree on the plan
 4. Proceed from there
 
+### "I want Claude to build while I'm away"
+1. `/catchup` — make sure the project state is clean
+2. Add tasks to `tasks.md` under `## Pending` — plain English, one task per line
+3. `/autonomous` — starts the agent; it will Slack you when each task is done
+4. From your phone: send `STATUS` to `#claude-agent` to check progress, `STOP` to halt
+5. When back: review the branches it created, merge what looks good
+
+### "Something is broken and I have an error"
+1. Copy the error message or log
+2. `/debug` — paste the error and describe what you were doing
+3. Claude finds the root cause and fixes it — tells you how to verify the fix
+
 ### "I haven't worked on this in a while"
 1. `/catchup` — catch up on current state
 2. Read the Build Log (`Build Log.md` in the Builds folder) for history
@@ -237,7 +296,7 @@ Use this when a project's rules or context need updating.
 | Project rules | `[Project]/CLAUDE.md` | Rules specific to one project |
 | Decision records | `[Project]/docs/decisions/` | Permanent record of key decisions |
 | Memory files | `Builds/memory/` | AI context that carries between sessions |
-| Skills | `Builds/Architect/` | All /command skill files |
+| Skills (global) | `~/.claude/commands/` | All /command skill files — available in every project |
 | Workspace file | `Builds/Builds.code-workspace` | Open all projects in VS Code at once |
 
 ---
