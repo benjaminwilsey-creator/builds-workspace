@@ -19,7 +19,7 @@ This vault is shared between you and Claude Code. Claude reads these files at th
 
 | Project | Repo | Notes |
 |---|---|---|
-| [[Archive/booksmut]] | booksmut | Paused |
+| [[Archive/reelforge]] | [reelforge](https://github.com/benjaminwilsey-creator/reelforge) | BookTok affiliate pipeline, TikTok integration in progress |
 | [[Archive/sportsball]] | sportsball | Paused |
 | [[Archive/3dprint]] | — | Notes only |
 
