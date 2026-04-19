@@ -49,7 +49,11 @@
       "Bash(scp \"E:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py\" \"E:/Builds - Copy/Rapid2/rapid2 v1.3/bot.py\" rapid2:/home/ubuntu/rapid2-v1.2/)",
       "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/MEMORY.md\" \"E:/Builds - Copy/memory/MEMORY.md\")",
       "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/rapid2.md\" \"E:/Builds - Copy/memory/rapid2.md\")",
-      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/last_session.md\" \"E:/Builds - Copy/memory/last_session.md\")"
+      "Bash(cp \"C:/Users/benja/.claude/projects/c--Users-benja-OneDrive-Documents-Builds/memory/last_session.md\" \"E:/Builds - Copy/memory/last_session.md\")",
+      "Bash(PYTHONUTF8=1 .venv/Scripts/python.exe app.py)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /PID 99484 /F)",
+      "Bash(.venv/Scripts/python.exe -m pip install pydub pyaudio)"
     ],
     "additionalDirectories": [
       "c:\\Users\\benja\\OneDrive\\Documents\\Builds\\Rapid2\\rapid2 v1.2\\tests",
