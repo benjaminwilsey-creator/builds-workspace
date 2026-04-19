@@ -12,14 +12,13 @@ This vault is shared between you and Claude Code. Claude reads these files at th
 | [[Active/busymom]] | [BusyMomBrainDump](https://github.com/benjaminwilsey-creator/BusyMomBrainDump) | Family chore app |
 | [[Active/financial-manager]] | [financial-manager](https://github.com/benjaminwilsey-creator/financial-manager) | Plaid + Slack bill tracker |
 | [[Active/hf-agents-course]] | [hf-agents-course](https://github.com/benjaminwilsey-creator/hf-agents-course) | HuggingFace Agents Course |
+| [[Active/reelforge]] | [reelforge](https://github.com/benjaminwilsey-creator/reelforge) | BookTok affiliate pipeline, TikTok integration in progress |
 
 ---
 
 ## 🗄️ Archive
 
 | Project | Repo | Notes |
-|---|---|---|
-| [[Archive/reelforge]] | [reelforge](https://github.com/benjaminwilsey-creator/reelforge) | BookTok affiliate pipeline, TikTok integration in progress |
 | [[Archive/sportsball]] | sportsball | Paused |
 | [[Archive/3dprint]] | — | Notes only |
 

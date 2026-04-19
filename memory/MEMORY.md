@@ -9,9 +9,9 @@
 - [autonomous-agent.md](Active/autonomous-agent.md) — Autonomous task queue system: tasks.md + /autonomous + sub-agents + Slack reporting
 - [financial-manager.md](Active/financial-manager.md) — FinancialManager: Plaid+Slack bill tracker, scaffolded, needs bills.yaml + Plaid + Slack setup before first run
 - [hf-agents-course.md](Active/hf-agents-course.md) — HuggingFace Agents Course: notebooks, Gradio UI, tools. Own GitHub repo.
+- [reelforge.md](Active/reelforge.md) — ReelForge (BookTok affiliate pipeline): Phase 2 complete, TikTok integration in progress
 
 ## Archive
-- [reelforge.md](Archive/reelforge.md) — ReelForge (BookTok affiliate pipeline): Phase 2 complete, TikTok integration in progress
 - [sportsball.md](Archive/sportsball.md) — Sportsball project (paused)
 - [3dprint.md](Archive/3dprint.md) — 3D print notes
 
