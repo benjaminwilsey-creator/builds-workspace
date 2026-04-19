@@ -1,6 +1,85 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 19 April 2026
+**Projects touched:** Autonomous Agent (infrastructure)
+**Session type:** Infrastructure / tooling upgrade
+
+### What was built or changed
+- Researched a tool called "Conductor" from GitHub — a structured project management system for Claude. Decided it's too complex for solo use (built for teams with product docs, style guides, and validators).
+- Designed a lightweight version called "Lite Conductor" — tasks now need a Track ID, a one-sentence Spec, and an Acceptance line before Claude will touch them.
+- Rewrote the /autonomous skill so it executes one phase at a time, reports to Slack after each phase, and waits for Benjamin to say "proceed" before moving to the next. No more auto-cascading through all phases in one go.
+
+### Current state
+| Project | Status |
+|---|---|
+| Rapid2 bot | Live on EC2, no changes this session |
+| BusyMomBrainDump | No tasks.md yet — needs one in new Lite Conductor format |
+| FinancialManager | Scaffolded, 3 setup steps pending |
+| feature/autonomous-agent | Built, not yet merged to master |
+
+### Decisions made this session
+- Chose Lite Conductor over full Conductor plugin — solo workflow doesn't need team-facing artifacts like product.md or style guides
+
+### Outstanding / next steps
+- Create tasks.md in Lite Conductor format for whichever project runs next
+- Merge feature/autonomous-agent to master
+---
+## Session: 18 April 2026 (2)
+**Projects touched:** FinancialManager (new project)
+**Session type:** New project scaffold
+
+### What was built or changed
+- Created a new local tool called FinancialManager — it connects to Benjamin's Truist bank account, watches for 9 recurring bills, and sends Slack messages to Benjamin and Liz when payments are coming due or get missed.
+- Decided NOT to automate actual bill payment — Truist has no public API for it, and using code to click through their website is against their terms of service and too risky with real money. Benjamin pays manually from a Slack reminder in under 10 seconds.
+- All 9 bills scaffolded (Electric, Gas, Water, Sanitation, Car, Car Insurance, Cell Phone, Orthodontist, Student Loan) — needs due dates and amounts filled in before first run.
+
+### Current state
+| | Status |
+|---|---|
+| Rapid2 bot | Live on EC2, no changes this session |
+| BusyMomBrainDump | 4 tasks queued, /autonomous not yet run |
+| FinancialManager | Scaffolded — 3 setup steps before it runs |
+| feature/autonomous-agent | Built, not yet merged to master |
+
+### Decisions made this session
+- Notify-only architecture for bill management — no automated payment due to Truist ToS and no public API
+- Plaid chosen for bank connectivity (free developer tier, supports Truist, read-only)
+
+### Outstanding / next steps
+- Fill in bills.yaml with real due dates and provider names
+- Set up Plaid developer account and connect Truist
+- Set up Slack app for the #finances channel
+- Merge feature/autonomous-agent to master
+- Run /autonomous on BusyMomBrainDump task queue
+
+---
+## Session: 18 April 2026
+**Projects touched:** Claude Code tooling, BusyMomBrainDump, Autonomous Agent system
+**Session type:** Infrastructure / Tooling build
+
+### What was built or changed
+- Built a full autonomous coding agent system — Benjamin can now add tasks to a queue file (tasks.md), start the agent, and walk away. It works through the tasks one at a time using fresh sub-agents (so it never runs out of memory), commits each task to its own branch, and sends a Slack message when done.
+- Built a Slack-based remote control — while away, Benjamin can send commands like STOP, PAUSE, SKIP, or ADD: new task to the #claude-agent channel and the agent will obey without needing a remote desktop session.
+- Built 6 new global assistant skills: /batch (edit many files at once), /debug (fix bugs from logs), /btw (quick side questions), /doctor (health check the Claude Code install), /autonomous (the agent orchestrator), and /remote-control (the Slack command bridge).
+- Audited the BusyMomBrainDump backend and discovered Phase 1 is already fully built — the build plan document was out of date. The real remaining work is tests, an OpenAPI schema for the main endpoint, and properly declaring environment variables for Render deployment.
+- Queued those 4 tasks in tasks.md, ready to run with /autonomous next session.
+
+### Current state
+| | Status |
+|---|---|
+| Rapid2 bot | Live on EC2, QF mode, no changes this session |
+| BusyMomBrainDump | Backend complete, 4 tasks queued, not yet run |
+| Autonomous agent | Built, on feature/autonomous-agent branch, not yet merged |
+
+### Decisions made this session
+- Chose sub-agent architecture for /autonomous — each task gets its own fresh context window instead of one agent accumulating context across the whole queue. This prevents context overflow on long sessions.
+- Tasks run sequentially, not in parallel — BusyMomBrainDump tasks depend on each other (e.g. tests assume the endpoint exists), so parallel runs would cause conflicts.
+
+### Outstanding / next steps
+- Merge feature/autonomous-agent into master
+- Run /autonomous on the BusyMomBrainDump task queue (tests, OpenAPI schema, render.yaml)
+---
 ## Session: 17 April 2026
 **Projects touched:** Rapid2 (live bot)
 **Session type:** Bug fix

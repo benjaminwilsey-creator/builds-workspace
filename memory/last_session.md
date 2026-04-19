@@ -1,14 +1,17 @@
 ---
-date: 2026-04-17
-project: Rapid2 (live bot)
-originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
+date: 2026-04-19
+project: Autonomous Agent (infrastructure)
+originSessionId: e8aa32cd-ffd7-41e9-8b15-006e8e3a9da6
 ---
 ## What we did
-- Applied the Kraken lot-minimum fix to the live bot — BEAM, LINK, and USDG now get silently removed from tracking instead of erroring every 3 minutes forever
-- Synced local bot.py to match EC2 (they were out of sync after the fix)
+- Researched and security-audited wshobson's Conductor plugin — decided it's too heavy for solo use
+- Designed "Lite Conductor" structure: Track IDs, Spec+Acceptance required, phase checkpoints
+- Rewrote /autonomous skill to enforce the new structure — stops between phases, waits for "proceed"
 
 ## Next up
-- No pending fixes — bot is clean, local files match EC2
+- Create a tasks.md using the new Lite Conductor format in whichever project runs first
+- Consider writing a /decide ADR for the Conductor decision
 
 ## Watch out for
-- Local strategy.py may still be out of sync with EC2 QF tuning (vol=0.02, volume_mult=1.2)
+- BusyMomBrainDump has no tasks.md yet — needs one in the new format before /autonomous will work
+- feature/autonomous-agent still not merged to master
