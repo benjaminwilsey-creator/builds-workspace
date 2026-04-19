@@ -1,4 +1,42 @@
 {
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\benja\\.local\\bin\\uv.exe run --directory \"E:\\Builds - Copy\\claude-memory-compiler\" python \"E:\\Builds - Copy\\claude-memory-compiler\\hooks\\session-start.py\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\benja\\.local\\bin\\uv.exe run --directory \"E:\\Builds - Copy\\claude-memory-compiler\" python \"E:\\Builds - Copy\\claude-memory-compiler\\hooks\\pre-compact.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\benja\\.local\\bin\\uv.exe run --directory \"E:\\Builds - Copy\\claude-memory-compiler\" python \"E:\\Builds - Copy\\claude-memory-compiler\\hooks\\session-end.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(ssh rapid2 *)",
@@ -53,7 +91,10 @@
       "Bash(PYTHONUTF8=1 .venv/Scripts/python.exe app.py)",
       "Bash(netstat -ano)",
       "Bash(taskkill /PID 99484 /F)",
-      "Bash(.venv/Scripts/python.exe -m pip install pydub pyaudio)"
+      "Bash(.venv/Scripts/python.exe -m pip install pydub pyaudio)",
+      "Bash(echo \"HF Agents Course/\")",
+      "Bash(echo \"FinancialManager/\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 30; Get-Content 'C:\\\\Users\\\\benja\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\e--Builds---Copy\\\\e8aa32cd-ffd7-41e9-8b15-006e8e3a9da6\\\\tasks\\\\b26h6fext.output' | Select-Object -Last 5\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\benja\\OneDrive\\Documents\\Builds\\Rapid2\\rapid2 v1.2\\tests",
