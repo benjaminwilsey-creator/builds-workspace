@@ -30,3 +30,5 @@ __pycache__/
 
 # VS Code user settings (keep workspace file, exclude user-specific)
 .vscode/settings.json
+HF Agents Course/
+FinancialManager/
