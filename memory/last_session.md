@@ -1,18 +1,17 @@
 ---
-date: 2026-04-18
-project: FinancialManager (new)
-originSessionId: 38e30724-452d-4497-9805-9aa1f0ab82c7
+date: 2026-04-19
+project: Autonomous Agent (infrastructure)
+originSessionId: e8aa32cd-ffd7-41e9-8b15-006e8e3a9da6
 ---
 ## What we did
-- Scaffolded FinancialManager — a local Python tool that monitors Truist via Plaid and sends Slack reminders when bills are due
-- Chose notify-only approach (no automated payment) — Truist has no bill pay API and browser automation is against their ToS
-- Built all 9 bills into bills.yaml, ready to fill in due dates and amounts
+- Researched and security-audited wshobson's Conductor plugin — decided it's too heavy for solo use
+- Designed "Lite Conductor" structure: Track IDs, Spec+Acceptance required, phase checkpoints
+- Rewrote /autonomous skill to enforce the new structure — stops between phases, waits for "proceed"
 
 ## Next up
-- Fill in bills.yaml with actual due dates, amounts, and provider names
-- Create free Plaid developer account and connect Truist
-- Create Slack app and add bot token to .env
+- Create a tasks.md using the new Lite Conductor format in whichever project runs first
+- Consider writing a /decide ADR for the Conductor decision
 
 ## Watch out for
-- feature/autonomous-agent still not merged to master from earlier this session
-- BusyMomBrainDump tasks.md queue still waiting to run with /autonomous
+- BusyMomBrainDump has no tasks.md yet — needs one in the new format before /autonomous will work
+- feature/autonomous-agent still not merged to master

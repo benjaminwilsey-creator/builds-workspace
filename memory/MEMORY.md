@@ -3,17 +3,12 @@
 ## User
 - [benjamin.md](User/benjamin.md) — Who Benjamin is: non-programmer, business-outcome thinker, how Claude should collaborate with him
 
-## Active Projects
-- [rapid2.md](Active/rapid2.md) — EC2 state: v1.3 live, QF mode, lot-minimum fix deployed, local bot.py in sync
-- [busymom.md](Active/busymom.md) — BusyMomBrainDump: Phase 1 backend complete, 4 tasks queued in tasks.md, ready for /autonomous
-- [autonomous-agent.md](Active/autonomous-agent.md) — Autonomous task queue system: tasks.md + /autonomous + sub-agents + Slack reporting
-- [financial-manager.md](Active/financial-manager.md) — FinancialManager: Plaid+Slack bill tracker, scaffolded, needs bills.yaml + Plaid + Slack setup before first run
-- [hf-agents-course.md](Active/hf-agents-course.md) — HuggingFace Agents Course: notebooks, Gradio UI, tools. Own GitHub repo.
-- [reelforge.md](Active/reelforge.md) — ReelForge (BookTok affiliate pipeline): Phase 2 complete, TikTok integration in progress
+## Projects
+- [rapid2_bot.md](Projects/rapid2_bot.md) — EC2 state: v1.3 live, QF mode, lot-minimum fix deployed, local bot.py in sync
+- [busymom_app.md](Projects/busymom_app.md) — BusyMomBrainDump: Phase 1 backend complete, 4 tasks queued in tasks.md, ready for /autonomous
+- [autonomous_agent.md](Projects/autonomous_agent.md) — Lite Conductor: Track IDs + Spec/Acceptance required + phase checkpoints — /autonomous stops between phases for approval
 
-## Archive
-- [sportsball.md](Archive/sportsball.md) — Sportsball project (paused)
-- [3dprint.md](Archive/3dprint.md) — 3D print notes
+- [financial_manager.md](Projects/financial_manager.md) — FinancialManager: Plaid+Slack bill tracker, scaffolded, needs bills.yaml + Plaid + Slack setup before first run
 
 ## Tools
 - Obsidian vault: `E:\Builds - Copy\memory\` — second brain, opens in Obsidian. OneDrive backup at `C:\Users\benja\OneDrive\SecondBrain\`. Synced every /remember.

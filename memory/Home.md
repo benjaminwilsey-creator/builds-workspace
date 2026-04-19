@@ -4,31 +4,25 @@ This vault is shared between you and Claude Code. Claude reads these files at th
 
 ---
 
-## 🟢 Active Projects
+## Active Projects
 
-| Project | Repo | Notes |
-|---|---|---|
-| [[Active/rapid2]] | [openclaw](https://github.com/benjaminwilsey-creator/openclaw) | Live crypto bot, EC2, v1.3 |
-| [[Active/busymom]] | [BusyMomBrainDump](https://github.com/benjaminwilsey-creator/BusyMomBrainDump) | Family chore app |
-| [[Active/financial-manager]] | [financial-manager](https://github.com/benjaminwilsey-creator/financial-manager) | Plaid + Slack bill tracker |
-| [[Active/hf-agents-course]] | [hf-agents-course](https://github.com/benjaminwilsey-creator/hf-agents-course) | HuggingFace Agents Course |
-| [[Active/reelforge]] | [reelforge](https://github.com/benjaminwilsey-creator/reelforge) | BookTok affiliate pipeline, TikTok integration in progress |
+- [[Projects/rapid2_bot]] — Live crypto trading bot (Kraken, EC2)
+- [[Projects/busymom_app]] — Family chore/task app (BusyMomBrainDump)
 
 ---
 
-## 🗄️ Archive
+## About Me
 
-| Project | Repo | Notes |
-| [[Archive/sportsball]] | sportsball | Paused |
-| [[Archive/3dprint]] | — | Notes only |
+- [[User/benjamin]] — Profile, working style, technical context
 
 ---
 
-## 🤖 Autonomous Agent Task Queue
+## How to Use This Vault
 
-Add tasks below. The autonomous agent picks these up via `tasks.md` at the root of builds-workspace.
-
-> See: `e:\Builds - Copy\tasks.md`
+- **Claude updates these files** automatically at the end of sessions (via `/remember`)
+- **You can edit them** in Obsidian anytime — Claude will read your changes next session
+- **To tell Claude something new:** add it to the relevant note, or just say it in chat and ask Claude to remember it
+- **To check what Claude knows:** open any file here and read it
 
 ---
 
@@ -36,10 +30,4 @@ Add tasks below. The autonomous agent picks these up via `tasks.md` at the root 
 
 - Local: `e:\Builds - Copy\`
 - EC2: `ubuntu@3.138.144.246` (alias: `rapid2`)
-- Workspace repo: [builds-workspace](https://github.com/benjaminwilsey-creator/builds-workspace)
-
----
-
-## About Me
-
-- [[User/benjamin]] — Profile, working style, technical context
+- Repo: github.com/benjaminwilsey-creator/builds-workspace
