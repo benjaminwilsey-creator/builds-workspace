@@ -1,6 +1,35 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 18 April 2026 (2)
+**Projects touched:** FinancialManager (new project)
+**Session type:** New project scaffold
+
+### What was built or changed
+- Created a new local tool called FinancialManager — it connects to Benjamin's Truist bank account, watches for 9 recurring bills, and sends Slack messages to Benjamin and Liz when payments are coming due or get missed.
+- Decided NOT to automate actual bill payment — Truist has no public API for it, and using code to click through their website is against their terms of service and too risky with real money. Benjamin pays manually from a Slack reminder in under 10 seconds.
+- All 9 bills scaffolded (Electric, Gas, Water, Sanitation, Car, Car Insurance, Cell Phone, Orthodontist, Student Loan) — needs due dates and amounts filled in before first run.
+
+### Current state
+| | Status |
+|---|---|
+| Rapid2 bot | Live on EC2, no changes this session |
+| BusyMomBrainDump | 4 tasks queued, /autonomous not yet run |
+| FinancialManager | Scaffolded — 3 setup steps before it runs |
+| feature/autonomous-agent | Built, not yet merged to master |
+
+### Decisions made this session
+- Notify-only architecture for bill management — no automated payment due to Truist ToS and no public API
+- Plaid chosen for bank connectivity (free developer tier, supports Truist, read-only)
+
+### Outstanding / next steps
+- Fill in bills.yaml with real due dates and provider names
+- Set up Plaid developer account and connect Truist
+- Set up Slack app for the #finances channel
+- Merge feature/autonomous-agent to master
+- Run /autonomous on BusyMomBrainDump task queue
+
+---
 ## Session: 18 April 2026
 **Projects touched:** Claude Code tooling, BusyMomBrainDump, Autonomous Agent system
 **Session type:** Infrastructure / Tooling build

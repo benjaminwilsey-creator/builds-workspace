@@ -1,18 +1,18 @@
 ---
 date: 2026-04-18
-project: Claude Code tooling, BusyMomBrainDump, Autonomous Agent
-originSessionId: ea8f5ab0-e150-41ca-bfe5-04c2bff8464d
+project: FinancialManager (new)
+originSessionId: 38e30724-452d-4497-9805-9aa1f0ab82c7
 ---
 ## What we did
-- Built 6 new global Claude Code skills: /autonomous, /remote-control, /batch, /debug, /btw, /doctor
-- Built an autonomous coding agent system — tasks.md queue, sub-agent per task, Slack reporting
-- Discovered BusyMomBrainDump Phase 1 backend is already complete (BUILD_PLAN.md was wrong)
-- Queued 4 real tasks in tasks.md for the autonomous agent to work through
+- Scaffolded FinancialManager — a local Python tool that monitors Truist via Plaid and sends Slack reminders when bills are due
+- Chose notify-only approach (no automated payment) — Truist has no bill pay API and browser automation is against their ToS
+- Built all 9 bills into bills.yaml, ready to fill in due dates and amounts
 
 ## Next up
-- Run /autonomous to work through the 4 BusyMomBrainDump tasks (tests, OpenAPI schema, render.yaml)
-- Merge feature/autonomous-agent into master when happy with it
+- Fill in bills.yaml with actual due dates, amounts, and provider names
+- Create free Plaid developer account and connect Truist
+- Create Slack app and add bot token to .env
 
 ## Watch out for
-- feature/autonomous-agent branch not yet merged — don't forget it
-- tasks.md queued but /autonomous not run yet — agent hasn't started
+- feature/autonomous-agent still not merged to master from earlier this session
+- BusyMomBrainDump tasks.md queue still waiting to run with /autonomous

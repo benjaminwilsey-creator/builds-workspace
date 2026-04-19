@@ -8,5 +8,7 @@
 - [busymom_app.md](Projects/busymom_app.md) — BusyMomBrainDump: Phase 1 backend complete, 4 tasks queued in tasks.md, ready for /autonomous
 - [autonomous_agent.md](Projects/autonomous_agent.md) — Autonomous task queue system: tasks.md + /autonomous + sub-agents + Slack reporting
 
+- [financial_manager.md](Projects/financial_manager.md) — FinancialManager: Plaid+Slack bill tracker, scaffolded, needs bills.yaml + Plaid + Slack setup before first run
+
 ## Tools
 - Obsidian vault: `E:\Builds - Copy\memory\` — second brain, opens in Obsidian. OneDrive backup at `C:\Users\benja\OneDrive\SecondBrain\`. Synced every /remember.
