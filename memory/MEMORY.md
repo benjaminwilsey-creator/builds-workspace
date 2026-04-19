@@ -11,7 +11,7 @@
 - [hf-agents-course.md](Active/hf-agents-course.md) — HuggingFace Agents Course: notebooks, Gradio UI, tools. Own GitHub repo.
 
 ## Archive
-- [booksmut.md](Archive/booksmut.md) — Booksmut project (paused)
+- [reelforge.md](Archive/reelforge.md) — ReelForge (BookTok affiliate pipeline): Phase 2 complete, TikTok integration in progress
 - [sportsball.md](Archive/sportsball.md) — Sportsball project (paused)
 - [3dprint.md](Archive/3dprint.md) — 3D print notes
 
