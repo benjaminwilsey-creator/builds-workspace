@@ -1,6 +1,36 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 20 April 2026
+**Projects touched:** Rapid2
+**Session type:** Architecture design + automated build kickoff
+
+### What was built or changed
+- Designed Rapid2 v1.4 strategy from scratch using published research — replaced the v1.3 "Quick Flip" approach (short-term scalping) with a two-part system that is more likely to actually make money at a $90 account size
+- Core layer: the bot now automatically buys small amounts of Bitcoin and Ethereum every week, doubling or tripling the buy when the market is in fear (historically the best time to accumulate)
+- Satellite layer: one active trading strategy — waits for Bitcoin to become oversold on a 4-hour chart, then enters with an 8% profit target and 4% stop, holding up to 72 hours
+- Circuit breaker: if the account drops below $70 the active trading pauses automatically; below $50 it texts Benjamin
+- Wrote a 15-section authoritative spec document (v1.4_SPEC.md) that the overnight build agents use as their source of truth
+- Queued 6 build tasks in the Lite Conductor format and fired a remote agent to work through them overnight — progress reports will appear in #claude-agent on Slack
+
+### Current state
+| Project | Status |
+|---|---|
+| Rapid2 v1.3 | Live on EC2, real money, QF mode — untouched this session |
+| Rapid2 v1.4 | Spec written, build running overnight via remote trigger |
+
+### Decisions made this session
+- Chose Core + Satellite over the proposed multi-agent orchestrator — at $90 the complexity adds bug surface without adding edge; revisit multi-agent at $300+
+- Chose mean-reversion (buy oversold, sell recovered) over momentum scalping — research shows scalping is structurally disadvantaged for retail bots; mean-reversion has better evidence at this account size
+- Chose fixed position sizing (100% of satellite capital, one trade at a time) over conviction-based sizing — dynamic sizing overfits and fails in practice for small accounts
+- Fear-DCA identified as the single highest-EV strategy available at $90 based on 2018–2025 backtests (1,145% return for fear-biased DCA vs standard buy-and-hold)
+
+### Outstanding / next steps
+- Review overnight build branches in the morning, merge what passes
+- Paper-trade v1.4 for 2 weeks before going live
+- Migrate EC2 to Oracle Cloud Free Tier (removes $12/mo burn — highest-leverage action before live deploy)
+- Disable nightly remote trigger once all 6 build tracks are complete
+---
 ## Session: 19 April 2026
 **Projects touched:** Autonomous Agent (infrastructure)
 **Session type:** Infrastructure / tooling upgrade

@@ -1,10 +1,10 @@
 ---
 name: EC2 bot deploy state
-description: Current EC2 state as of 2026-04-17 — v1.3 deployed, lot-minimum fix live, local files in sync
+description: v1.3 live on EC2 QF mode (real money) | v1.4 spec written, 6 tracks queued + remote trigger fired overnight
 type: project
 originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
 ---
-## Current EC2 State (as of 2026-04-17)
+## Current EC2 State (v1.3 — LIVE)
 
 **Server:** ubuntu@3.138.144.246 (ssh alias: rapid2)
 **Service:** `openclaw-paper.service` (mis-named — this IS the live trading bot)
@@ -21,20 +21,58 @@ originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
 
 ### Local files:
 - `e:/Builds - Copy/Rapid2/rapid2 v1.3/bot.py` — IN SYNC with EC2
-- `e:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py` — MAY BE OUT OF SYNC (local may still have old vol=0.03, volume_mult=1.5 values). Pull from EC2 before editing.
+- `e:/Builds - Copy/Rapid2/rapid2 v1.3/strategy.py` — MAY BE OUT OF SYNC (local may still have old vol=0.03, volume_mult=1.5). Pull from EC2 before editing.
 
-### What the `.bak` files are:
-- `bot.py.bak` and `strategy.py.bak` in the EC2 directory are OLD v1.2. Do NOT restore.
+### EC2 Gotchas:
+- scp alias works fine: `scp rapid2:/path/to/file local_dest`
+- Bare IP `ubuntu@3.138.144.246` fails with "Permission denied (publickey)" — always use `rapid2` alias
+- Diagnostic script: `ssh rapid2 "python3 /tmp/qf_diag2.py"` — live gate readings
 
 ---
 
-## EC2 Gotchas
+## v1.4 — In Build (as of 2026-04-20)
 
-**scp alias works fine:**
-- `scp rapid2:/path/to/file local_dest` — works with no extra flags
-- `scp ubuntu@3.138.144.246:...` (bare IP without alias) fails with "Permission denied (publickey)"
-- Always use the `rapid2` alias
+**Status:** Spec written. 6 tasks queued. Remote trigger fired overnight.
+**v1.3 is untouched** — v1.4 builds in parallel in a new directory.
 
-**Diagnostic script:**
-- `/tmp/qf_diag2.py` on EC2 — shows live gate readings (vol, RSI, volume ratio, trigger) for all QF symbols
-- Run: `ssh rapid2 "python3 /tmp/qf_diag2.py"`
+### Architecture decided: Core + Satellite
+Evidence-based redesign. Multi-agent orchestrator deferred to $300+ account.
+
+**Core (70% of account) — Enhanced Fear-DCA:**
+- Weekly buys: $4 BTC/USD + $4 ETH/USD
+- F&G < 25 → 2× buy size. F&G < 15 → 3× buy size.
+- Top filter: skip buys when BTC > 50% above 200MA AND F&G ≥ 25
+- Never sells — accumulation only
+
+**Satellite (30% of account) — Mean-Reversion on BTC only:**
+- Entry: RSI(14) on 4h ≤ 35 + price touches lower Bollinger Band (20, 2σ) + green confirmation candle
+- Filter: only trade when BTC above 200-day MA
+- TP: +8%, SL: −4%, max hold: 72h
+- One position at a time, 100% of satellite capital (no conviction sizing)
+
+**Circuit breaker:**
+- Account < $70 → pause satellite, Core keeps running
+- Account < $50 → Telegram alert, manual decision required
+
+**Scan interval:** 900s (15 min) — not 60s
+
+### Spec file:
+`e:/Builds - Copy/Rapid2/v1.4_SPEC.md` — authoritative source of truth for all v1.4 sub-agents
+
+### Task queue:
+6 TRACK-R14 tracks in `e:/Builds - Copy/tasks.md` (Lite Conductor format, single-phase).
+Remote trigger created and fired 2026-04-20:
+- **Trigger ID:** `trig_01JvBvCBLs2qWSBksPRsfj2C`
+- **Schedule:** 4am UTC nightly (safety net — disable after tracks complete)
+- **Manage at:** https://claude.ai/code/scheduled/trig_01JvBvCBLs2qWSBksPRsfj2C
+
+### After overnight run:
+1. Check #claude-agent on Slack for branch names and results
+2. `git checkout agent/track-r14-001-phase1-2026-04-20` to review work
+3. Merge what looks good, then paper-trade for 2 weeks before live deploy
+4. **Disable the nightly trigger** once all 6 tracks are done
+
+### Oracle Cloud migration (not yet done):
+Strongly recommended before v1.4 goes live. Oracle Cloud Free Tier = free forever.
+Removes the $12/mo AWS burn entirely — the bot no longer needs to earn to survive.
+**Why:** How to apply: do this before deploying v1.4 live.
