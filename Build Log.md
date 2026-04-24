@@ -1,6 +1,29 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 24 April 2026
+**Projects touched:** Rapid2
+**Session type:** Quality / Testing
+
+### What was built or changed
+- Reviewed all four versions of the Rapid2 trading bot against a published article ("Tech Broiler") that defines what separates real production software from a working prototype — the biggest gap found was that v1.3 had zero automated tests despite running real money
+- Added 54 automated tests to v1.3: 42 unit tests that verify each rule in isolation (regime detection, position sizing, stop losses, take profits, DCA gates, kill switch) and 12 behavioral tests that simulate complete trades from entry approval through the full exit sequence — all 54 pass green with no network calls
+- Set a paper trade review checkpoint for 2026-05-08 — two weeks to collect real signal data before deciding whether to keep v1.3 QF mode live or switch to v1.4
+
+### Current state
+| Project | Status |
+|---|---|
+| Rapid2 v1.3 | Live on EC2, real money, QF mode — 54 tests now covering pure logic |
+| Rapid2 v1.4 | Spec + 6 build tasks queued — directory not yet built as of 2026-04-24 |
+
+### Decisions made this session
+- None — this was a quality catch-up session, not an architecture session
+
+### Outstanding / next steps
+- Start paper_bot.py to collect 2 weeks of signal data (review due 2026-05-08)
+- Verify v1.4 overnight build ran — check #claude-agent on Slack and look for the rapid2 v1.4 directory; if tasks didn't run, re-fire /autonomous
+- Disable nightly trigger once all 6 v1.4 tracks are confirmed complete
+---
 ## Session: 20 April 2026
 **Projects touched:** Rapid2
 **Session type:** Architecture design + automated build kickoff
