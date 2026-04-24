@@ -30,9 +30,23 @@ originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
 
 ---
 
+## v1.3 — Tests Added (2026-04-24)
+
+**54 tests now exist** — `pytest tests/ -v` runs green (54/54) with no network calls.
+- `tests/test_strategy.py` — 42 unit tests: regime, classify, risk floor, exits, DCA, QF kill switch
+- `tests/test_smoke.py` — 12 behavioral tests: full trade lifecycle (entry → TP1 → TP2 → trail → exit)
+- Run: `py -3 -m pytest tests/ -v` from inside `rapid2 v1.3/` — use `py -3`, not `python` (venv conflict on this machine)
+
+**Paper trade started: 2026-04-24 — review due 2026-05-08**
+- Run `python paper_bot.py` from `rapid2 v1.3/` (uses `PAPER_TELEGRAM_TOKEN` env var)
+- Logs: `logs/paper_bot.log` and `state/paper_state.json`
+- Review on 2026-05-08: win rate, avg PnL, circuit breaker events, compare vs EC2 live
+- If v1.4 tracks complete by then: start v1.4 paper clock
+
 ## v1.4 — In Build (as of 2026-04-20)
 
-**Status:** Spec written. 6 tasks queued. Remote trigger fired overnight.
+**Status:** Spec written. 6 tasks queued. Remote trigger fired 2026-04-20.
+**Confirmed 2026-04-24: `rapid2 v1.4/` directory does NOT exist** — trigger may not have completed all tracks. Check #claude-agent on Slack and verify before assuming build ran.
 **v1.3 is untouched** — v1.4 builds in parallel in a new directory.
 
 ### Architecture decided: Core + Satellite
