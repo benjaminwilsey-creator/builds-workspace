@@ -1,6 +1,6 @@
 ---
 name: EC2 bot deploy state
-description: v1.3 live on EC2 QF mode (real money) | v1.4 spec written, 6 tracks queued + remote trigger fired overnight
+description: v1.3 live on EC2 QF mode (real money) + dust fix deployed 2026-04-25 | account ~$90 | v1.4 spec written + paper trade review due 2026-05-08
 type: project
 originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
 ---
@@ -11,9 +11,15 @@ originSessionId: 0ab1bf2a-022f-4db9-ba88-87b31eac5439
 **Directory:** `/home/ubuntu/rapid2-v1.2/`
 **Bot is LIVE and running real money.**
 **Mode: Quick Flip (QF)**
+**Account balance: ~$90. Approaching end of AWS free tier — bot must turn a profit or be shut down.**
 
 ### What's deployed:
-- `bot.py` — v1.3 code. Has `strat.Tier` enum, `ALL_WATCHLISTS`, `execute_sell_partial`, and lot-minimum fix in both `execute_sell` and `execute_sell_partial`
+- `bot.py` — v1.3 code. Has `strat.Tier` enum, `ALL_WATCHLISTS`, `execute_sell_partial`, and lot-minimum fix in both `execute_sell` and `execute_sell_partial`.
+  **Dust fix deployed 2026-04-25:**
+  - `DUST_THRESHOLD_USD = 5.0` — positions under $5 are silently removed from tracking
+  - `ALWAYS_IGNORE = {"BEAM/USD"}` — BEAM can only trade whole coins, never a fit; always ignored
+  - Removal logic in 3 places: `load_existing_positions`, `execute_sell`, `execute_sell_partial`
+  - Before fix: 14 sub-$5 dust positions (PONKE, SHIB, SOL $1.20, ETH $0.27, etc.) counted in portfolio guard → permanent defensive mode
 - `strategy.py` — v1.3 QF mode. Key QF config values (as of 2026-04-18):
   - `QF_MIN_VOLATILITY_PCT = 0.02` (lowered from 0.03 on 2026-04-18)
   - `VOLUME_CONFIRM_MULTIPLIER = 1.2` (lowered from 1.5 on 2026-04-18)

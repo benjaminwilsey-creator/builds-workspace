@@ -1,18 +1,17 @@
 ---
-date: 2026-04-24
-project: Rapid2
-originSessionId: d71b3022-dc06-4d3b-a6a1-79ffa64ab9ff
+date: 2026-04-25
+project: Rapid2 v1.3 (bug fix) + v1.4 (strategy design)
+originSessionId: e8aa32cd-ffd7-41e9-8b15-006e8e3a9da6
 ---
 ## What we did
-- Reviewed all Rapid2 versions (original through v1.4 spec) against the "Tech Broiler" article's production-grade criteria — biggest gap found was zero test coverage on v1.3
-- Added 54 tests to v1.3 (42 unit tests + 12 full-trade lifecycle smoke tests), all passing green; paper trade checkpoint set for review on 2026-05-08
+- Fixed dust position bug: 14 sub-$5 positions were keeping the bot in permanent defensive mode; added $5 threshold that removes them from tracking entirely
+- Designed v1.4 survival-first architecture: survival score gates, three-layer design (execution/orchestrator/strategy agents), conviction-based sizing
 
 ## Next up
-- Start paper_bot.py running (needs PAPER_TELEGRAM_TOKEN in .env)
-- Check #claude-agent on Slack — v1.4 trigger fired 2026-04-20 but directory was missing 2026-04-24; verify if tracks ran, re-fire /autonomous if not
+- Continue v1.4 fine-tuning in an Opus 4.7 session using the handoff document
+- Confirm dust fix is deployed to EC2 (deploy if not)
 
 ## Watch out for
-- Local strategy.py may be out of sync with EC2 (EC2 has vol=0.02, local may have 0.03) — scp rapid2:/home/ubuntu/rapid2-v1.2/strategy.py . before editing
+- Account is ~$90 and approaching AWS free tier end — bot needs to generate returns or get shut down
+- v1.4 fine-tuning items (7 open questions) are not yet decided — see rapid2_bot.md
 - Nightly trigger trig_01JvBvCBLs2qWSBksPRsfj2C still running — disable once v1.4 tracks confirmed complete
-- BusyMom tasks in tasks.md are legacy flat format — /autonomous will skip them; convert before running
-- Oracle Cloud migration not done — do before deploying v1.4 live (removes $12/mo burn)

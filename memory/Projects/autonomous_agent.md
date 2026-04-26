@@ -73,7 +73,7 @@ All saved to `C:/Users/benja/.claude/commands/` — available in every project:
 | `/doctor` | Health check on Claude Code install, config, MCP servers, env vars |
 
 ## Branch
-Built on: `feature/autonomous-agent` (not yet merged to master)
+Built on: `feature/autonomous-agent` — merged to master 2026-04-19.
 
 ## Slack Channel
 All agent communication goes to `#claude-agent`

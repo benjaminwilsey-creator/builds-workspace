@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Home.md",
+                "file": "Active/autonomous-agent.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Home"
+              "title": "autonomous-agent"
             }
           }
         ]
@@ -183,8 +183,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "a34f5df23a2faf40",
+  "active": "ba8fdee06d8c45f7",
   "lastOpenFiles": [
+    "Home.md",
+    "User/benjamin.md",
+    "sportsball.md",
+    "rapid2.md",
+    "booksmut.md",
+    "3dprint.md",
     "Projects/busymom_app.md",
     "Projects/financial_manager.md",
     "Projects/autonomous_agent.md",
@@ -192,12 +198,8 @@
     "MEMORY.md.tmp.25808.1776570614330",
     "Home.md.tmp.25808.1776570604653",
     "Untitled",
-    "User/benjamin.md",
-    "Home.md",
     "MEMORY.md",
     "Projects",
-    "User",
-    "rapid2.md",
-    "sportsball.md"
+    "User"
   ]
 }
