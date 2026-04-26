@@ -1,0 +1,22 @@
+# Rapid2 v1.4 — Python dependencies
+# Install: pip install -r requirements.txt
+
+# Core
+ccxt==4.5.40
+python-telegram-bot==22.6
+python-dotenv==1.2.1
+requests==2.32.5
+
+# Testing
+pytest>=8.0.0
+
+# Transitive deps pinned for reproducibility
+aiohttp==3.13.3
+httpx==0.28.1
+tzlocal==5.3.1
+urllib3==2.6.3
+
+# Removed from v1.3:
+#   APScheduler     — not used in v1.4 (no scheduled jobs; loop runs on fixed interval)
+#   LunarCrush      — explicitly excluded per spec §14
+#   CryptoCompare   — explicitly excluded per spec §14
