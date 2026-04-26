@@ -1,6 +1,30 @@
 # Builds — Session Log
 *Most recent session at the top. Plain English reference for what has been built and why.*
 ---
+## Session: 25 April 2026
+**Projects touched:** Rapid2 v1.3, Rapid2 v1.4 (design)
+**Session type:** Bug fix + Strategy design
+
+### What was built or changed
+- Fixed a silent bug where 14 tiny leftover positions (worth $0–$3 each) were being counted as real positions — this was keeping the bot locked in permanent defensive mode and blocking all new trades
+- Added a $5 floor: any position worth less than $5 is now quietly removed from tracking; BEAM is always ignored because it can only trade in whole coins which the account can't afford
+- Designed the v1.4 "survival-first" strategy from scratch: the bot now calculates how many months it has left to run (based on account balance vs. server cost) and adjusts how aggressively it trades accordingly — lower runway = more conservative
+
+### Current state
+| Project | Status |
+|---|---|
+| Rapid2 v1.3 | Live on EC2, QF mode — dust fix deployed, account ~$90 |
+| Rapid2 v1.4 | Architecture designed, 7 fine-tuning questions open — continuing in Opus 4.7 |
+
+### Decisions made this session
+- Dust positions under $5 are removed, not just skipped — skipping still counted them in the portfolio guard calculation; removal fixed the defensive mode lock
+- v1.4 built around survival score as the primary gate, not signal quality — at $90 keeping the bot online is more important than maximizing returns
+
+### Outstanding / next steps
+- Continue v1.4 fine-tuning in Opus 4.7 (7 open design questions, see rapid2_bot.md)
+- Deploy dust fix to EC2 if not already done
+- AWS free tier running out — Oracle Cloud migration recommended before v1.4 goes live
+---
 ## Session: 24 April 2026
 **Projects touched:** Rapid2
 **Session type:** Quality / Testing
