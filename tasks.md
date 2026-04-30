@@ -31,41 +31,43 @@
 - [x] Verify: `cd "rapid2 v1.4" && python -c "import bot, strategy, capital; from core import dca; from agents import base, mean_reversion"` exits 0
 
 ## [TRACK-R14-002] Port execution engine (bot.py) to v1.4
-**Status:** in-progress
+**Status:** done
+**Branch:** agent/r14-002-phase1-2026-04-20
 **Spec:** Port v1.3's bot.py to v1.4 as a pure execution engine — Kraken client, Telegram setup, async loop, state persistence — with ALL strategy/regime/QF logic stripped out.
 **Acceptance:** `rapid2 v1.4/bot.py` contains no references to regime, tier, QF, LunarCrush, or CryptoCompare; imports only `strategy.decide` from the v1.4 strategy module; scan interval is 900s per spec §12; the five new Telegram commands (`/runway`, `/survival`, `/why`, `/core`, `/satellite`) are registered (may return placeholder strings — real content comes in later tracks); `/mode` command is removed; `python bot.py --help` or equivalent startup check runs without ImportError.
 **Phase:** 1 of 1
 
 ### Phase 1 — Port
-- [ ] Read `e:/Builds - Copy/Rapid2/v1.4_SPEC.md` §9, §11, §12 first
-- [ ] Read `e:/Builds - Copy/Rapid2/rapid2 v1.3/bot.py` in full
-- [ ] Copy bot.py to `rapid2 v1.4/bot.py`
-- [ ] Strip all imports of regime/tier/QF helpers from strategy.py v1.3
-- [ ] Strip CryptoCompare + LunarCrush integration completely
-- [ ] Replace the trading-loop body with a call to `strategy.decide(...)` — handle `OrchestratorDecision` return type
-- [ ] Set `SCAN_INTERVAL_SECONDS = 900` at module level
-- [ ] Register Telegram commands `/runway`, `/survival`, `/why`, `/core`, `/satellite` with placeholder handlers that reply "not yet wired (track R14-004)"
-- [ ] Remove `/mode` command handler entirely
-- [ ] Add `dca_state.json` persistence (load/save dict of `{symbol: last_buy_ts}`) alongside existing `positions.json`
-- [ ] Verify: file compiles (`python -m py_compile bot.py`) and imports succeed
-- [ ] DO NOT run the bot — never start `python bot.py` in full
+- [x] Read `e:/Builds - Copy/Rapid2/v1.4_SPEC.md` §9, §11, §12 first
+- [x] Read `e:/Builds - Copy/Rapid2/rapid2 v1.3/bot.py` in full
+- [x] Copy bot.py to `rapid2 v1.4/bot.py`
+- [x] Strip all imports of regime/tier/QF helpers from strategy.py v1.3
+- [x] Strip CryptoCompare + LunarCrush integration completely
+- [x] Replace the trading-loop body with a call to `strategy.decide(...)` — handle `OrchestratorDecision` return type
+- [x] Set `SCAN_INTERVAL_SECONDS = 900` at module level
+- [x] Register Telegram commands `/runway`, `/survival`, `/why`, `/core`, `/satellite` with placeholder handlers that reply "not yet wired (track R14-004)"
+- [x] Remove `/mode` command handler entirely
+- [x] Add `dca_state.json` persistence (load/save dict of `{symbol: last_buy_ts}`) alongside existing `positions.json`
+- [x] Verify: file compiles (`python -m py_compile bot.py`) and imports succeed
+- [x] DO NOT run the bot — never start `python bot.py` in full
 
 ## [TRACK-R14-003] Implement Core — Enhanced Fear-DCA
-**Status:** planned
+**Status:** done
+**Branch:** agent/r14-003-phase1-2026-04-20
 **Spec:** Implement `core/dca.py` as a pure function per spec §5, with full pytest coverage of every decision branch.
 **Acceptance:** `core/dca.py` defines `DCADecision` dataclass and `evaluate_dca(...)` function exactly matching §5 signature; all constants from §12 are defined as module-level; `tests/test_dca.py` contains the 6 test cases listed in §5 (all passing); `pytest tests/test_dca.py -v` exits 0 with 6 passed; the function is pure (no network calls, no file I/O, no imports of ccxt).
 **Phase:** 1 of 1
 
 ### Phase 1 — Build DCA + tests
-- [ ] Read `v1.4_SPEC.md` §5 and §12 first
-- [ ] Implement `rapid2 v1.4/core/dca.py` per spec — constants at top, dataclass, single public `evaluate_dca` function
-- [ ] Follow the exact logic order: interval gate → top filter → F&G multiplier → min-order check
-- [ ] Keep function pure — no I/O, no ccxt imports, only stdlib + dataclasses
-- [ ] Write `rapid2 v1.4/tests/test_dca.py` covering all 6 cases listed in §5
-- [ ] Run `cd "rapid2 v1.4" && pytest tests/test_dca.py -v` — must exit 0 with 6 passed
+- [x] Read `v1.4_SPEC.md` §5 and §12 first
+- [x] Implement `rapid2 v1.4/core/dca.py` per spec — constants at top, dataclass, single public `evaluate_dca` function
+- [x] Follow the exact logic order: interval gate → top filter → F&G multiplier → min-order check
+- [x] Keep function pure — no I/O, no ccxt imports, only stdlib + dataclasses
+- [x] Write `rapid2 v1.4/tests/test_dca.py` covering all 6 cases listed in §5
+- [x] Run `cd "rapid2 v1.4" && pytest tests/test_dca.py -v` — must exit 0 with 6 passed
 
 ## [TRACK-R14-004] Implement Satellite — Mean-Reversion Agent + base interface
-**Status:** planned
+**Status:** in-progress
 **Spec:** Implement `agents/base.py` (AgentContext, AgentSignal) and `agents/mean_reversion.py` (pure function) per spec §4 and §6, with full pytest coverage.
 **Acceptance:** `agents/base.py` defines both dataclasses exactly as in §4; `agents/mean_reversion.py` exports `evaluate(ctx: AgentContext) -> AgentSignal` following §6 logic; mocks `exchange.fetch_ohlcv` in tests — no live network; `tests/test_mean_reversion.py` contains the 9 test cases listed in §6 (all passing); `pytest tests/test_mean_reversion.py -v` exits 0.
 **Phase:** 1 of 1
