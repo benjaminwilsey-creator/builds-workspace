@@ -12,25 +12,26 @@
 ## Pending
 
 ## [TRACK-R14-001] Scaffold Rapid2 v1.4 directory and CLAUDE.md
-**Status:** in-progress
+**Status:** done
+**Branch:** agent/r14-001-phase1-2026-04-20
 **Spec:** Create the `rapid2 v1.4/` directory skeleton with all module stubs, CLAUDE.md, README.md, and copy .env.example + requirements.txt from v1.3 — no logic yet, just importable scaffolding.
 **Acceptance:** Directory `e:/Builds - Copy/Rapid2/rapid2 v1.4/` exists with the exact file tree in §3 of v1.4_SPEC.md, every .py file has a module docstring and empty stub functions matching the signatures in the spec, `rapid2 v1.4/CLAUDE.md` matches §11 of the spec verbatim, and running `python -c "import bot, strategy, capital; from core import dca; from agents import base, mean_reversion"` from inside the v1.4 dir exits 0 with no ImportError.
 **Phase:** 1 of 1
 
 ### Phase 1 — Scaffold
-- [ ] Read `e:/Builds - Copy/Rapid2/v1.4_SPEC.md` in full first — it is the source of truth
-- [ ] Read `e:/Builds - Copy/Rapid2/rapid2 v1.3/CLAUDE.md` for project conventions
-- [ ] Create directory tree exactly as in §3 of the spec (do NOT add extra files)
-- [ ] For every .py file: write the module docstring, imports, and `pass`-body stub functions/dataclasses whose signatures exactly match the spec
-- [ ] Write `rapid2 v1.4/CLAUDE.md` using the verbatim content from §11 of the spec
-- [ ] Write a one-page `rapid2 v1.4/README.md` summarizing Core + Satellite architecture and how to run paper_bot.py
-- [ ] Copy `requirements.txt` and `.env.example` from `rapid2 v1.3/` into `rapid2 v1.4/`
-- [ ] Remove any LunarCrush or CryptoCompare deps from the v1.4 `requirements.txt`
-- [ ] Create `deploy.sh` as a blank stub with a comment: `# v1.4 deploy intentionally blank — paper only`
-- [ ] Verify: `cd "rapid2 v1.4" && python -c "import bot, strategy, capital; from core import dca; from agents import base, mean_reversion"` exits 0
+- [x] Read `e:/Builds - Copy/Rapid2/v1.4_SPEC.md` in full first — it is the source of truth
+- [x] Read `e:/Builds - Copy/Rapid2/rapid2 v1.3/CLAUDE.md` for project conventions
+- [x] Create directory tree exactly as in §3 of the spec (do NOT add extra files)
+- [x] For every .py file: write the module docstring, imports, and `pass`-body stub functions/dataclasses whose signatures exactly match the spec
+- [x] Write `rapid2 v1.4/CLAUDE.md` using the verbatim content from §11 of the spec
+- [x] Write a one-page `rapid2 v1.4/README.md` summarizing Core + Satellite architecture and how to run paper_bot.py
+- [x] Copy `requirements.txt` and `.env.example` from `rapid2 v1.3/` into `rapid2 v1.4/`
+- [x] Remove any LunarCrush or CryptoCompare deps from the v1.4 `requirements.txt`
+- [x] Create `deploy.sh` as a blank stub with a comment: `# v1.4 deploy intentionally blank — paper only`
+- [x] Verify: `cd "rapid2 v1.4" && python -c "import bot, strategy, capital; from core import dca; from agents import base, mean_reversion"` exits 0
 
 ## [TRACK-R14-002] Port execution engine (bot.py) to v1.4
-**Status:** planned
+**Status:** in-progress
 **Spec:** Port v1.3's bot.py to v1.4 as a pure execution engine — Kraken client, Telegram setup, async loop, state persistence — with ALL strategy/regime/QF logic stripped out.
 **Acceptance:** `rapid2 v1.4/bot.py` contains no references to regime, tier, QF, LunarCrush, or CryptoCompare; imports only `strategy.decide` from the v1.4 strategy module; scan interval is 900s per spec §12; the five new Telegram commands (`/runway`, `/survival`, `/why`, `/core`, `/satellite`) are registered (may return placeholder strings — real content comes in later tracks); `/mode` command is removed; `python bot.py --help` or equivalent startup check runs without ImportError.
 **Phase:** 1 of 1
