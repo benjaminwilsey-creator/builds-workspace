@@ -22,6 +22,9 @@ Desktop.ini
 # LibreOffice lock files (created when a file is open, never commit)
 .~lock.*
 
+# Claude Code agent worktrees (ephemeral — never commit)
+.claude/worktrees/
+
 # Python cache
 __pycache__/
 *.pyc
