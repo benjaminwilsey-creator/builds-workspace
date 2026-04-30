@@ -12,7 +12,7 @@
 ## Pending
 
 ## [TRACK-R14-001] Scaffold Rapid2 v1.4 directory and CLAUDE.md
-**Status:** planned
+**Status:** in-progress
 **Spec:** Create the `rapid2 v1.4/` directory skeleton with all module stubs, CLAUDE.md, README.md, and copy .env.example + requirements.txt from v1.3 — no logic yet, just importable scaffolding.
 **Acceptance:** Directory `e:/Builds - Copy/Rapid2/rapid2 v1.4/` exists with the exact file tree in §3 of v1.4_SPEC.md, every .py file has a module docstring and empty stub functions matching the signatures in the spec, `rapid2 v1.4/CLAUDE.md` matches §11 of the spec verbatim, and running `python -c "import bot, strategy, capital; from core import dca; from agents import base, mean_reversion"` from inside the v1.4 dir exits 0 with no ImportError.
 **Phase:** 1 of 1
