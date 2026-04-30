@@ -67,22 +67,23 @@
 - [x] Run `cd "rapid2 v1.4" && pytest tests/test_dca.py -v` — must exit 0 with 6 passed
 
 ## [TRACK-R14-004] Implement Satellite — Mean-Reversion Agent + base interface
-**Status:** in-progress
+**Status:** done
+**Branch:** agent/r14-004-phase1-2026-04-20
 **Spec:** Implement `agents/base.py` (AgentContext, AgentSignal) and `agents/mean_reversion.py` (pure function) per spec §4 and §6, with full pytest coverage.
 **Acceptance:** `agents/base.py` defines both dataclasses exactly as in §4; `agents/mean_reversion.py` exports `evaluate(ctx: AgentContext) -> AgentSignal` following §6 logic; mocks `exchange.fetch_ohlcv` in tests — no live network; `tests/test_mean_reversion.py` contains the 9 test cases listed in §6 (all passing); `pytest tests/test_mean_reversion.py -v` exits 0.
 **Phase:** 1 of 1
 
 ### Phase 1 — Build agent + tests
-- [ ] Read `v1.4_SPEC.md` §4 and §6 first
-- [ ] Implement `rapid2 v1.4/agents/base.py` — frozen dataclasses, type hints, no logic
-- [ ] Implement `rapid2 v1.4/agents/mean_reversion.py` with constants at top and the `evaluate` function
-- [ ] Compute RSI(14) and Bollinger Bands from `ctx.exchange.fetch_ohlcv(symbol, "4h", limit=100)` — pure numpy-free stdlib math is fine
-- [ ] Order of checks: open-position exit logic first (TP/SL/time-stop), then entry logic (trend filter → RSI → BB → confirmation)
-- [ ] Write `rapid2 v1.4/tests/test_mean_reversion.py` mocking `fetch_ohlcv` — all 9 cases from §6
-- [ ] Run `cd "rapid2 v1.4" && pytest tests/test_mean_reversion.py -v` — must exit 0 with 9 passed
+- [x] Read `v1.4_SPEC.md` §4 and §6 first
+- [x] Implement `rapid2 v1.4/agents/base.py` — frozen dataclasses, type hints, no logic
+- [x] Implement `rapid2 v1.4/agents/mean_reversion.py` with constants at top and the `evaluate` function
+- [x] Compute RSI(14) and Bollinger Bands from `ctx.exchange.fetch_ohlcv(symbol, "4h", limit=100)` — pure numpy-free stdlib math is fine
+- [x] Order of checks: open-position exit logic first (TP/SL/time-stop), then entry logic (trend filter → RSI → BB → confirmation)
+- [x] Write `rapid2 v1.4/tests/test_mean_reversion.py` mocking `fetch_ohlcv` — all 9 cases from §6
+- [x] Run `cd "rapid2 v1.4" && pytest tests/test_mean_reversion.py -v` — must exit 0 with 9 passed
 
 ## [TRACK-R14-005] Implement Capital module + Strategy orchestrator + Telegram wiring
-**Status:** planned
+**Status:** in-progress
 **Spec:** Implement `capital.py` (circuit breaker) per §7, `strategy.py` (orchestrator) per §8, and replace placeholder Telegram handlers in bot.py with real implementations per §9.
 **Acceptance:** `capital.py` defines CapitalState and `compute_state(...)` per §7 with all 4 thresholds as module constants; `strategy.py` defines `OrchestratorDecision` and `decide(...)` per §8; the 5 Telegram commands in bot.py (`/runway`, `/survival`, `/why`, `/core`, `/satellite`) return real data using capital/strategy modules (not placeholders); `tests/test_capital.py` covers the 5 cases in §7 and `tests/test_strategy.py` covers the 4 cases in §8; `pytest tests/test_capital.py tests/test_strategy.py -v` exits 0.
 **Phase:** 1 of 1
