@@ -100,19 +100,20 @@
 - [x] Run `cd "rapid2 v1.4" && pytest tests/test_capital.py tests/test_strategy.py -v` — must exit 0
 
 ## [TRACK-R14-006] Paper trading harness + full test suite + validation
-**Status:** in-progress
+**Status:** done
+**Branch:** agent/r14-006-phase1-2026-04-20
 **Spec:** Implement `paper_bot.py` per §10 and run the full test suite + the meta-acceptance checks from §15.
 **Acceptance:** `paper_bot.py` starts, connects to Kraken public API (OHLCV only, no auth), runs one orchestrator decision, logs it, and exits cleanly on a `--dry-run` flag (without entering the real async loop); `pytest tests/ -v` passes green with every test collected; `python -c "import bot, strategy, capital; from core import dca; from agents import base, mean_reversion"` exits 0; a `PAPER_VALIDATION.md` file documents the 5 meta-acceptance checks from §15 as run + pass/fail results; NO live run, NO deploy to EC2.
 **Phase:** 1 of 1
 
 ### Phase 1 — Paper harness + final validation
-- [ ] Read `v1.4_SPEC.md` §10 and §15 first
-- [ ] Implement `rapid2 v1.4/paper_bot.py` per §10 — simulated fills, taker fee applied, separate Telegram token env var, trade log to `logs/paper_trades.csv`
-- [ ] Add a `--dry-run` flag to paper_bot.py that performs ONE orchestrator decision, prints it, writes one row to the log, and exits — no infinite loop
-- [ ] Run `cd "rapid2 v1.4" && pytest tests/ -v` — must exit 0 with all tests from earlier tracks passing
-- [ ] Run `cd "rapid2 v1.4" && python paper_bot.py --dry-run` — must exit 0 (needs only Kraken public API, no keys)
-- [ ] Write `rapid2 v1.4/PAPER_VALIDATION.md` listing each of the 5 checks in §15 with pass/fail status + any blockers
-- [ ] DO NOT start bot.py, DO NOT deploy, DO NOT run paper_bot.py without --dry-run
+- [x] Read `v1.4_SPEC.md` §10 and §15 first
+- [x] Implement `rapid2 v1.4/paper_bot.py` per §10 — simulated fills, taker fee applied, separate Telegram token env var, trade log to `logs/paper_trades.csv`
+- [x] Add a `--dry-run` flag to paper_bot.py that performs ONE orchestrator decision, prints it, writes one row to the log, and exits — no infinite loop
+- [x] Run `cd "rapid2 v1.4" && pytest tests/ -v` — must exit 0 with all tests from earlier tracks passing
+- [x] Run `cd "rapid2 v1.4" && python paper_bot.py --dry-run` — must exit 0 (needs only Kraken public API, no keys)
+- [x] Write `rapid2 v1.4/PAPER_VALIDATION.md` listing each of the 5 checks in §15 with pass/fail status + any blockers
+- [x] DO NOT start bot.py, DO NOT deploy, DO NOT run paper_bot.py without --dry-run
 
 ---
 
