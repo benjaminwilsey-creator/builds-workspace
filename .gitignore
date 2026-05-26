@@ -1,11 +1,24 @@
 # Subprojects with their own git repos — exclude them here
 Booksmut/
-Rapid2/rapid2 (Program)/
-Rapid2/rapid2 v1.2/
-Rapid2/rapid2 v1.3/
+Rapid2/
 model-skills/
+model-specific-skills/
 Architect/
 Sportsball/
+Gemini/
+
+# Personal journal — moved to builds-journal private repo
+Build Log.md
+tasks.md
+claude-code-confirmed.md
+claude-code-to-investigate.md
+memory/
+"temp context"/
+
+# Claude/Gemini local config that must never be committed
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.qwen
 
 # Claude Desktop Skills folder on Desktop (ephemeral output)
 # Never commit secrets or credentials
