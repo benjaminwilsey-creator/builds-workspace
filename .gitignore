@@ -48,3 +48,8 @@ __pycache__/
 .vscode/settings.json
 HF Agents Course/
 FinancialManager/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
