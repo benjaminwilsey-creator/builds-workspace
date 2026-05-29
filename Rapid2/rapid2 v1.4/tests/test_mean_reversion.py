@@ -39,10 +39,14 @@ def _oversold_ohlcv(
     """Build 100 synthetic candles that produce the desired signal conditions.
 
     Strategy:
-    - Start with 60 candles near base_price (stable baseline).
-    - Add a series of declining candles to push RSI down to ~rsi_target.
-    - Optionally push the last closed close below the lower BB band.
-    - Append one forming candle with controlled green/red + low direction.
+    - Start with 60 flat candles near base_price (Wilder's RSI warm-up).
+    - 20 consecutive decline candles (−0.5% each) drive RSI well below 35.
+    - 18 flat candles pad closed count to 98.
+    - The 99th (last) closed candle: when bb_touch=True, drop 8% below the
+      flat price so it sits clearly below the BB lower band (the BB window
+      contains 19 values at 'price' and 1 at price*0.92, giving non-zero std
+      and a lower band ≈ price*0.961 — well above price*0.92).
+    - One forming candle with controlled green/red and low direction.
     """
     candles: list[list] = []
 
@@ -50,37 +54,33 @@ def _oversold_ohlcv(
     for _ in range(60):
         candles.append(_make_candle(base_price, base_price * 1.001, base_price * 0.999, base_price))
 
-    # Decline phase: enough consecutive down candles to drive RSI < rsi_target
-    # Each candle drops by drop_pct; tune to reach the desired RSI range.
-    # For RSI ~ 30, we want avg_loss >> avg_gain.
+    # Decline phase: 20 consecutive down candles to drive RSI < 35
     drop_pct = 0.005   # 0.5% per candle
     price = base_price
-    # 20 decline candles gives roughly RSI = 100 - 100/(1 + 0/avg_loss) ≈ 0–30 territory
     for _ in range(20):
         prev = price
         price = price * (1 - drop_pct)
         candles.append(_make_candle(prev, prev * 1.0005, price * 0.999, price))
 
-    # At this point len(candles) = 80, which gives RSI enough warmup.
-    # We need 99 closed + 1 forming = 100 total.
-    # Add flat candles to pad to 99 closed candles.
-    while len(candles) < 99:
+    # Pad to 98 closed candles with flat candles at current price
+    while len(candles) < 98:
         candles.append(_make_candle(price, price * 1.001, price * 0.999, price))
 
-    # Determine last-closed close for BB calculation
-    last_closed_close = price
-
-    # If bb_touch requested, push close to just below lower BB
+    # Build the 99th (last) closed candle.
+    # When bb_touch=True: close is 8% below 'price'.  The BB(20) window then
+    # contains 19 values at 'price' and 1 at price*0.92.  Mathematically this
+    # always satisfies last_close < lower_band regardless of floating-point
+    # precision (proven: for any single outlier below n-1 identical values,
+    # the outlier is below mean−2σ).
     if bb_touch:
-        # The BB lower band ≈ mean - 2σ of the last 20 closes.
-        # Our 20 decline candles already push us there; keep the close as-is.
-        # For robustness, manually set the last closed candle's close well below
-        # where the band would be calculated.  We re-use the declining price.
-        pass  # declining price is already below the stable baseline's lower band
+        last_closed_close = price * 0.92
+    else:
+        last_closed_close = price
 
-    # Build last closed candle (index 98, i.e. candle number 99)
-    prior_low = price * 0.998   # low of the 99th candle
-    candles[-1] = _make_candle(price * 1.001, price * 1.002, prior_low, last_closed_close)
+    prior_low = last_closed_close * 0.999   # low of the 99th candle
+    candles.append(_make_candle(price, price, prior_low, last_closed_close))
+
+    assert len(candles) == 99
 
     # Forming (still-open) candle — index 99
     forming_open = last_closed_close
