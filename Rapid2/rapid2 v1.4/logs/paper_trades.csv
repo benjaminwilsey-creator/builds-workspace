@@ -1,0 +1,2 @@
+timestamp_utc,action,symbol,price_raw,price_with_slippage,qty_coin,usd_amount,fee_usd,paper_cash_after,reason
+2026-05-29T04:14:14.068878+00:00,DRY_RUN,N/A,N/A,N/A,N/A,N/A,N/A,90.00,"dry-run: Account healthy: $90.00, satellite enabled | Core DCA: DCA buy: F&G=50, multiplier=1.0x, amount=$4.00 | Satellite error: kraken GET https://api.kraken.com/0/public/Assets"
